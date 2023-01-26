@@ -11,7 +11,7 @@ const Home: NextPage = () => {
 
     //const isSystemDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
 
-    console.log( isSystemDark )
+    //console.log( isSystemDark )
 
     return (
             <>
