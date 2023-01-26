@@ -1,0 +1,42 @@
+{
+  "name": "nftticketsthridweb",
+  "version": "1.0.0",
+  "description": "Marketplace front-end of NFTTickets",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NFTicket-System/NFTTicketsThridweb.git"
+  },
+  "keywords": [],
+  "author": "NFTTickets Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NFTicket-System/NFTTicketsThridweb/issues"
+  },
+  "homepage": "https://github.com/NFTicket-System/NFTTicketsThridweb#readme",
+  "dependencies": {
+    "@nextui-org/react": "^1.0.0-beta.12",
+    "next": "13.1.5",
+    "next-themes": "^0.2.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.27",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "eslint": "^8.32.0",
+    "eslint-config-next": "13.1.5",
+    "eslint-config-prettier": "^8.6.0",
+    "prettier": "^2.8.3",
+    "sass": "^1.57.1",
+    "typescript": "^4.9.4"
+  }
+}
