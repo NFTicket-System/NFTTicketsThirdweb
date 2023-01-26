@@ -9,7 +9,7 @@ const Home: NextPage = () => {
     const { setTheme } = useNextTheme()
     const { isDark, type } = useTheme()
 
-    const isSystemDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
+    //const isSystemDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
 
     console.log( isSystemDark )
 
