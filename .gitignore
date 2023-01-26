@@ -400,3 +400,9 @@ Temporary Items
 
 /.idea/
 /package-lock.json
+
+# Local Netlify folder
+.netlify
+
+# Netlify build
+out_*

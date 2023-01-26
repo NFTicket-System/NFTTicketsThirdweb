@@ -8,6 +8,11 @@ import { Navbar, Button, Link, Text } from '@nextui-org/react'
 const Home: NextPage = () => {
     const { setTheme } = useNextTheme()
     const { isDark, type } = useTheme()
+
+    const isSystemDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
+
+    console.log( isSystemDark )
+
     return (
             <>
                 <Navbar isBordered variant='floating'>
@@ -38,7 +43,7 @@ const Home: NextPage = () => {
 
                 <div className='mt-2'>
                     The current theme is: { type }
-                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) } />
+                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
                 </div>
                 <h1 className='text-3xl font-bold underline'>
                     Hello world!
