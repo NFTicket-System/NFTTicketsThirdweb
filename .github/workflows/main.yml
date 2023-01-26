@@ -28,11 +28,13 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: 🧰 Install dependencies and 📦 Build project
+      - name: 🧰 Install dependencies
+        run: npm install
+
+      - name: 📦 Build project
         run: |
-          npm install
-          npx netlify link  --auth=${{ secrets.NETLIFY_TOKEN }} --id ${{ secrets.SITE_ID }}
-          npx netlify build --auth=${{ secrets.NETLIFY_TOKEN }}
+          npx netlify link  --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --id ${{ secrets.NETLIFY_SITE_ID }}
+          npx netlify build --auth=${{ secrets.NETLIFY_AUTH_TOKEN }}
 
       # - name: 🧹 Run lint
       #   run: npm run lint
@@ -53,6 +55,6 @@ jobs:
           enable-commit-comment: true
           overwrites-pull-request-comment: true
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_NETLIFY_SITE_ID }}
         timeout-minutes: 1
