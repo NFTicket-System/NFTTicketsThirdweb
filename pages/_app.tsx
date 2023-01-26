@@ -2,6 +2,8 @@ import '@/../styles/globals.scss'
 import type { AppProps } from 'next/app'
 import { createTheme, NextUIProvider } from '@nextui-org/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { ChainId } from '@thirdweb-dev/sdk'
+import { ThirdwebProvider } from '@thirdweb-dev/react'
 
 // 2. Call `createTheme` and pass your custom values
 const lightTheme = createTheme( {
@@ -14,15 +16,17 @@ const darkTheme = createTheme( {
 
 function MyApp( { Component, pageProps }: AppProps ) {
     return (
-            <NextThemesProvider defaultTheme='system' attribute='class' value={ {
-                light: lightTheme.className,
-                dark: darkTheme.className,
-            } }>
-                {/*Make the NextUI component library available app-wild*/ }
-                <NextUIProvider>
-                    <Component { ...pageProps } />
-                </NextUIProvider>
-            </NextThemesProvider>
+            <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
+                <NextThemesProvider defaultTheme='system' attribute='class' value={ {
+                    light: lightTheme.className,
+                    dark: darkTheme.className,
+                } }>
+                    {/*Make the NextUI component library available app-wild*/ }
+                    <NextUIProvider>
+                        <Component { ...pageProps } />
+                    </NextUIProvider>
+                </NextThemesProvider>
+            </ThirdwebProvider>
     )
 }
 
