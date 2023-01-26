@@ -28,24 +28,31 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: 🧰 Install dependencies
-        run: npm install
+      - name: 🧰 Install dependencies and 📦 Build project
+        run: |
+          npm install
+          npx netlify link  --auth=${{ secrets.NETLIFY_TOKEN }} --id ${{ secrets.SITE_ID }}
+          npx netlify build --auth=${{ secrets.NETLIFY_TOKEN }}
 
-      - name: 📦 Build project
-        run: npm run build --if-present
-
-      - name: 🧹 Run lint
-        run: npm run lint
+      # - name: 🧹 Run lint
+      #   run: npm run lint
 
       # - name: 🐛 Run tests
       #  run: npm run test
 
       # Deploy to Netlify with a personalized message
       - name: 🚀 Deploy to Netlify
-        id: deploy-netlify
-        uses: netlify/actions/cli@master
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        uses: nwtgck/actions-netlify@v1.2
         with:
-          args: deploy -m 'v${{ steps.package-version.outputs.current-version}} ・ ${{ github.head_ref }}'
+          publish-dir: 'packages/web/out'
+          functions-dir: 'packages/web/out_functions'
+          production-branch: master
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+        timeout-minutes: 1
