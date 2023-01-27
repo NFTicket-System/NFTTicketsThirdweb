@@ -22,18 +22,10 @@ jobs:
             ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Use Node.js 14.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
-
-      - name: Setup deployment
-        uses: bobheadxi/deployments@v0.6.0
-        id: deployment
-        with:
-          step: start
-          env: branch-deploy-${{ github.head_ref }}
-          ref: ${{ github.head_ref }}
+          node-version: 16.x
 
       - name: Install dependencies
         run: |
