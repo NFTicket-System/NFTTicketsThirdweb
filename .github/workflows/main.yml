@@ -1,23 +1,20 @@
-name: Production build+deploy
+name: Pull Request build+deploy
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    environment: branch-deploy
     name: Build and deploy
-    environment:
-      name: production
-      url: ${{ steps.deploy-netlify.outputs.NETLIFY_LIVE_URL }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Cache node modules and next folder
-      - name: 🛟 Caching
+      - name: Caching
         uses: actions/cache@v2
         with:
           path: |
@@ -25,21 +22,29 @@ jobs:
             ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Use Node.js 16.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 14.x
 
-      - name: ⛏️ Install dependencies
-        run: npm install
+      - name: Setup deployment
+        uses: bobheadxi/deployments@v0.6.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: branch-deploy-${{ github.head_ref }}
+          ref: ${{ github.head_ref }}
 
-      #- name: 🧩 Run tests
-      #  run: npm run test
+      - name: Install dependencies
+        run: |
+          npm install -g yarn
+          yarn install
 
-      # Using `netlify build` to build the website.
-      # It will run the command specified on `netlify.toml` (`npm run build`)
-      # and use the necessary plugin
-      - name: 📦 Build project
+      - name: Run tests
+        run: yarn test
+
+      - name: Build project
         id: build-netlify
         run: |
           netlify build
@@ -47,20 +52,30 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      # Deploys the website to Netlify extracting the deploy metadata.
-      # Adapted from the Netlify Github Action.
-      - name: 🚀 Production deployment
+      # Slightly different regexes and var names here
+      - name: Preview deployment
         id: deploy-netlify
         run: |
-          COMMAND="netlify deploy --prod"
+          COMMAND="netlify deploy -m ${{ github.head_ref }} --alias ${{ github.head_ref }}"
           OUTPUT=$(sh -c "$COMMAND")
 
+          NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*') # Unique key: --
           NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*') # Unique key: app.netlify.com
-          NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Ev "netlify.com|(--)") # Unique key: doesn't contain -- and app.netlify.com
 
+          echo "::set-output name=netlify_preview_url::$NETLIFY_URL"
           echo "::set-output name=netlify_logs_url::$NETLIFY_LOGS_URL"
-          echo "::set-output name=netlify_live_url::$NETLIFY_LIVE_URL"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Update deployment status
+        uses: bobheadxi/deployments@v0.6.0
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          logs: ${{ steps.deploy-netlify.outputs.netlify_logs_url }}
+          env_url: ${{ steps.deploy-netlify.outputs.netlify_preview_url }}
 
