@@ -1,60 +1,66 @@
-name: Deploy to Netlify Workflow
+name: Production build+deploy
 
 on:
-  pull_request:
+  push:
     branches:
-      - master
       - main
-    types: [ opened, synchronize, reopened ]
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
+    name: Build and deploy
+    environment:
+      name: production
+      url: ${{ steps.deploy-netlify.outputs.NETLIFY_LIVE_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       # Cache node modules and next folder
-      - name: 📬 Caching
+      - name: 🛟 Caching
         uses: actions/cache@v2
         with:
           path: |
             **/node_modules
             ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
 
-      - name: 🧰 Install dependencies
+      - name: ⛏️ Install dependencies
         run: npm install
 
-      - name: 📦 Build project
-        run: |
-          npx netlify link  --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} --id ${{ secrets.NETLIFY_SITE_ID }}
-          npx netlify build --auth=${{ secrets.NETLIFY_AUTH_TOKEN }}
-
-      # - name: 🧹 Run lint
-      #   run: npm run lint
-
-      # - name: 🐛 Run tests
+      #- name: 🧩 Run tests
       #  run: npm run test
 
-      # Deploy to Netlify with a personalized message
-      - name: 🚀 Deploy to Netlify
-        uses: nwtgck/actions-netlify@v1.2
-        with:
-          publish-dir: 'packages/web/out'
-          functions-dir: 'packages/web/out_functions'
-          production-branch: master
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy from GitHub Actions"
-          enable-pull-request-comment: false
-          enable-commit-comment: true
-          overwrites-pull-request-comment: true
+      # Using `netlify build` to build the website.
+      # It will run the command specified on `netlify.toml` (`npm run build`)
+      # and use the necessary plugin
+      - name: 📦 Build project
+        id: build-netlify
+        run: |
+          netlify build
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_NETLIFY_SITE_ID }}
-        timeout-minutes: 1
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # Deploys the website to Netlify extracting the deploy metadata.
+      # Adapted from the Netlify Github Action.
+      - name: 🚀 Production deployment
+        id: deploy-netlify
+        run: |
+          COMMAND="netlify deploy --prod"
+          OUTPUT=$(sh -c "$COMMAND")
+
+          NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*') # Unique key: app.netlify.com
+          NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Ev "netlify.com|(--)") # Unique key: doesn't contain -- and app.netlify.com
+
+          echo "::set-output name=netlify_logs_url::$NETLIFY_LOGS_URL"
+          echo "::set-output name=netlify_live_url::$NETLIFY_LIVE_URL"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
