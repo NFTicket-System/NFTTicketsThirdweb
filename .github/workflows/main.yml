@@ -11,7 +11,7 @@ env:
 
 jobs:
   # this job will only run if the PR has been merged
-  Lint Verification:
+  Lint-Verification:
     if: github.event.pull_request.merged == true
     name: 🩺 Run ESLint Verification
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
 
   Deploy-Production:
     name: 🚀 Deploy to Vercel
-    needs: [ Lint Verification, Tests ]
+    needs: [ Lint-Verification, Tests ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
