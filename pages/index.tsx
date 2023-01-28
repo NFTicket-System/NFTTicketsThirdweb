@@ -1,9 +1,7 @@
 import type { NextPage } from 'next'
 import { useTheme as useNextTheme } from 'next-themes'
-import { Switch, useTheme } from '@nextui-org/react'
+import { Button, Text, Link, Navbar, Switch, useTheme } from '@nextui-org/react'
 import '@/../styles/Home.module.scss'
-
-import { Navbar, Button, Link, Text } from '@nextui-org/react'
 
 const Home: NextPage = () => {
     const { setTheme } = useNextTheme()
@@ -15,7 +13,6 @@ const Home: NextPage = () => {
 
     return (
             <>
-                {/*
                 <Navbar isBordered variant='floating'>
                     <Navbar.Brand>
                         <Text b color='inherit' hideIn='xs'>
@@ -41,7 +38,6 @@ const Home: NextPage = () => {
                         </Navbar.Item>
                     </Navbar.Content>
                 </Navbar>
-*/ }
 
                 <div className='mt-2'>
                     The current theme is: { type }
