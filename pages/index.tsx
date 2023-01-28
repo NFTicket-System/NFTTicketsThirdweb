@@ -15,6 +15,7 @@ const Home: NextPage = () => {
 
     return (
             <>
+                {/*
                 <Navbar isBordered variant='floating'>
                     <Navbar.Brand>
                         <Text b color='inherit' hideIn='xs'>
@@ -40,13 +41,14 @@ const Home: NextPage = () => {
                         </Navbar.Item>
                     </Navbar.Content>
                 </Navbar>
+*/ }
 
                 <div className='mt-2'>
                     The current theme is: { type }
-                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
+                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) } />
                 </div>
                 <h1 className='text-3xl font-bold underline'>
-                    Hello world!
+                    Home Page
                 </h1>
                 <p className='test'>test</p>
             </>
