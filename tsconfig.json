@@ -22,18 +22,7 @@
       "jest",
       "node",
       "@types/testing-library__jest-dom"
-    ],
-    "paths": {
-      "@/components/*": [
-        "components/*"
-      ],
-      "@/pages/*": [
-        "pages/*"
-      ],
-      "@/styles/*": [
-        "styles/*"
-      ]
-    }
+    ]
   },
   "include": [
     "next-env.d.ts",

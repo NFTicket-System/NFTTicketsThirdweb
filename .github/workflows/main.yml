@@ -10,23 +10,33 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
-  Tests:
-    # this job will only run if the PR has been merged
+  # this job will only run if the PR has been merged
+  Lint Verification:
     if: github.event.pull_request.merged == true
-    name: 🧩 Run Tests
+    name: 🩺 Run ESLint Verification
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Cache node modules and next folder
-      - name: 💾 Caching
-        uses: actions/cache@v2
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
         with:
-          path: |
-            **/node_modules
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          node-version: 18.x
+
+      - name: ⛏️ Install dependencies
+        run: npm install
+
+      - name: Run Lint
+        run: npm run lint
+
+  Test:
+    # this job will only run if the PR has been merged
+    name: 🧩 Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Use Node.js 18.x
         uses: actions/setup-node@v1
@@ -41,7 +51,7 @@ jobs:
 
   Deploy-Production:
     name: 🚀 Deploy to Vercel
-    needs: Tests
+    needs: [ Lint Verification, Tests ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
