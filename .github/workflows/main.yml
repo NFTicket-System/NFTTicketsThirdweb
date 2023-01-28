@@ -30,7 +30,7 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
-  Test:
+  Tests:
     # this job will only run if the PR has been merged
     name: 🧩 Run Tests
     runs-on: ubuntu-latest
