@@ -5,9 +5,6 @@ name: 💫 Vercel Production Deployment
 #    types:
 #      - closed
 on:
-  label:
-    types:
-      - created
   push:
     branches:
       - cicd
