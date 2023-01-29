@@ -16,15 +16,15 @@ env:
 jobs:
   # this job will only run if the PR has been merged
   Lint-Verification:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     name: 🩺 Run ESLint Verification
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
@@ -40,10 +40,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Use Node.js 18.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
