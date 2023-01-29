@@ -1,13 +1,13 @@
 name: 💫 Vercel Production Deployment
-
 #on:
-#  pull_request:
-#    types:
-#      - closed
+#  push:
+#    branches:
+#      - cicd
+
 on:
-  push:
-    branches:
-      - cicd
+  pull_request:
+    types:
+      - closed
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -16,7 +16,7 @@ env:
 jobs:
   # this job will only run if the PR has been merged
   Lint-Verification:
-    #if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     name: 🩺 Run ESLint Verification
     runs-on: ubuntu-latest
     steps:

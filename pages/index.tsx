@@ -2,14 +2,32 @@ import type { NextPage } from 'next'
 import { useTheme as useNextTheme } from 'next-themes'
 import { Button, Text, Link, Navbar, Switch, useTheme } from '@nextui-org/react'
 import '@/../styles/Home.module.scss'
+import { useEffect } from 'react'
+import { useMetamask } from '@thirdweb-dev/react';
 
 const Home: NextPage = () => {
     const { setTheme } = useNextTheme()
     const { isDark, type } = useTheme()
+    const connectWithMetamask = useMetamask();
 
-    //const isSystemDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
+    useEffect( () => {
+        // Check the browser's user theme on mount
+        const userTheme = window.matchMedia( '(prefers-color-scheme: dark)' ).matches ? 'dark' : 'light';
+        setTheme( userTheme );
 
-    //console.log( isSystemDark )
+        // Register a listener for the 'change' event
+        const mediaQuery = window.matchMedia( '(prefers-color-scheme: dark)' );
+        mediaQuery.addEventListener( 'change', ( event ) => {
+            setTheme( event.matches ? 'dark' : 'light' );
+        } );
+
+        // Cleanup function
+        return () => {
+            mediaQuery.removeEventListener( 'change', ( event ) => {
+                setTheme( event.matches ? 'dark' : 'light' );
+            } );
+        }
+    }, [] );
 
     return (
             <>
@@ -41,12 +59,13 @@ const Home: NextPage = () => {
 
                 <div className='mt-2'>
                     The current theme is: { type }
-                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) } />
+                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
                 </div>
                 <h1 className='text-3xl font-bold underline'>
                     Home Page
                 </h1>
                 <p className='test'>test</p>
+                <Button bordered color="primary" onClick={ connectWithMetamask }>Connectez vous</Button>
             </>
     )
 }
