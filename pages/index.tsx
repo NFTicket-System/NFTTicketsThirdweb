@@ -1,15 +1,15 @@
 import type { NextPage } from 'next'
 import { useTheme as useNextTheme } from 'next-themes'
-import { Button, Text, Link, Navbar, Switch, useTheme } from '@nextui-org/react'
+import { Button, Text, Link, Navbar, Switch, useTheme, Container } from '@nextui-org/react'
 import '@/../styles/Home.module.scss'
+import { useMetamask } from '@thirdweb-dev/react';
+import React from 'react';
+import MetaMaskIcon from '../components/icons/MetaMaskIcon';
 
 const Home: NextPage = () => {
     const { setTheme } = useNextTheme()
     const { isDark, type } = useTheme()
-
-    //const isSystemDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
-
-    //console.log( isSystemDark )
+    const connectWithMetamask = useMetamask();
 
     return (
             <>
@@ -39,14 +39,18 @@ const Home: NextPage = () => {
                     </Navbar.Content>
                 </Navbar>
 
-                <div className='mt-2'>
+
+                <div>
                     The current theme is: { type }
-                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) } />
+                    <Switch checked={ isDark }
+                            onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
                 </div>
-                <h1 className='text-3xl font-bold underline'>
+                <h1>
                     Home Page
                 </h1>
-                <p className='test'>test</p>
+                <Button icon={ <MetaMaskIcon height={ 20 } width={ 20 }/> } flat color="primary"
+                        onPress={ connectWithMetamask }>Metamask</Button>
+
             </>
     )
 }
