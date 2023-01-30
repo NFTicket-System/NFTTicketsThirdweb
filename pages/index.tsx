@@ -1,33 +1,15 @@
 import type { NextPage } from 'next'
 import { useTheme as useNextTheme } from 'next-themes'
-import { Button, Text, Link, Navbar, Switch, useTheme } from '@nextui-org/react'
+import { Button, Text, Link, Navbar, Switch, useTheme, Container } from '@nextui-org/react'
 import '@/../styles/Home.module.scss'
-import { useEffect } from 'react'
 import { useMetamask } from '@thirdweb-dev/react';
+import React from 'react';
+import MetaMaskIcon from '../components/icons/MetaMaskIcon';
 
 const Home: NextPage = () => {
     const { setTheme } = useNextTheme()
     const { isDark, type } = useTheme()
     const connectWithMetamask = useMetamask();
-
-    useEffect( () => {
-        // Check the browser's user theme on mount
-        const userTheme = window.matchMedia( '(prefers-color-scheme: dark)' ).matches ? 'dark' : 'light';
-        setTheme( userTheme );
-
-        // Register a listener for the 'change' event
-        const mediaQuery = window.matchMedia( '(prefers-color-scheme: dark)' );
-        mediaQuery.addEventListener( 'change', ( event ) => {
-            setTheme( event.matches ? 'dark' : 'light' );
-        } );
-
-        // Cleanup function
-        return () => {
-            mediaQuery.removeEventListener( 'change', ( event ) => {
-                setTheme( event.matches ? 'dark' : 'light' );
-            } );
-        }
-    }, [] );
 
     return (
             <>
@@ -57,15 +39,18 @@ const Home: NextPage = () => {
                     </Navbar.Content>
                 </Navbar>
 
-                <div className='mt-2'>
+
+                <div>
                     The current theme is: { type }
-                    <Switch checked={ isDark } onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
+                    <Switch checked={ isDark }
+                            onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
                 </div>
-                <h1 className='text-3xl font-bold underline'>
+                <h1>
                     Home Page
                 </h1>
-                <p className='test'>test</p>
-                <Button bordered color="primary" onClick={ connectWithMetamask }>Connectez vous</Button>
+                <Button icon={ <MetaMaskIcon height={ 20 } width={ 20 }/> } flat color="primary"
+                        onPress={ connectWithMetamask }>Metamask</Button>
+
             </>
     )
 }
