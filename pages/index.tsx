@@ -1,19 +1,49 @@
 import type { NextPage } from 'next'
-import { useTheme as useNextTheme } from 'next-themes'
-import { Button, Text, Link, Navbar, Switch, useTheme, Container } from '@nextui-org/react'
 import '@/../styles/Home.module.scss'
-import { useMetamask } from '@thirdweb-dev/react';
 import React from 'react';
-import MetaMaskIcon from '../components/icons/MetaMaskIcon';
+import { Button, Col, Container, Grid, Image, Row } from '@nextui-org/react';
 
 const Home: NextPage = () => {
-    const { setTheme } = useNextTheme()
-    const { isDark, type } = useTheme()
-    const connectWithMetamask = useMetamask();
+    /*    const { setTheme } = useNextTheme()
+        const { isDark, type } = useTheme()
+        const connectWithMetamask = useMetamask();*/
 
+    /**
+     * TESTING MINTING FROM CLIENT
+     */
+
+    const postNft = async () => {
+        console.log( 'clicked' )
+    }
+    /*        await fetch( "api/mintTicket", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json"
+                }
+            } )
+        }*/
+
+
+    /**
+     * TESTING MINTING FROM CLIENT
+     */
     return (
-            <>
-                <Navbar isBordered variant='floating'>
+            <Grid.Container justify="center" css={ { height: '100vh' } }>
+                <Grid css={ { border: "1px red solid" } } xs={ 12 } md={ 6 }>
+                    <Col>
+                        <Image
+                                showSkeleton
+                                objectFit="fill"
+                                width={ '100%' }
+                                height={ '200px' }
+                                maxDelay={ 10000 }
+                                src="/assets/angele_2-photo1-@manuel-obadia-wills-3-1140x570.jpg"
+                                alt="Default Image"
+                        />
+                        <Button onClick={ postNft }>Créer votre ticket</Button>
+                    </Col>
+                </Grid>
+                {/*                <Navbar isBordered variant='floating'>
                     <Navbar.Brand>
                         <Text b color='inherit' hideIn='xs'>
                             ACME
@@ -50,8 +80,9 @@ const Home: NextPage = () => {
                 </h1>
                 <Button icon={ <MetaMaskIcon height={ 20 } width={ 20 }/> } flat color="primary"
                         onPress={ connectWithMetamask }>Metamask</Button>
-
-            </>
+                <Carousel/>
+                */ }
+            </Grid.Container>
     )
 }
 

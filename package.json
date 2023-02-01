@@ -32,7 +32,9 @@
     "next": "12.3.0",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-multi-carousel": "^2.8.2",
+    "react-touch-drag-slider": "^2.2.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
