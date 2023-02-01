@@ -4,6 +4,7 @@ import { NextUIProvider } from '@nextui-org/react'
 import { ChainId } from '@thirdweb-dev/sdk'
 import { ThirdwebProvider } from '@thirdweb-dev/react'
 
+
 /*// 2. Call `createTheme` and pass your custom values
 const lightTheme = createTheme( {
     type: 'light',
@@ -12,6 +13,7 @@ const lightTheme = createTheme( {
 const darkTheme = createTheme( {
     type: 'dark',
 } )*/
+
 
 function MyApp( { Component, pageProps }: AppProps ) {
     return (
