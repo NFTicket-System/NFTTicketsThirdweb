@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import { useTheme as useNextTheme } from 'next-themes'
 import { Button, Text, Link, Navbar, Switch, useTheme, Container } from '@nextui-org/react'
 import '@/../styles/Home.module.scss'
-import { useMetamask,useWalletConnect } from '@thirdweb-dev/react';
+import { useMetamask,useWalletConnect,useDisconnect,useConnect } from '@thirdweb-dev/react';
 import React from 'react';
 import MetaMaskIcon from '../components/icons/MetaMaskIcon';
 import WalletConnectIcon from '../components/icons/WalletConnectIcon';
@@ -12,6 +12,9 @@ const Home: NextPage = () => {
     const { isDark, type } = useTheme()
     const connectWithMetamask = useMetamask();
     const connectWithWalletConnect = useWalletConnect();
+    const disconnect = useDisconnect();
+    const [{ data }, connect] = useConnect();
+
 
     return (
             <>
@@ -28,15 +31,22 @@ const Home: NextPage = () => {
                         </Navbar.Link>
                     </Navbar.Content>
                     <Navbar.Content>
-                        <Button icon={ <MetaMaskIcon height={ 20 } width={ 20 }/> } flat color="primary"
-                                onPress={ connectWithMetamask }>Metamask</Button>
-                        <Button icon={ <WalletConnectIcon height={ 20 } width={ 20 }/> } flat color="primary"
-                                onPress={ connectWithWalletConnect }>WalletConnect</Button>
-                        <div className='test'>
-                            The current theme is: { type }
-                            <Switch checked={ isDark }
-                                    onChange={ ( e ) => setTheme( e.target.checked ? 'dark' : 'light' ) }/>
-                        </div>
+                        { !data.connected &&
+                                <><Button icon={<MetaMaskIcon height={20} width={20}/>} flat color="primary"
+                                          onPress={connectWithMetamask}>Metamask</Button><Button
+                                        icon={<WalletConnectIcon height={20} width={20}/>} flat color="primary"
+                                        onPress={connectWithWalletConnect}>WalletConnect</Button>
+                                    <div className='test'>
+                                        The current theme is: {type}
+                                        <Switch checked={isDark}
+                                                onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}/>
+                                    </div>
+                                </>
+                        }
+                        {data.connected &&
+                                 <Button flat color="primary"
+                                          onPress={disconnect}>Disconnect
+                                 </Button>}
                     </Navbar.Content>
 
                 </Navbar>
