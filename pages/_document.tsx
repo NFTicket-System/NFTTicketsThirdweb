@@ -2,8 +2,7 @@
 
 import React from 'react'
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
-import { CssBaseline, Spacer } from '@nextui-org/react'
-import NavBar from '../components/navbar/navbar';
+import { CssBaseline } from '@nextui-org/react'
 
 class MyDocument extends Document {
     static async getInitialProps( ctx: DocumentContext ) {
@@ -19,8 +18,6 @@ class MyDocument extends Document {
                 <Html lang="fr">
                     <Head>{ CssBaseline.flush() }</Head>
                     <body>
-                    <NavBar></NavBar>
-                    <Spacer y={ 3 }/>
                     <Main/>
                     <NextScript/>
                     </body>

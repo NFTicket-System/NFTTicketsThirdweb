@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Grid, Input, Spacer } from '@nextui-org/react';
 import DOMPurify from 'dompurify';
 
 const NftDrop = () => {
     const [ name, setName ] = useState( "" );
-    const [ result, setResult ] = useState<any>();
 
     const handleSubmit = async (
             e: React.FormEvent<HTMLFormElement>
@@ -33,12 +32,30 @@ const NftDrop = () => {
     return (
             <>
                 <form onSubmit={ handleSubmit }>
-                    <Input size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
-                           onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
-                    <Button type="submit">Submit</Button>
+                    <Grid.Container justify={ "center" } direction={ "column" }>
+                        <Input size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
+                               onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
+                        <Spacer y={ 2 }/>
+                        <Input
+                                size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
+                                onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
+                        <Spacer y={ 2 }/>
+                        <Input
+                                size={ "lg" }
+                                clearable
+                                bordered
+                                labelPlaceholder="Name"
+                                name="name"
+                                value={ name }
+                                onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
+                        <Spacer y={ 2 }/>
+                        <Input
+                                size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
+                                onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
+                        <Spacer y={ 1 }/>
+                        <Button type="submit">Submit</Button>
+                    </Grid.Container>
                 </form>
-                Result
-                <pre>{ JSON.stringify( result, null, 4 ) }</pre>
             </>
     );
 }

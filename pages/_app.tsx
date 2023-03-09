@@ -18,17 +18,16 @@ const darkTheme = createTheme( {
 
 function MyApp( { Component, pageProps }: AppProps ) {
     return (
-            <NextUIProvider>
-                <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
-                    <NextThemesProvider defaultTheme='system' attribute='class' value={ {
-                        light: lightTheme.className,
-                        dark: darkTheme.className,
-                    } }>
+            <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
+                <NextThemesProvider defaultTheme='system' attribute='class' value={ {
+                    light: lightTheme.className,
+                    dark: darkTheme.className,
+                } }>
+                    <NextUIProvider>
                         <Component { ...pageProps } />
-
-                    </NextThemesProvider>
-                </ThirdwebProvider>
-            </NextUIProvider>
+                    </NextUIProvider>
+                </NextThemesProvider>
+            </ThirdwebProvider>
     )
 }
 
