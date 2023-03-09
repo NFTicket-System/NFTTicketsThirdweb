@@ -10,7 +10,16 @@ const NftDrop = () => {
     ): Promise<void> => {
         e.preventDefault();
 
-        console.log( "CLICKED", name )
+        const formData = new URLSearchParams();
+        formData.append( "name", name );
+
+        fetch( "http://localhost:5000/create-drop", {
+            body: formData.toString(),
+            method: "post",
+            headers: {
+                "content-type": "application/x-www-form-urlencoded",
+            },
+        } )
 
 
         /*        // 👇 encode the data to application/x-www-form-urlencoded type
@@ -36,7 +45,7 @@ const NftDrop = () => {
                         <Input size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
                                onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
                         <Spacer y={ 2 }/>
-                        <Input
+                        {/*<Input
                                 size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
                                 onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
                         <Spacer y={ 2 }/>
@@ -52,7 +61,7 @@ const NftDrop = () => {
                         <Input
                                 size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
                                 onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
-                        <Spacer y={ 1 }/>
+                        <Spacer y={ 1 }/>*/}
                         <Button type="submit">Submit</Button>
                     </Grid.Container>
                 </form>
