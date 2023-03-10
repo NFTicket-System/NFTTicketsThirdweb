@@ -28,12 +28,12 @@
     "@thirdweb-dev/auth": "^3.0.0",
     "@thirdweb-dev/react": "^3.7.0",
     "@thirdweb-dev/sdk": "^3.7.0",
-    "dompurify": "^3.0.1",
     "ethers": "^5.7.2",
     "next": "12.3.0",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.5",
     "react-multi-carousel": "^2.8.2",
     "react-touch-drag-slider": "^2.2.5"
   },

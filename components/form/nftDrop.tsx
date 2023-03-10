@@ -1,49 +1,38 @@
 import React, { useState } from 'react';
 import { Button, Grid, Input, Spacer } from '@nextui-org/react';
-import DOMPurify from 'dompurify';
+import { useForm } from 'react-hook-form';
+
 
 const NftDrop = () => {
-    const [ name, setName ] = useState( "" );
+    const {register, handleSubmit, setError, formState: {isSubmitting, errors}} = useForm();
 
-    const handleSubmit = async (
-            e: React.FormEvent<HTMLFormElement>
-    ): Promise<void> => {
-        e.preventDefault();
+    async function saveFormData(data: object) {
+        return await fetch("http://localhost:5000/create-drop", {
+            body: JSON.stringify(data),
+            headers: {"Content-Type": "application/json"},
+            method: "POST"
+        })
+    }
 
-        const formData = new URLSearchParams();
-        formData.append( "name", name );
-
-        fetch( "http://localhost:5000/create-drop", {
-            body: formData.toString(),
-            method: "post",
-            headers: {
-                "content-type": "application/x-www-form-urlencoded",
-            },
-        } )
-
-
-        /*        // 👇 encode the data to application/x-www-form-urlencoded type
-                const formData = new URLSearchParams();
-                formData.append( "name", name );
-                // 👇 call backend endpoint using fetch API
-                fetch( "/api/hello", {
-                    body: formData.toString(),
-                    method: "post",
-                    headers: {
-                        "content-type": "application/x-www-form-urlencoded",
-                    },
-                } ).then( async ( result ) => {
-                    // 👇 modify the state to show the result
-                    setResult( await result.json() );
-                } );*/
-    };
+    const onSubmit = async (data: object) => {
+        const response = await saveFormData(data)
+        if (response.status === 400) {
+            // Validation error
+        } else if (response.ok) {
+            // successful
+        } else {
+            // unknown error
+        }
+    }
 
     return (
             <>
-                <form onSubmit={ handleSubmit }>
+                <form onSubmit={ handleSubmit(onSubmit) }>
                     <Grid.Container justify={ "center" } direction={ "column" }>
-                        <Input size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
-                               onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
+                        <Input size={ "lg" }
+                               clearable bordered labelPlaceholder="Name"
+                               {...register("name", {required: true})}
+                               />
                         <Spacer y={ 2 }/>
                         {/*<Input
                                 size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
@@ -62,7 +51,7 @@ const NftDrop = () => {
                                 size={ "lg" } clearable bordered labelPlaceholder="Name" name="name" value={ name }
                                 onChange={ ( e ) => setName( DOMPurify.sanitize( e.target.value ) ) }/>
                         <Spacer y={ 1 }/>*/}
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">{isSubmitting ? 'Loading' : "Submit"}</Button>
                     </Grid.Container>
                 </form>
             </>
