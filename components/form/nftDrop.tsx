@@ -36,10 +36,10 @@ const NftDrop = () => {
         if ( data.connected ) {
             const collectionContractAddress = await sdk?.deployer.deployNFTCollection( {
                 name: formData.collectionName,
-                primary_sale_recipient: connectedAddress!,
+                primary_sale_recipient: connectedAddress || '',
             } );
 
-            const contract = await sdk?.getContract( collectionContractAddress!, 'nft-collection' )
+            const contract = await sdk?.getContract( collectionContractAddress || '', 'nft-collection' )
 
             const metaData = {
                 name: "My NFT",
@@ -47,7 +47,7 @@ const NftDrop = () => {
                 image: "ipfs://example.com/my-nft.png",
             }
 
-            const mintTransaction = await contract?.mintTo( connectedAddress!, metaData );
+            const mintTransaction = await contract?.mintTo( connectedAddress || '', metaData );
 
             const nftData = await mintTransaction?.data();
 
@@ -55,13 +55,13 @@ const NftDrop = () => {
 
             const marketplaceAddress = await process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS;
 
-            const marketplace = await sdk?.getMarketplace( marketplaceAddress! );
+            const marketplace = await sdk?.getMarketplace( marketplaceAddress || '' );
 
             const listing = {
                 // address of the contract the asset you want to list is on
-                assetContractAddress: collectionContractAddress ? collectionContractAddress : '',
+                assetContractAddress: collectionContractAddress || '',
                 // token ID of the asset you want to list
-                tokenId: mintTransaction!.id,
+                tokenId: mintTransaction ? mintTransaction.id : 0,
                 // when should the listing open up for offers
                 startTimestamp: new Date(),
                 // how long the listing will be open for
@@ -74,7 +74,7 @@ const NftDrop = () => {
                 buyoutPricePerToken: "1",
             }
 
-            marketplace!.direct.createListing( listing );
+            marketplace?.direct.createListing( listing );
         } else {
             console.log( 'no connected wallet' )
         }
