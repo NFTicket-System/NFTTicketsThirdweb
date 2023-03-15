@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input, Spacer } from '@nextui-org/react';
+import { Button, Grid, Input, Spacer } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import { useAddress, useConnect, useSDK } from '@thirdweb-dev/react';
 import { NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
@@ -35,7 +35,7 @@ const NftDrop = () => {
 
         if ( data.connected ) {
             const collectionContractAddress = await sdk?.deployer.deployNFTCollection( {
-                name: 'my title 2',
+                name: formData.collectionName,
                 primary_sale_recipient: connectedAddress!,
             } );
 
@@ -82,15 +82,19 @@ const NftDrop = () => {
 
     return (
             <>
-                <form onSubmit={ handleSubmit( onSubmit ) }>
-                    <Input size={ "lg" }
-                           clearable bordered labelPlaceholder="Name"
-                           { ...register( "name", { required: true } ) }
-                    />
-                    <Spacer y={ 2 }/>
-                    <Button type="submit">{ isSubmitting ? 'Loading' : "Submit" }</Button>
-                </form>
-
+                <Grid.Container justify={ 'center' }>
+                    <form onSubmit={ handleSubmit( onSubmit ) }>
+                        <Input size={ "md" }
+                               clearable
+                               bordered
+                               color={ "primary" }
+                               labelPlaceholder="Nom de votre collection"
+                               { ...register( "collectionName", { required: true } ) }
+                        />
+                        <Spacer y={ 2 }/>
+                        <Button type="submit">{ isSubmitting ? 'Loading' : "Submit" }</Button>
+                    </form>
+                </Grid.Container>
             </>
     );
 }
