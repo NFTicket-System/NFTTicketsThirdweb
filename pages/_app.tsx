@@ -15,7 +15,6 @@ const darkTheme = createTheme( {
     type: 'dark',
 } )
 
-
 function MyApp( { Component, pageProps }: AppProps ) {
     return (
             <ThirdwebProvider desiredChainId={ ChainId.Goerli }>

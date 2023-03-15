@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Button, Grid, Input, Spacer, Text } from '@nextui-org/react';
+import React from 'react';
+import { Button, Grid, Input, Spacer } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
-import { useAddress, useCompilerMetadata, useConnect, useSDK, useUser } from '@thirdweb-dev/react';
+import { useAddress, useConnect, useSDK } from '@thirdweb-dev/react';
 
 
 const NftDrop = () => {
@@ -33,14 +33,11 @@ const NftDrop = () => {
             // unknown error
         }*/
         if ( data.connected ) {
-            sdk?.deployer.deployNFTDrop( {
-                name: 'my title',
-                description: "my best description",
-                image: '',
+            const contractAddress = await sdk?.deployer.deployNFTDrop( {
+                name: 'my title 2',
                 primary_sale_recipient: address!,
-                fee_recipient: process.env.NEXT_PUBLIC_MADD,
-                seller_fee_basis_points: 1
             } );
+            console.log( contractAddress )
         } else {
             console.log( 'no' )
         }
