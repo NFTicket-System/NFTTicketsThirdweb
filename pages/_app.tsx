@@ -1,9 +1,10 @@
 import '@/../styles/globals.scss'
 import type { AppProps } from 'next/app'
 import { createTheme, NextUIProvider } from '@nextui-org/react'
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { ChainId } from '@thirdweb-dev/sdk'
 import { ThirdwebProvider } from '@thirdweb-dev/react'
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+
 
 // 2. Call `createTheme` and pass your custom values
 const lightTheme = createTheme( {
@@ -21,7 +22,6 @@ function MyApp( { Component, pageProps }: AppProps ) {
                     light: lightTheme.className,
                     dark: darkTheme.className,
                 } }>
-                    {/*Make the NextUI component library available app-wild*/ }
                     <NextUIProvider>
                         <Component { ...pageProps } />
                     </NextUIProvider>
