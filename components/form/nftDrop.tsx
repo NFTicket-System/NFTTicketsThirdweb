@@ -17,7 +17,7 @@ type formDataType = {
 }
 
 const NftDrop = () => {
-    const { register, handleSubmit, setError, formState: { isSubmitting, errors } } = useForm();
+    const { register, handleSubmit, setError, formState: { isSubmitting, errors } } = useForm<formDataType>();
     const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK!,'goerli')
     const [ { data }, connect ] = useConnect();
     const connectedAddress = useAddress();
