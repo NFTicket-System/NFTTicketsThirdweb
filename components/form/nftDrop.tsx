@@ -2,12 +2,13 @@ import React from 'react';
 import { Button, Grid, Input, Spacer } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import { useAddress, useConnect, useSDK } from '@thirdweb-dev/react';
-import { NATIVE_TOKEN_ADDRESS } from '@thirdweb-dev/sdk';
+import {NATIVE_TOKEN_ADDRESS, ThirdwebSDK} from '@thirdweb-dev/sdk';
 
 
 const NftDrop = () => {
     const { register, handleSubmit, setError, formState: { isSubmitting, errors } } = useForm();
     const sdk = useSDK();
+    const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK!,'goerli')
     const [ { data }, connect ] = useConnect();
     const connectedAddress = useAddress();
 
@@ -34,47 +35,54 @@ const NftDrop = () => {
 
 
         if ( data.connected ) {
-            const collectionContractAddress = await sdk?.deployer.deployNFTCollection( {
+            const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection( {
                 name: formData.collectionName,
                 primary_sale_recipient: connectedAddress || '',
             } );
 
-            const contract = await sdk?.getContract( collectionContractAddress || '', 'nft-collection' )
+            const contract = await sdkAdmin?.getContract( collectionContractAddress || '', 'nft-collection' )
 
             const metaData = {
                 name: "My NFT",
                 description: "This is my NFT",
                 image: "ipfs://example.com/my-nft.png",
             }
+            const metaDatas = []
 
-            const mintTransaction = await contract?.mintTo( connectedAddress || '', metaData );
-
-            const nftData = await mintTransaction?.data();
-
-            console.log( nftData )
-
-            const marketplaceAddress = await process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS;
-
-            const marketplace = await sdk?.getMarketplace( marketplaceAddress || '' );
-
-            const listing = {
-                // address of the contract the asset you want to list is on
-                assetContractAddress: collectionContractAddress || '',
-                // token ID of the asset you want to list
-                tokenId: mintTransaction ? mintTransaction.id : 0,
-                // when should the listing open up for offers
-                startTimestamp: new Date(),
-                // how long the listing will be open for
-                listingDurationInSeconds: 86400,
-                // how many of the asset you want to list
-                quantity: 1,
-                // address of the currency contract that will be used to pay for the listing
-                currencyContractAddress: NATIVE_TOKEN_ADDRESS,
-                // how much the asset will be sold for
-                buyoutPricePerToken: "1",
+            for(let i = 0;i < 20; i++){
+                metaDatas.push(metaData)
             }
 
-            marketplace?.direct.createListing( listing );
+            const mintTransaction = await contract?.mintBatchTo( process.env.NEXT_PUBLIC_MADD || '', metaDatas );
+
+                const nftData = await mintTransaction[0]?.data();
+
+                console.log( nftData )
+
+                const marketplaceAddress = await process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS;
+
+                const marketplace = await sdkAdmin?.getMarketplace( marketplaceAddress || '' );
+
+                const listing = {
+                    // address of the contract the asset you want to list is on
+                    assetContractAddress: collectionContractAddress || '',
+                    // token ID of the asset you want to list
+                    tokenId: mintTransaction[0] ? mintTransaction[0].id : 0,
+                    // when should the listing open up for offers
+                    startTimestamp: new Date(),
+                    // how long the listing will be open for
+                    listingDurationInSeconds: 86400,
+                    // how many of the asset you want to list
+                    quantity: 25,
+                    // address of the currency contract that will be used to pay for the listing
+                    currencyContractAddress: NATIVE_TOKEN_ADDRESS,
+                    // how much the asset will be sold for
+                    buyoutPricePerToken: "1",
+                }
+
+                marketplace?.direct.createListing( listing );
+
+
         } else {
             console.log( 'no connected wallet' )
         }
