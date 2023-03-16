@@ -1,37 +1,49 @@
 import React from 'react';
 import { Button, Grid, Input, Spacer } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
-import { useAddress, useConnect, useSDK } from '@thirdweb-dev/react';
-import {NATIVE_TOKEN_ADDRESS, ThirdwebSDK} from '@thirdweb-dev/sdk';
+import { useAddress, useConnect } from '@thirdweb-dev/react';
+import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from '@thirdweb-dev/sdk';
 
 type formDataType = {
-    name:string,
-    description:string,
-    date:string,
-    hourStart:string,
-    hourEnd:string,
-    location:string,
-    price:string,
-    image:string,
-    count:number
+    count: number
+    name: string,
+    description: string,
+    date: string,
+    price: string,
+    hourStart: string,
+    hourEnd: string,
+    location: string,
+    image: string,
+}
+
+export enum InputEvent {
+    NAME = "name",
+    DESCRIPTION = "description",
+    DATE = "date",
+    COUNT = "count",
+    PRICE = "price",
+    HOUR_START = "hourStart",
+    HOUR_END = "hourEnd",
+    LOCATION = 'location',
+    IMAGE = 'image'
 }
 
 const NftDrop = () => {
-    const { register, handleSubmit, setError, formState: { isSubmitting, errors } } = useForm<formDataType>();
-    const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK!,'goerli')
-    const [ { data }, connect ] = useConnect();
+    const { register, handleSubmit, formState: { isSubmitting } } = useForm<formDataType>();
+    const sdkAdmin = ThirdwebSDK.fromPrivateKey( process.env.NEXT_PUBLIC_SDK_PK || '', 'goerli' )
+    const [ { data } ] = useConnect();
     const connectedAddress = useAddress();
 
 
-    async function saveFormData( data: formDataType ) {
-        return await fetch( "http://localhost:5000/create-drop", {
-            body: JSON.stringify( data ),
-            headers: { "Content-Type": "application/json" },
-            method: "POST"
-        } )
-    }
+    /*    async function saveFormData( data: formDataType ) {
+            return await fetch( "http://localhost:5000/create-drop", {
+                body: JSON.stringify( data ),
+                headers: { "Content-Type": "application/json" },
+                method: "POST"
+            } )
+        }*/
 
-    const onSubmit = async (formData:formDataType) => {
+    const onSubmit = async ( formData: formDataType ) => {
         /*const response = await saveFormData( data )
 
         if ( response.status === 400 ) {
@@ -49,29 +61,36 @@ const NftDrop = () => {
                 primary_sale_recipient: connectedAddress || '',
             } );
 
+            console.log( "COLLECTION" )
             const contract = await sdkAdmin?.getContract( collectionContractAddress || '', 'nft-collection' )
+
+            console.log( "CONTRACT" )
 
             const metaData = {
                 name: formData.name,
                 description: formData.description,
                 image: formData.image,
-                hourStart:formData.hourStart,
-                hourEnd:formData.hourEnd,
-                location:formData.location,
-                date:formData.date
+                properties: {
+                    hourEnd: formData.hourEnd,
+                    location: formData.location,
+                    hourStart: formData.hourStart,
+                    date: formData.date
+                }
             }
             const metaDatas = []
 
-            for(let i = 0;i < formData.count; i++){
-                metaDatas.push(metaData)
+            for ( let i = 0; i < formData.count; i++ ) {
+                metaDatas.push( metaData )
             }
 
             const mintTransaction = await contract?.mintBatchTo( process.env.NEXT_PUBLIC_MADD || '', metaDatas );
-            for(const nftObject of mintTransaction){
 
-            const marketplaceAddress = await process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS;
+            console.log( "mint" )
+            for ( const nftObject of mintTransaction ) {
 
-                const marketplace = await sdkAdmin?.getContract( marketplaceAddress || '' ,'marketplace');
+                const marketplaceAddress = await process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS;
+
+                const marketplace = await sdkAdmin?.getContract( marketplaceAddress || '', 'marketplace' );
 
                 const listing = {
                     // address of the contract the asset you want to list is on
@@ -90,7 +109,8 @@ const NftDrop = () => {
                     buyoutPricePerToken: formData.price,
                 }
 
-                marketplace?.direct.createListing( listing );
+                await marketplace?.direct.createListing( listing );
+                console.log( "market" )
             }
 
         } else {
@@ -155,8 +175,15 @@ const NftDrop = () => {
                                clearable
                                bordered
                                color={ "primary" }
-                               labelPlaceholder="type"
-                               { ...register( InputEvent.TYPE, { required: true } ) }
+                               labelPlaceholder="Location"
+                               { ...register( InputEvent.LOCATION, { required: true } ) }
+                        />
+                        <Input size={ "md" }
+                               clearable
+                               bordered
+                               color={ "primary" }
+                               labelPlaceholder="Image"
+                               { ...register( InputEvent.IMAGE, { required: true } ) }
                         />
                         <Spacer y={ 2 }/>
                         <Button type="submit">{ isSubmitting ? 'Loading' : "Submit" }</Button>
@@ -167,14 +194,3 @@ const NftDrop = () => {
 }
 
 export default NftDrop;
-
-export enum InputEvent {
-    NAME = "name",
-    DESCRIPTION = "description",
-    DATE = "date",
-    COUNT = "count",
-    PRICE = "price",
-    HOUR_START = "hourStart",
-    HOUR_END = "hourEnd",
-    TYPE = "type"
-}
