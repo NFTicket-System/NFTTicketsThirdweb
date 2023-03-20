@@ -5,26 +5,7 @@ import Header from '../components/header/Header';
 
 const AllNft = () => {
     const { contract: marketplace } = useContract( process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, "marketplace" );
-    /*    const isMismatched = useNetworkMismatch();
-        const [ , switchNetwork ] = useNetwork();*/
     const { data: nfts, isLoading: isLoadingNfts } = useActiveListings( marketplace );
-
-    /*    async function buyNft( nftId: BigNumberish ) {
-            try {
-                // Ensure user is on the correct network
-                if ( isMismatched ) {
-                    switchNetwork && await switchNetwork( ChainId.Goerli );
-                    return;
-                }
-
-                // Simple one-liner for buying the NFT
-                await marketplace?.buyoutListing( nftId, 1 );
-                alert( "NFT bought successfully!" );
-            } catch ( error ) {
-                console.error( error );
-                alert( error );
-            }
-        }*/
 
     return (
             <>

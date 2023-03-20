@@ -1,8 +1,8 @@
 import { Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text } from "@nextui-org/react";
 import { RiMapPinLine } from "@react-icons/all-files/ri/RiMapPinLine";
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
-import { useContract, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react';
+import { useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react';
 import { BigNumber, BigNumberish } from 'ethers';
 import { ChainId } from '@thirdweb-dev/sdk';
 import Header from '../../../components/header/Header';
@@ -11,25 +11,10 @@ const NftDetails = () => {
     const router = useRouter();
     const { tokenID } = router.query;
     const { contract: marketplace } = useContract( process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, "marketplace" );
-    const [ loading, setLoading ] = useState( false )
-    const [ item, setItem ] = useState<any>()
+    const { data: item, isLoading } = useListing( marketplace, tokenID as string );
     const isMismatched = useNetworkMismatch();
     const [ , switchNetwork ] = useNetwork();
 
-
-    const getItems = async () => {
-        try {
-            setLoading( true )
-            const item = await marketplace?.getListing( BigNumber.from( tokenID ) )
-            setItem( item )
-            setLoading( false )
-            console.log( item )
-        } catch ( e ) {
-            console.log( "ERROR" );
-
-            console.error( e )
-        }
-    }
 
     async function buyNft( nftId: BigNumberish ) {
         try {
@@ -40,7 +25,7 @@ const NftDetails = () => {
             }
 
             // Simple one-liner for buying the NFT
-            await marketplace?.buyoutListing( nftId, 1 );
+            await marketplace?.buyoutListing( BigNumber.from( nftId ), 1 );
             alert( "NFT bought successfully!" );
         } catch ( error ) {
             console.error( error );
@@ -52,7 +37,7 @@ const NftDetails = () => {
             <>
                 <Header></Header>
                 <Container>
-                    { loading ? (
+                    { isLoading ? (
                             <Row justify="center">
                                 <Loading type="points" size={ "lg" }/>
                             </Row>
@@ -83,7 +68,7 @@ const NftDetails = () => {
                                                 </Card.Header>
                                                 <Card.Image
                                                         showSkeleton
-                                                        src={ item?.asset.image }
+                                                        src={ item?.asset.image || '' }
                                                         objectFit="cover"
                                                         width="100%"
                                                         maxDelay={ 10000 }
