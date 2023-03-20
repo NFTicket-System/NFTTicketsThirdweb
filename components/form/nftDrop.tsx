@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Grid, Input, Spacer } from '@nextui-org/react';
+import {Button, Grid, Input, Loading, Modal, Spacer} from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import { useAddress, useConnect } from '@thirdweb-dev/react';
 import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from '@thirdweb-dev/sdk';
@@ -33,7 +33,14 @@ const NftDrop = () => {
     const sdkAdmin = ThirdwebSDK.fromPrivateKey( process.env.NEXT_PUBLIC_SDK_PK || '', 'goerli' )
     const [ { data } ] = useConnect();
     const connectedAddress = useAddress();
+    const [visible, setVisible] = React.useState(false);
+    const handler = () => setVisible(true);
 
+    const closeHandler = () => {
+        setVisible(false);
+        console.log("closed");
+    };
+    //onst changeIsLoading = () => { useEffect(() => { isLoading? setIsLoading(false) : setIsLoading(true) }, [])}
 
     /*    async function saveFormData( data: formDataType ) {
             return await fetch( "http://localhost:5000/create-drop", {
@@ -44,16 +51,7 @@ const NftDrop = () => {
         }*/
 
     const onSubmit = async ( formData: formDataType ) => {
-        /*const response = await saveFormData( data )
-
-        if ( response.status === 400 ) {
-            // Validation error
-        } else if ( response.ok ) {
-            // successful
-        } else {
-            // unknown error
-        }*/
-
+        handler()
 
         if ( data.connected ) {
             const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection( {
@@ -116,12 +114,15 @@ const NftDrop = () => {
         } else {
             console.log( 'no connected wallet' )
         }
+        closeHandler()
     }
 
     return (
             <>
                 <Grid.Container justify={ 'center' }>
-                    <form onSubmit={ handleSubmit( onSubmit ) }>
+                    <form onSubmit={
+                        handleSubmit(onSubmit)
+                     }>
                         <Input size={ "md" }
                                clearable
                                bordered
@@ -188,6 +189,13 @@ const NftDrop = () => {
                         <Spacer y={ 2 }/>
                         <Button type="submit">{ isSubmitting ? 'Loading' : "Submit" }</Button>
                     </form>
+                    <Modal open={visible} fullScreen >
+                        <Modal.Body>
+                            <Grid.Container justify={"center"} alignItems={"center"} css={{height:"100%"}} >
+                                <Loading size={"xl"} />
+                            </Grid.Container>
+                        </Modal.Body>
+                    </Modal>
                 </Grid.Container>
             </>
     );
