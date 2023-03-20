@@ -32,20 +32,18 @@ const AllNft = () => {
 
     const router = useRouter()
 
-    function redirect( nftId: BigNumberish ) {
-        router.push( `/nft/${ nftId }` )
-    }
-
     return (
             <>
                 <Navbar></Navbar>
+
+
                 { isLoadingNfts ? (
                         <Loading type="points" size={ "lg" }/>
                 ) : (
                         <div>
                             {
                                 nfts?.map( ( nft ) => (
-                                        <div key={ nft.id } onClick={ () => redirect( nft.id ) }>
+                                        <div key={ nft.id } onClick={ () => router.push( `/nft/${ nft.id }` ) }>
                                             <MediaRenderer src={ nft.asset.image }></MediaRenderer>
                                             <h2>
                                                 <Link href={ `/nft/${ nft.id }` }>
