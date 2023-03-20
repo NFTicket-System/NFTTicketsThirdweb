@@ -1,5 +1,5 @@
 import React from 'react';
-import NftDrop from '../components/form/nftDrop';
+import NftDrop from '../components/form/NftDrop';
 import Navbar from '../components/navbar/navbar';
 
 const Createdrop = () => {

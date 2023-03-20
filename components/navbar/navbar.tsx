@@ -16,6 +16,11 @@ const NavBar = () => {
                                 Crée un évènement
                             </Link>
                         </Navbar.Item>
+                        <Navbar.Item>
+                            <Link href="/all-nft">
+                                All nft
+                            </Link>
+                        </Navbar.Item>
                     </Navbar.Content>
                     <Navbar.Content>
                         <ConnectWallet btnTitle="Connectez votre wallet" colorMode={ isDark ? "dark" : "light" }/>
