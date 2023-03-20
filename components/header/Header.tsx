@@ -11,6 +11,16 @@ const Header = () => {
                 <Navbar variant={ "sticky" }>
                     <Navbar.Content hideIn="xs">
                         <Navbar.Link href="/">Home</Navbar.Link>
+                        <Navbar.Item>
+                            <Link href="/createdrop">
+                                Crée un évènement
+                            </Link>
+                        </Navbar.Item>
+                        <Navbar.Item>
+                            <Link href="/all-nft">
+                                All nft
+                            </Link>
+                        </Navbar.Item>
                     </Navbar.Content>
                     <Navbar.Content>
                         <ConnectWallet btnTitle="Connectez votre wallet" colorMode={ isDark ? "dark" : "light" }/>
