@@ -1,7 +1,7 @@
 import React from 'react';
-import Navbar from '../components/navbar/navbar';
 import { MediaRenderer, useActiveListings, useContract } from '@thirdweb-dev/react';
 import { Link, Loading } from '@nextui-org/react';
+import Header from '../components/header/Header';
 
 const AllNft = () => {
     const { contract: marketplace } = useContract( process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, "marketplace" );
@@ -28,7 +28,7 @@ const AllNft = () => {
 
     return (
             <>
-                <Navbar></Navbar>
+                <Header></Header>
 
                 { isLoadingNfts ? (
                         <Loading type="points" size={ "lg" }/>

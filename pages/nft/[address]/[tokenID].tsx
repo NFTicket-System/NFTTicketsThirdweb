@@ -1,11 +1,11 @@
 import { Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text } from "@nextui-org/react";
 import { RiMapPinLine } from "@react-icons/all-files/ri/RiMapPinLine";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useContract, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react';
 import { BigNumber, BigNumberish } from 'ethers';
-import Navbar from '../../../components/navbar/navbar';
 import { ChainId } from '@thirdweb-dev/sdk';
+import Header from '../../../components/header/Header';
 
 const NftDetails = () => {
     const router = useRouter();
@@ -16,9 +16,6 @@ const NftDetails = () => {
     const isMismatched = useNetworkMismatch();
     const [ , switchNetwork ] = useNetwork();
 
-    useEffect( () => {
-        getItems()
-    }, [] )
 
     const getItems = async () => {
         try {
@@ -28,6 +25,8 @@ const NftDetails = () => {
             setLoading( false )
             console.log( item )
         } catch ( e ) {
+            console.log( "ERROR" );
+
             console.error( e )
         }
     }
@@ -51,10 +50,8 @@ const NftDetails = () => {
 
     return (
             <>
-                <Navbar></Navbar>
-
+                <Header></Header>
                 <Container>
-
                     { loading ? (
                             <Row justify="center">
                                 <Loading type="points" size={ "lg" }/>
@@ -115,7 +112,7 @@ const NftDetails = () => {
                                                     </Container>
                                                 </Card.Body>
                                                 <Card.Footer css={ { display: "flex", justifyContent: "flex-end" } }>
-                                                    <Text weight={ "bold" }>{ item.buyoutCurrencyValuePerToken.displayValue } { item.buyoutCurrencyValuePerToken.symbol }</Text>
+                                                    <Text weight={ "bold" }>{ item?.buyoutCurrencyValuePerToken.displayValue } { item?.buyoutCurrencyValuePerToken.symbol }</Text>
                                                     <Spacer x={ 1 }></Spacer>
                                                     <Button onPress={ () => buyNft( BigNumber.from( tokenID ) ) }
                                                             size={ "lg" }
