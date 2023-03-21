@@ -8,12 +8,12 @@ interface EventContainerProps {
 
 const EventContainer: React.FC<EventContainerProps> = ( props: EventContainerProps ) => {
     return (
-            <Grid.Container gap={ 2 } justify="center">
-                { props.events.map( ( item, index ) => {
+            <Grid.Container gap={ 2 } justify="space-around">
+                { props.events.map( ( item ) => {
                     return (
-                            <Grid key={ item.id } xs={ 6 } md={ 6 }>
-                                <EventCard event={ item }/>
-                            </Grid>
+                        <Grid key={ item.id } md={ 2 }>
+                            <EventCard event={ item }/>
+                        </Grid>
                     )
                 } ) }
             </Grid.Container>

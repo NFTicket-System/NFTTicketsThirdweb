@@ -13,7 +13,7 @@ const Header = () => {
                         <Navbar.Link href="/">Home</Navbar.Link>
                         <Navbar.Item>
                             <Link href="/createdrop">
-                                Crée un évènement
+                                Créer un évènement
                             </Link>
                         </Navbar.Item>
                         <Navbar.Item>
