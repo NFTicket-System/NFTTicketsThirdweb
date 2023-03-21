@@ -7,6 +7,7 @@ import { BigNumber, BigNumberish } from 'ethers';
 import { ChainId } from '@thirdweb-dev/sdk';
 import Header from '../../../components/header/Header';
 
+
 const NftDetails = () => {
     const router = useRouter();
     const { tokenID } = router.query;
@@ -14,7 +15,6 @@ const NftDetails = () => {
     const { data: item, isLoading } = useListing( marketplace, tokenID as string );
     const isMismatched = useNetworkMismatch();
     const [ , switchNetwork ] = useNetwork();
-
 
     async function buyNft( nftId: BigNumberish ) {
         try {
@@ -47,7 +47,7 @@ const NftDetails = () => {
                                     <Row justify={ "flex-start" }>
                                         <Text weight={ "bold" } color={ 'white' }
                                               css={ { backgroundColor: 'black', padding: '0 1rem' } }>
-                                            { item?.asset.attributes[ 0 ].value }
+                                            { ( item?.asset.properties as { date: string } )?.date ?? 'Date missing' }
                                         </Text>
                                     </Row>
                                     <Spacer y={ 1 }/>
@@ -62,7 +62,7 @@ const NftDetails = () => {
                                                     <Col>
                                                         <Text size={ 24 } color="white" weight="bold">
                                                             <RiMapPinLine/>
-                                                            { item?.asset.attributes[ 3 ].value }
+                                                            { ( item?.asset.properties as { location: string } )?.location ?? 'Location missing' }
                                                         </Text>
                                                     </Col>
                                                 </Card.Header>
@@ -86,13 +86,13 @@ const NftDetails = () => {
                                                             { item?.asset.name }
                                                         </Text>
                                                         <Text size={ 18 } color="black" weight="bold">
-                                                            Le { item?.asset.attributes[ 0 ].value }
+                                                            Le { ( item?.asset.properties as { date: string } )?.date ?? 'Date missing' }
                                                         </Text>
                                                         <Text size={ 18 } color="black" weight="bold">
-                                                            { item?.asset.attributes[ 1 ].value } - { item?.asset.attributes[ 2 ].value }
+                                                            { ( item?.asset.properties as { hourStart: string } )?.hourStart ?? 'Start Hour Missing' } - { ( item?.asset.properties as { hourEnd: string } )?.hourEnd ?? 'End Hour Missing' }
                                                         </Text>
                                                         <Text size={ 18 } color="black" weight="bold">
-                                                            { item?.asset.attributes[ 3 ].value }
+                                                            { ( item?.asset.properties as { location: string } )?.location ?? 'Location missing' }
                                                         </Text>
                                                     </Container>
                                                 </Card.Body>
