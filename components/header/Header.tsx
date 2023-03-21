@@ -8,7 +8,7 @@ const Header = () => {
 
     return (
             <>
-                <Navbar variant={ "sticky" }>
+                <Navbar variant={ "sticky" } maxWidth='fluid'>
                     <Navbar.Content hideIn="xs">
                         <Navbar.Link href="/">Home</Navbar.Link>
                         <Navbar.Item>

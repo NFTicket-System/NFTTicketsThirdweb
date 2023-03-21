@@ -1,4 +1,4 @@
-import { Grid } from "@nextui-org/react"
+import { Grid, Link } from "@nextui-org/react"
 import { LightEvent } from "../../models/LightEvent"
 import EventCard from "../card/EventCard"
 
