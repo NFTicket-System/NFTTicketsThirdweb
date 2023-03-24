@@ -1,7 +1,7 @@
-import { Card, Container, Row, Text } from "@nextui-org/react"
+import { Card, Container, Row, Text } from '@nextui-org/react'
 
 const Footer = () => {
-    return(
+  return (
         <Container xl>
             <Card css={{ $$cardColor: '$colors$yellow600' }}>
                 <Card.Body>
@@ -13,7 +13,7 @@ const Footer = () => {
                 </Card.Body>
             </Card>
         </Container>
-    )
+  )
 }
 
 export default Footer
