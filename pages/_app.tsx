@@ -1,19 +1,12 @@
 import '@/../styles/globals.scss'
 import type { AppProps } from 'next/app'
-import { createTheme, NextUIProvider, useSSR } from '@nextui-org/react'
+import { NextUIProvider, useSSR } from '@nextui-org/react'
 import { ChainId } from '@thirdweb-dev/sdk'
 import { ThirdwebProvider } from '@thirdweb-dev/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { LightTheme } from '../styles/theme/lightTheme';
+import { DarkTheme } from '../styles/theme/darkTheme';
 
-
-// 2. Call `createTheme` and pass your custom values
-const lightTheme = createTheme( {
-    type: 'light',
-} )
-
-const darkTheme = createTheme( {
-    type: 'dark',
-} )
 
 function MyApp( { Component, pageProps }: AppProps ) {
     const { isBrowser } = useSSR();
@@ -22,8 +15,8 @@ function MyApp( { Component, pageProps }: AppProps ) {
             isBrowser && (
                     <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
                         <NextThemesProvider defaultTheme='system' attribute='class' value={ {
-                            light: lightTheme.className,
-                            dark: darkTheme.className,
+                            light: LightTheme.className,
+                            dark: DarkTheme.className,
                         } }>
                             <NextUIProvider>
                                 <Component { ...pageProps } />

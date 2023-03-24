@@ -1,6 +1,7 @@
-import { Link, Navbar, Spacer, useTheme } from '@nextui-org/react';
+import { Button, Link, Navbar, Spacer, Text, useTheme } from '@nextui-org/react';
 import { ConnectWallet } from '@thirdweb-dev/react';
 import React from 'react';
+import Logo from '../icons/Logo';
 import ThemeSwitcher from '../theme/ThemeSwitcher';
 
 const Header = () => {
@@ -8,12 +9,26 @@ const Header = () => {
 
     return (
             <>
-                <Navbar variant={ "sticky" } maxWidth='fluid'>
-                    <Navbar.Content hideIn="xs">
-                        <Navbar.Link href="/">Home</Navbar.Link>
-                        <Navbar.Item>
+                <Navbar isBordered={ isDark } variant={ "sticky" } maxWidth='fluid'>
+                    <Navbar.Brand>
+                        <Link href="/">
+                            <Logo width={ 34 } height={ 34 } color={ isDark ? '#FFF' : '#000' }/>
+                            <Spacer x={ .5 }/>
+                            <Text b color={ isDark ? 'white' : 'black' } hideIn="xs">
+                                NFTickets
+                            </Text>
+                        </Link>
+                    </Navbar.Brand>
+                    <Button color="gradient" auto>
+                        Gradient
+                    </Button>
+                    <Navbar.Content activeColor={ 'primary' } hideIn="xs"
+                                    variant={ 'underline-rounded' }>
+                        <Navbar.Item isActive>
                             <Link href="/createdrop">
-                                Créer un évènement
+                                <Text b color={ isDark ? 'white' : 'black' }>
+                                    Créer un évènement
+                                </Text>
                             </Link>
                         </Navbar.Item>
                         <Navbar.Item>
@@ -29,7 +44,7 @@ const Header = () => {
                         </Navbar.Item>
                     </Navbar.Content>
                 </Navbar>
-                <Spacer y={2}/>
+                <Spacer y={ 2 }/>
             </>
     );
 };
