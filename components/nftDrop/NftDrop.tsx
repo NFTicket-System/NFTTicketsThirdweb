@@ -36,12 +36,6 @@ const NftDrop = () => {
   const [visible, setVisible] = React.useState(false)
   const handler = () => { setVisible(true) }
 
-  function wrapAsyncFunction<ARGS extends unknown[]> (fn: (...args: ARGS) => Promise<unknown>): (...args: ARGS) => void {
-    return (...args) => {
-      void fn(...args)
-    }
-  }
-
   const closeHandler = () => {
     setVisible(false)
     console.log('closed')
@@ -122,86 +116,86 @@ const NftDrop = () => {
   }
 
   return (
-            <>
-                <Grid.Container justify={ 'center' }>
-                    <form onSubmit={
-                        wrapAsyncFunction(handleSubmit(onSubmit))
-                     }>
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Nom de l'évènement"
-                               { ...register(InputEvent.NAME, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Description de l'évènement"
-                               { ...register(InputEvent.DESCRIPTION, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Date"
-                               { ...register(InputEvent.DATE, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Count"
-                               { ...register(InputEvent.COUNT, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Price"
-                               { ...register(InputEvent.PRICE, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Hour start"
-                               { ...register(InputEvent.HOUR_START, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Hour end"
-                               { ...register(InputEvent.HOUR_END, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Location"
-                               { ...register(InputEvent.LOCATION, { required: true }) }
-                        />
-                        <Input size={ 'md' }
-                               clearable
-                               bordered
-                               color={ 'primary' }
-                               labelPlaceholder="Image"
-                               { ...register(InputEvent.IMAGE, { required: true }) }
-                        />
-                        <Spacer y={ 2 }/>
-                        <Button type="submit">{ isSubmitting ? 'Loading' : 'Submit' }</Button>
-                    </form>
-                    <Modal open={visible} fullScreen >
-                        <Modal.Body>
-                            <Grid.Container justify={'center'} alignItems={'center'} css={{ height: '100%' }} >
-                                <Loading size={'xl'} />
-                            </Grid.Container>
-                        </Modal.Body>
-                    </Modal>
-                </Grid.Container>
-            </>
+    <>
+      <Grid.Container justify={ 'center' }>
+        <form onSubmit={
+          handleSubmit(onSubmit)
+        }>
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Nom de l'évènement"
+                 { ...register(InputEvent.NAME, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Description de l'évènement"
+                 { ...register(InputEvent.DESCRIPTION, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Date"
+                 { ...register(InputEvent.DATE, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Count"
+                 { ...register(InputEvent.COUNT, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Price"
+                 { ...register(InputEvent.PRICE, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Hour start"
+                 { ...register(InputEvent.HOUR_START, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Hour end"
+                 { ...register(InputEvent.HOUR_END, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Location"
+                 { ...register(InputEvent.LOCATION, { required: true }) }
+          />
+          <Input size={ 'md' }
+                 clearable
+                 bordered
+                 color={ 'primary' }
+                 labelPlaceholder="Image"
+                 { ...register(InputEvent.IMAGE, { required: true }) }
+          />
+          <Spacer y={ 2 }/>
+          <Button type="submit">{ isSubmitting ? 'Loading' : 'Submit' }</Button>
+        </form>
+        <Modal open={visible} fullScreen >
+          <Modal.Body>
+            <Grid.Container justify={'center'} alignItems={'center'} css={{ height: '100%' }} >
+              <Loading size={'xl'} />
+            </Grid.Container>
+          </Modal.Body>
+        </Modal>
+      </Grid.Container>
+    </>
   )
 }
 

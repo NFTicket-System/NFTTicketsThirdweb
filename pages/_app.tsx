@@ -12,16 +12,16 @@ function MyApp ({ Component, pageProps }: AppProps) {
 
   return (
     isBrowser && (
-                    <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
-                        <NextThemesProvider defaultTheme='system' attribute='class' value={ {
-                          light: LightTheme.className,
-                          dark: DarkTheme.className
-                        } }>
-                            <NextUIProvider>
-                                <Component { ...pageProps } />
-                            </NextUIProvider>
-                        </NextThemesProvider>
-                    </ThirdwebProvider>
+      <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
+        <NextThemesProvider defaultTheme='system' attribute='class' value={ {
+          light: LightTheme.className,
+          dark: DarkTheme.className
+        } }>
+          <NextUIProvider>
+            <Component { ...pageProps } />
+          </NextUIProvider>
+        </NextThemesProvider>
+      </ThirdwebProvider>
     )
   )
 }

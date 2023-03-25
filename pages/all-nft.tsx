@@ -8,34 +8,31 @@ const AllNft = () => {
   const { data: nfts, isLoading: isLoadingNfts } = useActiveListings(marketplace)
 
   return (
-            <>
-                <Header></Header>
+    <>
+      <Header></Header>
 
-                { isLoadingNfts
-                  ? (<Loading type="points" size={ 'lg' }/>)
-                  : (
-                        <div>
-                            {
-                                nfts?.map((nft) => (
-                                        <div key={ nft.id }
-                                        >
-                                            <MediaRenderer src={ nft.asset.image }></MediaRenderer>
-                                            <h2>
-                                                <Link href={ `/nft/${nft.assetContractAddress}/${nft.id}` }>
-                                                    { nft.asset.name }
-                                                </Link>
-                                            </h2>
-                                            {/* <Button shadow color="primary" auto onClick={ () => buyNft( nft.id ) }>
+      { isLoadingNfts
+        ? (<Loading type="points" size={ 'lg' }/>)
+        : (<div>
+          { nfts?.map((nft) => (
+            <div key={ nft.id }>
+              <MediaRenderer src={ nft.asset.image }></MediaRenderer>
+              <h2>
+                <Link href={ `/nft/${nft.assetContractAddress}/${nft.id}` }>
+                  { nft.asset.name }
+                </Link>
+              </h2>
+              {/* <Button shadow color="primary" auto onClick={ () => buyNft( nft.id ) }>
                                                 buy
                                                 <b>{ nft.buyoutCurrencyValuePerToken.displayValue }</b>{ " " }
                                                 { nft.buyoutCurrencyValuePerToken.symbol }
                                             </Button> */ }
-                                        </div>
-                                ))
-                            }
-                        </div>
-                    ) }
-            </>
+            </div>
+          ))
+          }
+        </div>)
+      }
+    </>
   )
 }
 

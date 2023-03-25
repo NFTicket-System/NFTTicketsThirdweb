@@ -33,89 +33,89 @@ const NftDetails = () => {
   }
 
   return (
+    <>
+      <Header></Header>
+      <Container>
+        { isLoading
+          ? (
+            <Row justify="center">
+              <Loading type="points" size={ 'lg' }/>
+            </Row>
+            )
+          : (
             <>
-                <Header></Header>
-                <Container>
-                    { isLoading
-                      ? (
-                            <Row justify="center">
-                                <Loading type="points" size={ 'lg' }/>
-                            </Row>
-                        )
-                      : (
-                            <>
-                                <Container css={ { maxWidth: '80%' } }>
-                                    <Row justify={ 'flex-start' }>
-                                        <Text weight={ 'bold' } color={ 'white' }
-                                              css={ { backgroundColor: 'black', padding: '0 1rem' } }>
-                                            { (item?.asset.properties as { date: string })?.date ?? 'Date missing' }
-                                        </Text>
-                                    </Row>
-                                    <Spacer y={ 1 }/>
-                                    <Text size="$3xl" weight={ 'bold' } color={ 'black' }>
-                                        { item?.asset.name }
-                                    </Text>
-                                    <Spacer y={ 2 }/>
-                                    <Grid.Container justify="center">
-                                        <Grid xs={ 6 }>
-                                            <Card>
-                                                <Card.Header css={ { position: 'absolute', zIndex: 1, top: 5 } }>
-                                                    <Col>
-                                                        <Text size={ 24 } color="white" weight="bold">
-                                                            <RiMapPinLine/>
-                                                            { (item?.asset.properties as { location: string })?.location ?? 'Location missing' }
-                                                        </Text>
-                                                    </Col>
-                                                </Card.Header>
-                                                <Card.Image
-                                                        showSkeleton
-                                                        src={ item?.asset.image ?? '' }
-                                                        objectFit="cover"
-                                                        width="100%"
-                                                        maxDelay={ 10000 }
-                                                        height={ 400 }
-                                                        alt="Card image background"
-                                                />
-                                            </Card>
-                                        </Grid>
-                                        <Grid xs={ 6 }>
-                                            <Card css={ { marginLeft: '1rem' } }>
-                                                <Card.Body>
-                                                    <Container fluid css={ { maxWidth: '95%' } }>
-                                                        <Text transform={ 'uppercase' } size={ 24 } color="black"
-                                                              weight="bold">
-                                                            { item?.asset.name }
-                                                        </Text>
-                                                        <Text size={ 18 } color="black" weight="bold">
+              <Container css={ { maxWidth: '80%' } }>
+                <Row justify={ 'flex-start' }>
+                  <Text weight={ 'bold' } color={ 'white' }
+                        css={ { backgroundColor: 'black', padding: '0 1rem' } }>
+                    { (item?.asset.properties as { date: string })?.date ?? 'Date missing' }
+                  </Text>
+                </Row>
+                <Spacer y={ 1 }/>
+                <Text size="$3xl" weight={ 'bold' } color={ 'black' }>
+                  { item?.asset.name }
+                </Text>
+                <Spacer y={ 2 }/>
+                <Grid.Container justify="center">
+                  <Grid xs={ 6 }>
+                    <Card>
+                      <Card.Header css={ { position: 'absolute', zIndex: 1, top: 5 } }>
+                        <Col>
+                          <Text size={ 24 } color="white" weight="bold">
+                            <RiMapPinLine/>
+                            { (item?.asset.properties as { location: string })?.location ?? 'Location missing' }
+                          </Text>
+                        </Col>
+                      </Card.Header>
+                      <Card.Image
+                        showSkeleton
+                        src={ item?.asset.image ?? '' }
+                        objectFit="cover"
+                        width="100%"
+                        maxDelay={ 10000 }
+                        height={ 400 }
+                        alt="Card image background"
+                      />
+                    </Card>
+                  </Grid>
+                  <Grid xs={ 6 }>
+                    <Card css={ { marginLeft: '1rem' } }>
+                      <Card.Body>
+                        <Container fluid css={ { maxWidth: '95%' } }>
+                          <Text transform={ 'uppercase' } size={ 24 } color="black"
+                                weight="bold">
+                            { item?.asset.name }
+                          </Text>
+                          <Text size={ 18 } color="black" weight="bold">
                                                             Le { (item?.asset.properties as { date: string })?.date ?? 'Date missing' }
-                                                        </Text>
-                                                        <Text size={ 18 } color="black" weight="bold">
-                                                            { (item?.asset.properties as { hourStart: string })?.hourStart ?? 'Start Hour Missing' } - { (item?.asset.properties as { hourEnd: string })?.hourEnd ?? 'End Hour Missing' }
-                                                        </Text>
-                                                        <Text size={ 18 } color="black" weight="bold">
-                                                            { (item?.asset.properties as { location: string })?.location ?? 'Location missing' }
-                                                        </Text>
-                                                    </Container>
-                                                </Card.Body>
-                                                <Card.Footer css={ { display: 'flex', justifyContent: 'flex-end' } }>
-                                                    <Text weight={ 'bold' }>{ item?.buyoutCurrencyValuePerToken.displayValue } { item?.buyoutCurrencyValuePerToken.symbol }</Text>
-                                                    <Spacer x={ 1 }></Spacer>
-                                                    <Button onPress={ async () => { await buyNft(BigNumber.from(tokenID)) } }
-                                                            size={ 'lg' }
-                                                            shadow
-                                                            color={ 'primary' } auto>
+                          </Text>
+                          <Text size={ 18 } color="black" weight="bold">
+                            { (item?.asset.properties as { hourStart: string })?.hourStart ?? 'Start Hour Missing' } - { (item?.asset.properties as { hourEnd: string })?.hourEnd ?? 'End Hour Missing' }
+                          </Text>
+                          <Text size={ 18 } color="black" weight="bold">
+                            { (item?.asset.properties as { location: string })?.location ?? 'Location missing' }
+                          </Text>
+                        </Container>
+                      </Card.Body>
+                      <Card.Footer css={ { display: 'flex', justifyContent: 'flex-end' } }>
+                        <Text weight={ 'bold' }>{ item?.buyoutCurrencyValuePerToken.displayValue } { item?.buyoutCurrencyValuePerToken.symbol }</Text>
+                        <Spacer x={ 1 }></Spacer>
+                        <Button onPress={ async () => { await buyNft(BigNumber.from(tokenID)) } }
+                                size={ 'lg' }
+                                shadow
+                                color={ 'primary' } auto>
                                                         Commander
-                                                    </Button>
-                                                </Card.Footer>
-                                            </Card>
-                                        </Grid>
-                                    </Grid.Container>
-                                </Container>
-                            </>
-                        ) }
-
-                </Container>
+                        </Button>
+                      </Card.Footer>
+                    </Card>
+                  </Grid>
+                </Grid.Container>
+              </Container>
             </>
+            ) }
+
+      </Container>
+    </>
   )
 }
 

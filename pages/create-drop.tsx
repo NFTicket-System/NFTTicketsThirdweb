@@ -4,10 +4,10 @@ import Navbar from '../components/header/Header'
 
 const CreateDrop = () => {
   return (
-            <>
-                <Navbar></Navbar>
-                <NftDrop></NftDrop>
-            </>
+    <>
+      <Navbar></Navbar>
+      <NftDrop></NftDrop>
+    </>
   )
 }
 

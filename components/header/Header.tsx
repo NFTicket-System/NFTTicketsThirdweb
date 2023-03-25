@@ -4,8 +4,8 @@ import React from 'react'
 import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
 import { useRouter } from 'next/router'
+import swal from 'sweetalert'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Header = () => {
   const { isDark } = useTheme()
   const { asPath } = useRouter()
@@ -17,10 +17,10 @@ const Header = () => {
                         isBordered={ isDark }
                         variant={ 'sticky' }
                         maxWidth='fluid'>
-                    {/* LOGO START */}
                     <Navbar.Brand>
                         <Link href="/">
-                            <Logo width={ 34 } height={ 34 } color={ (isDark ?? false) ? '#FFF' : '#000' }/>
+                            <Logo width={ 34 } height={ 34 }
+                                  color={ (isDark ?? false) ? '#FFF' : '#000' }/>
                             <Spacer x={ 0.5 }/>
                             <Text b
                                   color={ (isDark ?? false) ? 'white' : 'black' }
@@ -33,11 +33,26 @@ const Header = () => {
                             auto>
                         Gradient
                     </Button>
+                    <Button color={ 'primary' }
+                            auto
+                            onPress={ async () => {
+                              await swal('Good job!', 'You clicked the' +
+                                        ' button!', 'success')
+                            } }>TEST
+                    </Button>
+                    <Button color={ 'primary' }
+                            flat
+                            auto
+                            onPress={ async () => {
+                              await swal('Good job!', 'You clicked the' +
+                                        ' button!', 'success')
+                            } }>TEST
+                    </Button>
                     <Navbar.Content enableCursorHighlight
                                     activeColor={ 'primary' }
                                     hideIn="xs"
                                     variant={ 'underline-rounded' }>
-                        <Navbar.Item isActive={asPath === '/create-drop'}>
+                        <Navbar.Item isActive={ asPath === '/create-drop' }>
                             <Link href="/create-drop">
                                 <Text b
                                       color={ (isDark ?? false) ? 'white' : 'black' }>
@@ -45,7 +60,7 @@ const Header = () => {
                                 </Text>
                             </Link>
                         </Navbar.Item>
-                        <Navbar.Item isActive={asPath === '/all-nft'}>
+                        <Navbar.Item isActive={ asPath === '/all-nft' }>
                             <Link href="/all-nft">
                                 <Text b
                                       color={ (isDark ?? false) ? 'white' : 'black' }>

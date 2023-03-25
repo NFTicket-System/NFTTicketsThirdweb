@@ -1,8 +1,7 @@
 import React from 'react'
 import { useTheme as useNextTheme } from 'next-themes'
-import { Switch, useTheme } from '@nextui-org/react'
-import { GiNightSleep } from '@react-icons/all-files/gi/GiNightSleep'
-import { IoIosGlasses } from '@react-icons/all-files/io/IoIosGlasses'
+import { useTheme } from '@nextui-org/react'
+import { MdDarkMode, MdLightMode } from 'react-icons/md'
 
 const ThemeSwitcher = () => {
   const { setTheme } = useNextTheme()
@@ -10,12 +9,16 @@ const ThemeSwitcher = () => {
 
   return (
             <>
-                <Switch checked={ isDark }
-                        color="warning"
-                        bordered
-                        iconOn={<GiNightSleep />}
-                        iconOff={<IoIosGlasses />}
-                        onChange={ (e) => { setTheme(e.target.checked ? 'dark' : 'light') } }/>
+                <div style={ { cursor: 'pointer' } }
+                     onClick={ (event) => {
+                       event.preventDefault()
+                       setTheme((isDark === true) ? 'light' : 'dark')
+                     } }>
+                    { (isDark === true)
+                      ? (<MdLightMode/>)
+                      : (<MdDarkMode/>)
+                    }
+                </div>
             </>
   )
 }

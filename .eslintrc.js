@@ -13,6 +13,11 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
+    'react/jsx-indent-props': ['error', 'first'],
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      { checksVoidReturn: { attributes: false } }
+    ],
     quotes: ['error', 'single']
   }
 }

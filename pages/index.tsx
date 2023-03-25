@@ -18,47 +18,47 @@ const Home: NextPage = () => {
   const mockedEvents = [mockedEvent1, mockedEvent2, mockedEvent3, mockedEvent4, mockedEvent5]
 
   return <>
-        <Header/>
-        <Container css={{ d: 'flex', flexWrap: 'nowrap', height: '200' }}>
-            <Spacer x={4} />
-            <Caroussel/>
-            <Spacer x={4} />
-        </Container>
-        <Spacer y={2} />
-        <Grid.Container justify='flex-start' alignItems='baseline' gap={2}>
-            <Spacer x={1} />
-            <Grid>
-                <Text h3>
-                    Top évenements
-                </Text>
-            </Grid>
-            <Grid>
-                <Text size={12} weight="bold" transform="uppercase" color="$gray800">
-                    Voir plus
-                </Text>
-            </Grid>
-        </Grid.Container>
-        <EventContainer events={mockedEvents}/>
-        <Spacer y={1} />
-        <Divider/>
-        <Grid.Container justify='flex-start' alignItems='baseline' gap={2}>
-            <Spacer x={1} />
-            <Grid>
-                <Text h3>
-                    Concerts
-                </Text>
-            </Grid>
-            <Grid>
-                <Text size={12} weight="bold" transform="uppercase" color="$gray800">
-                    Voir plus
-                </Text>
-            </Grid>
-        </Grid.Container>
-        <EventContainer events={mockedEvents}/>
-        <Spacer y={2} />
+      <Header/>
+      <Container css={{ d: 'flex', flexWrap: 'nowrap', height: '200' }}>
+          <Spacer x={4} />
+          <Caroussel/>
+          <Spacer x={4} />
+      </Container>
+      <Spacer y={2} />
+      <Grid.Container justify='flex-start' alignItems='baseline' gap={2}>
+          <Spacer x={1} />
+          <Grid>
+              <Text h3>
+                  Top évenements
+              </Text>
+          </Grid>
+          <Grid>
+              <Text size={12} weight="bold" transform="uppercase" color="$gray800">
+                  Voir plus
+              </Text>
+          </Grid>
+      </Grid.Container>
+      <EventContainer events={mockedEvents}/>
+      <Spacer y={1} />
+      <Divider/>
+      <Grid.Container justify='flex-start' alignItems='baseline' gap={2}>
+          <Spacer x={1} />
+          <Grid>
+              <Text h3>
+                  Concerts
+              </Text>
+          </Grid>
+          <Grid>
+              <Text size={12} weight="bold" transform="uppercase" color="$gray800">
+                  Voir plus
+              </Text>
+          </Grid>
+      </Grid.Container>
+      <EventContainer events={mockedEvents}/>
+      <Spacer y={2} />
 
-        <Footer/>
-    </>
+      <Footer/>
+  </>
 }
 
 export default Home

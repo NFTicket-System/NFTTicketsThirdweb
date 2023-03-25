@@ -11,7 +11,7 @@
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci",
-    "docker": "docker compose down -v && docker compose up --build front && docker compose logs --follow"
+    "docker": "docker image prune -f --all && docker compose down -v && docker compose up --build"
   },
   "repository": {
     "type": "git",
@@ -38,7 +38,8 @@
     "react-icons": "^4.8.0",
     "react-multi-carousel": "^2.8.2",
     "react-responsive-carousel": "^3.2.23",
-    "react-touch-drag-slider": "^2.2.5"
+    "react-touch-drag-slider": "^2.2.5",
+    "sweetalert": "^2.1.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

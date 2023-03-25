@@ -13,13 +13,13 @@ class MyDocument extends Document {
 
   render () {
     return (
-                <Html lang="fr">
-                    <Head>{ CssBaseline.flush() }</Head>
-                    <body>
-                    <Main/>
-                    <NextScript/>
-                    </body>
-                </Html>
+      <Html lang="fr">
+        <Head>{ CssBaseline.flush() }</Head>
+        <body>
+          <Main/>
+          <NextScript/>
+        </body>
+      </Html>
     )
   }
 }
