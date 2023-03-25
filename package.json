@@ -11,7 +11,7 @@
     "lint": "next lint",
     "test": "jest --watch",
     "test:ci": "jest --ci",
-    "docker": "docker-compose up && docker logs --follow front"
+    "docker": "docker compose down -v && docker compose up --build front && docker compose logs --follow"
   },
   "repository": {
     "type": "git",
