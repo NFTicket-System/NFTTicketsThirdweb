@@ -25,7 +25,6 @@ const Header = () => {
                               }
                             ) }
                         shouldHideOnScroll
-                        isBordered={ isDark }
                         variant={ 'sticky' }
                         maxWidth='fluid'>
                     <Navbar.Brand>
