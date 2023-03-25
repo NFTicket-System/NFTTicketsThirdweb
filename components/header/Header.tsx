@@ -37,8 +37,8 @@ const Header = () => {
                                     activeColor={ 'primary' }
                                     hideIn="xs"
                                     variant={ 'underline-rounded' }>
-                        <Navbar.Item isActive={asPath === '/createdrop'}>
-                            <Link href="/createdrop">
+                        <Navbar.Item isActive={asPath === '/create-drop'}>
+                            <Link href="/create-drop">
                                 <Text b
                                       color={ (isDark ?? false) ? 'white' : 'black' }>
                                     Créer un évènement

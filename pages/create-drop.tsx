@@ -2,7 +2,7 @@ import React from 'react'
 import NftDrop from '../components/nftDrop/NftDrop'
 import Navbar from '../components/header/Header'
 
-const Createdrop = () => {
+const CreateDrop = () => {
   return (
             <>
                 <Navbar></Navbar>
@@ -11,4 +11,4 @@ const Createdrop = () => {
   )
 }
 
-export default Createdrop
+export default CreateDrop

@@ -30,7 +30,7 @@ export enum InputEvent {
 
 const NftDrop = () => {
   const { register, handleSubmit, formState: { isSubmitting } } = useForm<formDataType>()
-  const sdkAdmin = ThirdwebSDK.fromPrivateKey(String((process.env.NEXT_PUBLIC_SDK_PK != null) ?? ''), 'goerli')
+  const sdkAdmin = ThirdwebSDK.fromPrivateKey((process.env.NEXT_PUBLIC_SDK_PK ?? ''), 'goerli')
   const [{ data }] = useConnect()
   const connectedAddress = useAddress()
   const [visible, setVisible] = React.useState(false)
