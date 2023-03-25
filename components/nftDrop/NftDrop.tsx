@@ -5,8 +5,8 @@ import { useAddress, useConnect } from '@thirdweb-dev/react'
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../../models/interfaces/createNFTFormData'
 import { InputName } from '../../models/enum/createNFTInputs'
-import { createNFTicket } from '../../services/createNFTicket'
 import swal from 'sweetalert'
+import { createNFTicket } from '../../services/createNFTicket'
 
 const NftDrop = () => {
 	const {
@@ -30,7 +30,13 @@ const NftDrop = () => {
 	const onSubmit = async (formData: formDataType) => {
 		handler()
 
-		if (userWallet.connected) {
+		if (!userWallet.connected) {
+			swal('Oh oh!', 'Veuillez connecter votre wallet grâce au button du menu principal !', 'error').catch(
+				(e) => {
+					console.error(e)
+				}
+			)
+		} else {
 			await createNFTicket(formData, sdkAdmin, connectedAddress)
 				.then(() => {
 					swal(
@@ -46,11 +52,6 @@ const NftDrop = () => {
 				.catch((e) => {
 					console.error(e)
 				})
-		} else {
-			swal('', 'Veuillez connecter votre wallet grâce au button du menu principal !', 'error').catch((e) => {
-				console.error(e)
-			})
-			console.log('no connected wallet')
 		}
 		closeHandler()
 	}
