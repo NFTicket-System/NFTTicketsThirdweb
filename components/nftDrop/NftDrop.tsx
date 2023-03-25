@@ -30,17 +30,23 @@ export enum InputEvent {
 
 const NftDrop = () => {
   const { register, handleSubmit, formState: { isSubmitting } } = useForm<formDataType>()
-  const sdkAdmin = ThirdwebSDK.fromPrivateKey((process.env.NEXT_PUBLIC_SDK_PK != null) ?? '', 'goerli')
+  const sdkAdmin = ThirdwebSDK.fromPrivateKey(String((process.env.NEXT_PUBLIC_SDK_PK != null) ?? ''), 'goerli')
   const [{ data }] = useConnect()
   const connectedAddress = useAddress()
   const [visible, setVisible] = React.useState(false)
   const handler = () => { setVisible(true) }
 
+  function wrapAsyncFunction<ARGS extends unknown[]> (fn: (...args: ARGS) => Promise<unknown>): (...args: ARGS) => void {
+    return (...args) => {
+      void fn(...args)
+    }
+  }
+
   const closeHandler = () => {
     setVisible(false)
     console.log('closed')
   }
-  // onst changeIsLoading = () => { useEffect(() => { isLoading? setIsLoading(false) : setIsLoading(true) }, [])}
+  // const changeIsLoading = () => { useEffect(() => { isLoading? setIsLoading(false) : setIsLoading(true) }, [])}
 
   /*    async function saveFormData( data: formDataType ) {
             return await fetch( "http://localhost:5000/create-drop", {
@@ -85,7 +91,7 @@ const NftDrop = () => {
 
       console.log('mint')
       for (const nftObject of mintTransaction) {
-        const marketplaceAddress = await process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
+        const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
 
         const marketplace = await sdkAdmin?.getContract(marketplaceAddress ?? '', 'marketplace')
 
@@ -93,7 +99,7 @@ const NftDrop = () => {
           // address of the contract the asset you want to list is on
           assetContractAddress: collectionContractAddress ?? '',
           // token ID of the asset you want to list
-          tokenId: nftObject ? nftObject.id : 0,
+          tokenId: (nftObject !== null) ? nftObject.id : 0,
           // when should the listing open up for offers
           startTimestamp: new Date(),
           // how long the listing will be open for
@@ -119,7 +125,7 @@ const NftDrop = () => {
             <>
                 <Grid.Container justify={ 'center' }>
                     <form onSubmit={
-                        handleSubmit(onSubmit)
+                        wrapAsyncFunction(handleSubmit(onSubmit))
                      }>
                         <Input size={ 'md' }
                                clearable
@@ -132,7 +138,7 @@ const NftDrop = () => {
                                clearable
                                bordered
                                color={ 'primary' }
-                               labelPlaceholder="Desciption de l'évènement"
+                               labelPlaceholder="Description de l'évènement"
                                { ...register(InputEvent.DESCRIPTION, { required: true }) }
                         />
                         <Input size={ 'md' }
