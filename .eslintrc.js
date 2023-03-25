@@ -4,7 +4,8 @@ module.exports = {
     'standard-with-typescript',
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
-    'plugin:jest-dom/recommended'
+    'plugin:jest-dom/recommended',
+      'prettier'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -13,7 +14,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
-    'react/jsx-indent-props': ['error', 'first'],
+    /* 'react/jsx-indent-props': ['error', 'first'], */
     '@typescript-eslint/no-misused-promises': [
       'error',
       { checksVoidReturn: { attributes: false } }

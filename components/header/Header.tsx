@@ -7,89 +7,103 @@ import { useRouter } from 'next/router'
 import swal from 'sweetalert'
 
 const Header = () => {
-  const { isDark } = useTheme()
-  const { asPath } = useRouter()
+	const { isDark } = useTheme()
+	const { asPath } = useRouter()
 
-  return (
-            <>
-                <Navbar
-                        css={ (isDark === true)
-                          ? ({
-                              $$navbarBackgroundColor: 'rgb(31,31,36)',
-                              $$navbarBlurBackgroundColor: 'radial-gradient(circle, rgba(31,31,36,1) 0%, rgba(39,39,47,1) 35%, rgba(24,26,27,1) 100%)'
-                            })
-                          : (
-                              {
-                                $$navbarBackgroundColor: 'rgb(249,249,249)',
-                                $$navbarBlurBackgroundColor: 'radial-gradient(circle, rgba(249,249,249,1) 0%,rgba(244,244,244,1) 46%, rgba(255,255,255,1) 100%)'
-                              }
-                            ) }
-                        shouldHideOnScroll
-                        variant={ 'sticky' }
-                        maxWidth='fluid'>
-                    <Navbar.Brand>
-                        <Link href="/">
-                            <Logo width={ 34 } height={ 34 }
-                                  color={ (isDark ?? false) ? '#FFF' : '#000' }/>
-                            <Spacer x={ 0.5 }/>
-                            <Text b
-                                  color={ (isDark ?? false) ? 'white' : 'black' }
-                                  hideIn="xs">
-                                NFTickets
-                            </Text>
-                        </Link>
-                    </Navbar.Brand>
-                    <Button color="gradient"
-                            auto>
-                        Gradient
-                    </Button>
-                    <Button color={ 'primary' }
-                            auto
-                            onPress={ async () => {
-                              await swal('Good job!', 'You clicked the' +
-                                        ' button!', 'success')
-                            } }>TEST
-                    </Button>
-                    <Button color={ 'primary' }
-                            flat
-                            auto
-                            onPress={ async () => {
-                              await swal('Good job!', 'You clicked the' +
-                                        ' button!', 'success')
-                            } }>TEST
-                    </Button>
-                    <Navbar.Content enableCursorHighlight
-                                    activeColor={ 'primary' }
-                                    hideIn="xs"
-                                    variant={ 'underline-rounded' }>
-                        <Navbar.Item isActive={ asPath === '/create-drop' }>
-                            <Link href="/create-drop">
-                                <Text b
-                                      color={ (isDark ?? false) ? 'white' : 'black' }>
-                                    Créer un évènement
-                                </Text>
-                            </Link>
-                        </Navbar.Item>
-                        <Navbar.Item isActive={ asPath === '/all-nft' }>
-                            <Link href="/all-nft">
-                                <Text b
-                                      color={ (isDark ?? false) ? 'white' : 'black' }>
-                                    All nft
-                                </Text>
-                            </Link>
-                        </Navbar.Item>
-                    </Navbar.Content>
-                    <Navbar.Content>
-                        <ConnectWallet btnTitle="Connectez votre wallet"
-                                       colorMode={ (isDark ?? false) ? 'dark' : 'light' }/>
-                        <Navbar.Item>
-                            <ThemeSwitcher></ThemeSwitcher>
-                        </Navbar.Item>
-                    </Navbar.Content>
-                </Navbar>
-                <Spacer y={ 2 }/>
-            </>
-  )
+	return (
+		<>
+			<Navbar
+				css={
+					isDark === true
+						? {
+								$$navbarBackgroundColor: 'rgb(31,31,36)',
+								$$navbarBlurBackgroundColor:
+									'radial-gradient(circle, rgba(31,31,36,1) 0%, rgba(39,39,47,1) 35%, rgba(24,26,27,1) 100%)',
+						  }
+						: {
+								$$navbarBackgroundColor: 'rgb(249,249,249)',
+								$$navbarBlurBackgroundColor:
+									'radial-gradient(circle, rgba(249,249,249,1) 0%,rgba(244,244,244,1) 46%, rgba(255,255,255,1) 100%)',
+						  }
+				}
+				shouldHideOnScroll
+				variant={'sticky'}
+				maxWidth="fluid">
+				<Navbar.Brand>
+					<Link href="/">
+						<Logo
+							width={34}
+							height={34}
+							color={isDark ?? false ? '#FFF' : '#000'}
+						/>
+						<Spacer x={0.5} />
+						<Text
+							b
+							color={isDark ?? false ? 'white' : 'black'}
+							hideIn="xs">
+							NFTickets
+						</Text>
+					</Link>
+				</Navbar.Brand>
+				<Button
+					color="gradient"
+					auto>
+					Gradient
+				</Button>
+				<Button
+					color={'primary'}
+					auto
+					onPress={async () => {
+						await swal('Good job!', 'You clicked the' + ' button!', 'success')
+					}}>
+					TEST
+				</Button>
+				<Button
+					color={'primary'}
+					flat
+					auto
+					onPress={async () => {
+						await swal('Good job!', 'You clicked the' + ' button!', 'success')
+					}}>
+					TEST
+				</Button>
+				<Navbar.Content
+					enableCursorHighlight
+					activeColor={'primary'}
+					hideIn="xs"
+					variant={'underline-rounded'}>
+					<Navbar.Item isActive={asPath === '/create-drop'}>
+						<Link href="/create-drop">
+							<Text
+								b
+								color={isDark ?? false ? 'white' : 'black'}>
+								Créer un évènement
+							</Text>
+						</Link>
+					</Navbar.Item>
+					<Navbar.Item isActive={asPath === '/all-nft'}>
+						<Link href="/all-nft">
+							<Text
+								b
+								color={isDark ?? false ? 'white' : 'black'}>
+								All nft
+							</Text>
+						</Link>
+					</Navbar.Item>
+				</Navbar.Content>
+				<Navbar.Content>
+					<ConnectWallet
+						btnTitle="Connectez votre wallet"
+						colorMode={isDark ?? false ? 'dark' : 'light'}
+					/>
+					<Navbar.Item>
+						<ThemeSwitcher></ThemeSwitcher>
+					</Navbar.Item>
+				</Navbar.Content>
+			</Navbar>
+			<Spacer y={2} />
+		</>
+	)
 }
 
 export default Header
