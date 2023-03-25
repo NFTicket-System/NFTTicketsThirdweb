@@ -42,8 +42,8 @@ const NftDrop = () => {
 					swal(
 						'Bravo !',
 						formData.count > 1
-							? 'Vos tickets aux étés ajoutés a la blockchain et sont disponibles en vente !'
-							: 'Votre ticket a été ajouté a la blockchain et est disponible en vente !',
+							? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
+							: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
 						'success'
 					).catch((e) => {
 						console.error(e)

@@ -33,9 +33,9 @@ export async function createNFTicket(
 		metaDatas.push(metaData)
 	}
 
-	const mintTransaction = await contract?.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
+	const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
+	console.log('MINT')
 
-	console.log('mint')
 	for (const nftObject of mintTransaction) {
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
 
@@ -59,6 +59,6 @@ export async function createNFTicket(
 		}
 
 		await marketplace?.direct.createListing(listing)
-		console.log('market')
+		console.log('MARKETPLACE')
 	}
 }
