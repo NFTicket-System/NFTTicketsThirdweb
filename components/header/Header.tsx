@@ -3,10 +3,12 @@ import { ConnectWallet } from '@thirdweb-dev/react'
 import React from 'react'
 import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
+import { useRouter } from 'next/router'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Header = () => {
   const { isDark } = useTheme()
+  const { asPath } = useRouter()
 
   return (
             <>
@@ -35,7 +37,7 @@ const Header = () => {
                                     activeColor={ 'primary' }
                                     hideIn="xs"
                                     variant={ 'underline-rounded' }>
-                        <Navbar.Item isActive>
+                        <Navbar.Item isActive={asPath === '/createdrop'}>
                             <Link href="/createdrop">
                                 <Text b
                                       color={ (isDark ?? false) ? 'white' : 'black' }>
@@ -43,7 +45,7 @@ const Header = () => {
                                 </Text>
                             </Link>
                         </Navbar.Item>
-                        <Navbar.Item>
+                        <Navbar.Item isActive={asPath === '/all-nft'}>
                             <Link href="/all-nft">
                                 <Text b
                                       color={ (isDark ?? false) ? 'white' : 'black' }>
