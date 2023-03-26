@@ -2,35 +2,20 @@ import { Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text } from '
 import { RiMapPinLine } from '@react-icons/all-files/ri/RiMapPinLine'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
-import { BigNumber, type BigNumberish } from 'ethers'
-import { ChainId } from '@thirdweb-dev/sdk'
+import { useAddress, useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
+import { BigNumber } from 'ethers'
 import Header from '../../../components/header/Header'
+import { buyNft } from '../../../services/buyNFTicket'
+import { noConnectedWalletErrorAlert } from '../../../utils/errors/noConnectedWalletErrorAlert'
 
 const NftDetails = () => {
+	const connectedAddress = useAddress()
 	const router = useRouter()
 	const { tokenID } = router.query
 	const { contract: marketplace } = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
 	const { data: item, isLoading } = useListing(marketplace, tokenID as string)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
-
-	async function buyNft(nftId: BigNumberish) {
-		try {
-			// Ensure user is on the correct network
-			if (isMismatched) {
-				switchNetwork != null && (await switchNetwork(ChainId.Goerli))
-				return
-			}
-
-			// Simple one-liner for buying the NFT
-			await marketplace?.buyoutListing(BigNumber.from(nftId), 1)
-			alert('NFT bought successfully!')
-		} catch (error) {
-			console.error(error)
-			alert(error)
-		}
-	}
 
 	return (
 		<>
@@ -132,7 +117,14 @@ const NftDetails = () => {
 											<Spacer x={1}></Spacer>
 											<Button
 												onPress={async () => {
-													await buyNft(BigNumber.from(tokenID))
+													connectedAddress === undefined
+														? noConnectedWalletErrorAlert()
+														: await buyNft({
+																nftId: BigNumber.from(tokenID),
+																isMismatched,
+																switchNetwork,
+																marketplace,
+														  })
 												}}
 												size={'lg'}
 												shadow

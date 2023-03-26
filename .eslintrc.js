@@ -15,6 +15,5 @@ module.exports = {
 	rules: {
 		'@typescript-eslint/explicit-function-return-type': 'off',
 		'@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { attributes: false } }],
-		quotes: ['error', 'single'],
 	},
 }

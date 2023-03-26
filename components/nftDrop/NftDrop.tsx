@@ -7,6 +7,8 @@ import { type formDataType } from '../../models/interfaces/createNFTFormData'
 import { InputName } from '../../models/enum/createNFTInputs'
 import swal from 'sweetalert'
 import { createNFTicket } from '../../services/createNFTicket'
+import { noConnectedWalletErrorAlert } from '../../utils/errors/noConnectedWalletErrorAlert'
+import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
 
 const NftDrop = () => {
 	const {
@@ -31,25 +33,20 @@ const NftDrop = () => {
 		handler()
 
 		if (!userWallet.connected) {
-			swal('Oh oh!', 'Veuillez connecter votre wallet grâce au button du menu principal !', 'error').catch(
-				(e) => {
-					console.error(e)
-				}
-			)
+			noConnectedWalletErrorAlert()
 		} else {
 			await createNFTicket(formData, sdkAdmin, connectedAddress)
 				.then(() => {
-					swal(
+					void swal(
 						'Bravo !',
 						formData.count > 1
 							? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
 							: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
 						'success'
-					).catch((e) => {
-						console.error(e)
-					})
+					)
 				})
 				.catch((e) => {
+					defaultErrorModal()
 					console.error(e)
 				})
 		}
