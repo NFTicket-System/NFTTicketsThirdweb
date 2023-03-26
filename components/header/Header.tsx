@@ -16,14 +16,12 @@ const Header = () => {
 				css={
 					isDark === true
 						? {
-								$$navbarBackgroundColor: 'rgb(31,31,36)',
-								$$navbarBlurBackgroundColor:
-									'radial-gradient(circle, rgba(31,31,36,1) 0%, rgba(39,39,47,1) 35%, rgba(24,26,27,1) 100%)',
+								$$navbarBackgroundColor: '#131313',
+								$$navbarBlurBackgroundColor: '#131313',
 						  }
 						: {
-								$$navbarBackgroundColor: 'rgb(249,249,249)',
-								$$navbarBlurBackgroundColor:
-									'radial-gradient(circle, rgba(249,249,249,1) 0%,rgba(244,244,244,1) 46%, rgba(255,255,255,1) 100%)',
+								$$navbarBackgroundColor: 'conic-gradient(from 90deg, #FFFFFF, #F7F7F7)',
+								$$navbarBlurBackgroundColor: '#FFF',
 						  }
 				}
 				shouldHideOnScroll
