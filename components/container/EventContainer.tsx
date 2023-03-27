@@ -1,4 +1,4 @@
-import { Col, Grid, Spacer, Text } from '@nextui-org/react'
+import { Grid } from '@nextui-org/react'
 import { type LightEvent } from '../../models/LightEvent'
 import EventCard from '../card/EventCard'
 
@@ -16,15 +16,7 @@ const EventContainer: React.FC<EventContainerProps> = (props: EventContainerProp
 					<Grid
 						key={item.id}
 						md={2}>
-						<Col>
-							<Text
-								size="$xl"
-								b>
-								{item.name}
-							</Text>
-							<Spacer y={1} />
-							<EventCard event={item} />
-						</Col>
+						<EventCard event={item} />
 					</Grid>
 				)
 			})}
