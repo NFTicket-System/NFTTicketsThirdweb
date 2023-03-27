@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Grid, Input, Loading, Modal, Spacer } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
-import { useAddress, useConnect } from '@thirdweb-dev/react'
-import { ThirdwebSDK } from '@thirdweb-dev/sdk'
+import { useAddress, useConnect, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
+import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../../models/interfaces/createNFTFormData'
 import { InputName } from '../../models/enum/createNFTInputs'
 import swal from 'sweetalert'
@@ -20,6 +20,8 @@ const NftDrop = () => {
 	const [{ data: userWallet }] = useConnect()
 	const connectedAddress = useAddress()
 	const [visible, setVisible] = useState(false)
+	const isMismatched = useNetworkMismatch()
+	const [, switchNetwork] = useNetwork()
 	const handler = () => {
 		setVisible(true)
 	}
@@ -35,6 +37,12 @@ const NftDrop = () => {
 		if (!userWallet.connected) {
 			noConnectedWalletErrorAlert()
 		} else {
+			if (isMismatched) {
+				closeHandler()
+				await switchNetwork?.(ChainId.Goerli)
+				return
+			}
+
 			await createNFTicket(formData, sdkAdmin, connectedAddress)
 				.then(() => {
 					void swal(
@@ -49,8 +57,8 @@ const NftDrop = () => {
 					defaultErrorModal()
 					console.error(e)
 				})
+			closeHandler()
 		}
-		closeHandler()
 	}
 
 	return (
