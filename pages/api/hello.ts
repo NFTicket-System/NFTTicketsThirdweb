@@ -1,12 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
 
-
-export default function handler(
-    req: NextApiRequest,
-    res: NextApiResponse
+export default function handler (
+/*  req: NextApiRequest,
+  res: NextApiResponse */
 ) {
-    /*    if ( req.method !== "POST" ) {
+  /*    if ( req.method !== "POST" ) {
             res.status( 405 ).send( "Method not allowed" );
             return;
         }
@@ -15,5 +13,5 @@ export default function handler(
 
         const name = req.body.name;
         //do something with the email
-        console.log( name );*/
+        console.log( name ); */
 }
