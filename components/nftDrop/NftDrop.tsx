@@ -153,6 +153,7 @@ const NftDrop = () => {
 					</Modal.Body>
 				</Modal>
 			</Grid.Container>
+			{/* <Map /> */}
 		</>
 	)
 }
