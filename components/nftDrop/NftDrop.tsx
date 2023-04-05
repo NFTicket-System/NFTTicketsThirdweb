@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Grid, Input, Loading, Modal, Spacer } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
-import { useAddress, useConnect, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
+import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload} from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../../models/interfaces/createNFTFormData'
 import { InputName } from '../../models/enum/createNFTInputs'
@@ -16,12 +16,15 @@ const NftDrop = () => {
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<formDataType>()
+    const [file, setFile] = useState<File>();
+    const [imageUrl, setImageUrl] = useState<string>();
+    const { mutateAsync: upload } = useStorageUpload();
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
 	const [{ data: userWallet }] = useConnect()
 	const connectedAddress = useAddress()
 	const [visible, setVisible] = useState(false)
 	const isMismatched = useNetworkMismatch()
-	const [, switchNetwork] = useNetwork()
+	const [switchNetwork] = useNetwork()
 	const handler = () => {
 		setVisible(true)
 	}
@@ -30,6 +33,15 @@ const NftDrop = () => {
 		setVisible(false)
 		console.log('closed')
 	}
+
+    const uploadToIpfs = async () => {
+        const uploadUrl = await upload({
+            data: [file],
+            options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
+        });
+        setImageUrl(uploadUrl[0])
+        console.log(uploadUrl);
+    }
 
 	const onSubmit = async (formData: formDataType) => {
 		handler()
@@ -43,7 +55,7 @@ const NftDrop = () => {
 				return
 			}
 
-			await createNFTicket(formData, sdkAdmin, connectedAddress)
+			await createNFTicket(formData, sdkAdmin, connectedAddress,imageUrl)
 				.then(() => {
 					void swal(
 						'Bravo !',
@@ -60,8 +72,7 @@ const NftDrop = () => {
 			closeHandler()
 		}
 	}
-
-	return (
+    return (
 		<>
 			<Grid.Container justify={'center'}>
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -129,14 +140,8 @@ const NftDrop = () => {
 						labelPlaceholder="Location"
 						{...register(InputName.LOCATION, { required: true })}
 					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Image"
-						{...register(InputName.IMAGE, { required: true })}
-					/>
+                    <input type="file" onChange={(e) => {if (e.target.files?.item(0) == null) return; setFile(e.target.files.item(0)!)}} />
+                    <button onClick={uploadToIpfs}>Upload</button>
 					<Spacer y={2} />
 					<Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button>
 				</form>
