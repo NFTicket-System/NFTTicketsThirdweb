@@ -24,7 +24,7 @@ export async function buyNft({
 	try {
 		// Ensure user is on the correct network
 		if (isMismatched) {
-			await switchNetwork?.(ChainId.Goerli)
+			await switchNetwork?.(ChainId.Mumbai)
 			return
 		}
 
