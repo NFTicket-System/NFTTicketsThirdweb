@@ -12,7 +12,7 @@ function MyApp ({ Component, pageProps }: AppProps) {
 
   return (
     isBrowser && (
-      <ThirdwebProvider desiredChainId={ ChainId.Goerli }>
+      <ThirdwebProvider desiredChainId={ ChainId.Mumbai }>
         <NextThemesProvider defaultTheme='system' attribute='class' value={ {
           light: LightTheme.className,
           dark: DarkTheme.className

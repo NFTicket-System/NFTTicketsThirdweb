@@ -16,7 +16,7 @@ const NftDrop = () => {
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<formDataType>()
-	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'goerli')
+	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
 	const [{ data: userWallet }] = useConnect()
 	const connectedAddress = useAddress()
 	const [visible, setVisible] = useState(false)
@@ -39,7 +39,7 @@ const NftDrop = () => {
 		} else {
 			if (isMismatched) {
 				closeHandler()
-				await switchNetwork?.(ChainId.Goerli)
+				await switchNetwork?.(ChainId.Mumbai)
 				return
 			}
 
