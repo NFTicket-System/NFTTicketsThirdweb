@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Grid, Input, Loading, Modal, Spacer, Text } from '@nextui-org/react'
+import { Button, Grid, Input, Loading, Modal, Progress, Spacer, Text } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
@@ -77,18 +77,33 @@ const NftDrop = () => {
 			key={'two'}>
 			TWO CONTENT
 		</FormWrapper>,
+		<FormWrapper
+			title={'Two'}
+			key={'two'}>
+			TWO CONTENT
+		</FormWrapper>,
+		<FormWrapper
+			title={'Two'}
+			key={'two'}>
+			TWO CONTENT
+		</FormWrapper>,
 	])
 
 	return (
 		<>
-			<Grid.Container justify={'center'}>
+			<Grid justify={'center'}>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Text>
 						{currentStepIndex + 1} / {steps.length}
 					</Text>
+					<Progress
+						value={((currentStepIndex + 1) * 100) / steps.length}
+						color="primary"
+						status="primary"
+					/>
 					{step}
 					{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
-					<Button type={'submit'}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
+					<Button onClick={nextStep}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
 					<Input
 						size={'md'}
 						clearable
@@ -176,7 +191,7 @@ const NftDrop = () => {
 						</Grid.Container>
 					</Modal.Body>
 				</Modal>
-			</Grid.Container>
+			</Grid>
 			{/* <Map /> */}
 		</>
 	)
