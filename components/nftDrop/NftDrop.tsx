@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Grid, Input, Loading, Modal, Spacer } from '@nextui-org/react'
+import { Button, Grid, Input, Loading, Modal, Spacer, Text } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
@@ -9,6 +9,8 @@ import swal from 'sweetalert'
 import { createNFTicket } from '../../services/createNFTicket'
 import { noConnectedWalletErrorAlert } from '../../utils/errors/noConnectedWalletErrorAlert'
 import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
+import { useMultiStepForm } from '../../hooks/useMultiStepForm'
+import FormWrapper from '../forms/FormWrapper'
 
 const NftDrop = () => {
 	const {
@@ -32,8 +34,11 @@ const NftDrop = () => {
 	}
 
 	const onSubmit = async (formData: formDataType) => {
-		handler()
+		if (!isLastStep) {
+			nextStep()
+		}
 
+		handler()
 		if (!userWallet.connected) {
 			noConnectedWalletErrorAlert()
 		} else {
@@ -61,10 +66,29 @@ const NftDrop = () => {
 		}
 	}
 
+	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
+		<FormWrapper
+			title={'One'}
+			key={'one'}>
+			ONE CONTENT
+		</FormWrapper>,
+		<FormWrapper
+			title={'Two'}
+			key={'two'}>
+			TWO CONTENT
+		</FormWrapper>,
+	])
+
 	return (
 		<>
 			<Grid.Container justify={'center'}>
 				<form onSubmit={handleSubmit(onSubmit)}>
+					<Text>
+						{currentStepIndex + 1} / {steps.length}
+					</Text>
+					{step}
+					{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
+					<Button type={'submit'}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
 					<Input
 						size={'md'}
 						clearable
