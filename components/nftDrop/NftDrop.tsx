@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
-import { Button, Container, Grid, Input, Loading, Modal, Progress, Row, Spacer, Text } from '@nextui-org/react'
+import React, { type SetStateAction, useState } from 'react'
+import { Button, Container, Grid, Input, Loading, Modal, Progress, Row, Spacer, Textarea } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../../models/interfaces/createNFTFormData'
-import { InputName } from '../../models/enum/createNFTInputs'
 import swal from 'sweetalert'
 import { createNFTicket } from '../../services/createNFTicket'
 import { noConnectedWalletErrorAlert } from '../../utils/errors/noConnectedWalletErrorAlert'
 import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '../../hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
+import { InputName } from '../../models/enum/createNFTInputs'
 
 const NftDrop = () => {
 	const {
@@ -49,8 +49,8 @@ const NftDrop = () => {
 		if (!isLastStep) {
 			nextStep()
 		}
-
 		handler()
+
 		if (!userWallet.connected) {
 			noConnectedWalletErrorAlert()
 		} else {
@@ -78,7 +78,34 @@ const NftDrop = () => {
 		}
 	}
 
+	const [searchTerm, setSearchTerm] = useState<string>('')
+
+	const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
+		setSearchTerm(e.target.value)
+	}
+
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
+		<Grid.Container
+			key={'first-step'}
+			direction={'column'}>
+			<Input
+				clearable
+				underlined
+				labelPlaceholder="Nom de l'évènement *"
+				{...register(InputName.NAME, { required: true })}
+				color="primary"
+				onChange={handleChange}
+				helperText={searchTerm === '' ? 'Champ requis' : ''}
+			/>
+			<Spacer y={4} />
+			<Textarea
+				bordered
+				color="primary"
+				labelPlaceholder="Description de l'évènement"
+				helperText={'Décrivez votre évènement en quelques mots'}
+				{...register(InputName.DESCRIPTION)}
+			/>
+		</Grid.Container>,
 		<FormWrapper
 			title={'One'}
 			key={'one'}>
@@ -103,49 +130,30 @@ const NftDrop = () => {
 
 	return (
 		<>
-			<Container
-				sm
-				display={'flex'}
-				direction={'column'}
-				alignItems={'center'}>
-				<Progress
-					value={((currentStepIndex + 1) * 100) / steps.length}
-					color="primary"
-					status="primary"
-				/>
-				<Text>
-					POUR INFO {currentStepIndex + 1} / {steps.length}
-				</Text>
-				<Spacer y={2}></Spacer>
-				<Row justify={'flex-end'}>
-					<Button.Group
-						rounded
-						flat>
-						{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
-						<Button onClick={nextStep}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
-					</Button.Group>
-				</Row>
-			</Container>
-			{step}
-
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Nom de l'évènement"
-					{...register(InputName.NAME, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Description de l'évènement"
-					{...register(InputName.DESCRIPTION, { required: true })}
-				/>
-				<Input
+				<Container
+					sm
+					display={'flex'}
+					direction={'column'}
+					alignItems={'center'}>
+					<Progress
+						value={((currentStepIndex + 1) * 100) / steps.length}
+						color="primary"
+						status="primary"
+					/>
+					<Spacer y={2}></Spacer>
+					{step}
+					<Spacer y={2} />
+					<Row justify={'flex-end'}>
+						<Button.Group
+							rounded
+							flat>
+							{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
+							<Button type={'submit'}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
+						</Button.Group>
+					</Row>
+				</Container>
+				{/*			<Input
 					size={'md'}
 					clearable
 					bordered
@@ -200,9 +208,9 @@ const NftDrop = () => {
 					color={'primary'}
 					labelPlaceholder="Image"
 					{...register(InputName.IMAGE, { required: true })}
-				/>
+				/> */}
 				<Spacer y={2} />
-				<Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button>
+				{/* <Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button> */}
 			</form>
 			<Modal
 				open={visible}
