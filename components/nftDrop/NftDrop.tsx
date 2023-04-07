@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Container, Grid, Input, Loading, Modal, Progress, Spacer, Text } from '@nextui-org/react'
+import { Button, Container, Grid, Input, Loading, Modal, Progress, Row, Spacer, Text } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
@@ -102,19 +102,17 @@ const NftDrop = () => {
 					status="primary"
 				/>
 				<Text>
-					{currentStepIndex + 1} / {steps.length}
+					POUR INFO {currentStepIndex + 1} / {steps.length}
 				</Text>
-			</Container>
-			<Spacer y={2}></Spacer>
-			<Container
-				sm
-				display={'flex'}
-				direction={'row'}
-				justify={'flex-end'}>
-				<Button.Group>
-					{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
-					<Button onClick={nextStep}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
-				</Button.Group>
+				<Spacer y={2}></Spacer>
+				<Row justify={'flex-end'}>
+					<Button.Group
+						rounded
+						flat>
+						{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
+						<Button onClick={nextStep}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
+					</Button.Group>
+				</Row>
 			</Container>
 			{step}
 
