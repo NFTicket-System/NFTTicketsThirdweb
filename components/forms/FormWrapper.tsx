@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react'
-import { Container } from '@nextui-org/react'
+import { Container, Grid, Spacer, Text } from '@nextui-org/react'
 
 interface FormWrapperProps {
 	title: string
@@ -9,8 +9,18 @@ interface FormWrapperProps {
 function FormWrapper({ title, children }: FormWrapperProps) {
 	return (
 		<>
-			<h2>{title}</h2>
-			<Container>{children}</Container>
+			<Container
+				direction={'column'}
+				alignItems={'center'}
+				display={'flex'}>
+				<Text h1>{title}</Text>
+				<Spacer y={2} />
+				<Grid.Container
+					key={'first-step'}
+					direction={'column'}>
+					{children}
+				</Grid.Container>
+			</Container>
 		</>
 	)
 }
