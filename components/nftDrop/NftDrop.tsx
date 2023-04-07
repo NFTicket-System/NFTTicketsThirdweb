@@ -13,6 +13,7 @@ import {
 	Spacer,
 	Text,
 	Textarea,
+	useTheme,
 } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
@@ -26,8 +27,10 @@ import { useMultiStepForm } from '../../hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
 import { InputName } from '../../models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
+import { ImUpload } from '@react-icons/all-files/im/ImUpload'
 
 const NftDrop = () => {
+	const { isDark } = useTheme()
 	const {
 		register,
 		handleSubmit,
@@ -46,9 +49,8 @@ const NftDrop = () => {
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
 
-	const [file, setFile] = useState<File>()
+	const [file, setFile] = useState<File | null>()
 	const handleImageChange = (file: File) => {
-		console.log(file)
 		setFile(file)
 	}
 
@@ -62,7 +64,6 @@ const NftDrop = () => {
 
 	const closeHandler = () => {
 		setVisible(false)
-		console.log('closed')
 	}
 
 	const uploadToIpfs = async () => {
@@ -139,7 +140,7 @@ const NftDrop = () => {
 			<Text>Description de l&apos;évènement</Text>
 			<Textarea
 				bordered
-				color="primary"
+				color="default"
 				helperText={'Décrivez votre évènement en quelques mots'}
 				{...register(InputName.DESCRIPTION)}
 			/>
@@ -158,24 +159,30 @@ const NftDrop = () => {
 					/>
 					<Card.Footer
 						isBlurred
-						css={{
-							position: 'absolute',
-							bgBlur: '#0f111466',
-							borderTop: '$borderWeights$light solid $gray800',
-							bottom: 0,
-							zIndex: 1,
-						}}>
+						css={
+							isDark === true
+								? {
+										position: 'absolute',
+										bgBlur: '#0f111466',
+										borderTop: '$borderWeights$light solid $gray800',
+										bottom: 0,
+										zIndex: 1,
+								  }
+								: {
+										position: 'absolute',
+										bgBlur: '#ffffff66',
+										borderTop: '$borderWeights$light solid rgba(255, 255, 255, 0.2)',
+										bottom: 0,
+										zIndex: 1,
+								  }
+						}>
 						<Row>
 							<Col>
-								<Row>
-									<Col>
-										<Text
-											color="#d1d1d1"
-											size={12}>
-											${file.name}
-										</Text>
-									</Col>
-								</Row>
+								<Text
+									color={isDark === true ? '#d1d1d1' : '#000'}
+									size={'$xl2'}>
+									${file.name}
+								</Text>
 							</Col>
 							<Col>
 								<Row justify="flex-end">
@@ -185,6 +192,7 @@ const NftDrop = () => {
 										}}
 										auto
 										rounded
+										shadow
 										color={'error'}>
 										<Text
 											css={{ color: 'inherit' }}
@@ -199,17 +207,36 @@ const NftDrop = () => {
 						</Row>
 					</Card.Footer>
 				</Card>
-			) : null}
-			<Spacer y={2} />
-			<FileUploader
-				multiple={false}
-				label={'Cliquez ou déposez une image ici'}
-				required={true}
-				hoverTitle={'Déposez ici'}
-				handleChange={handleImageChange}
-				name="file"
-				types={['JPG', 'PNG']}
-			/>
+			) : (
+				<FileUploader
+					multiple={false}
+					/* label={'Cliquez ou déposez une image ici'}
+                        hoverTitle={'Déposez ici'} */
+					required={true}
+					handleChange={handleImageChange}
+					name="file"
+					types={['JPG', 'PNG']}
+					onTypeError={defaultErrorModal}>
+					<Card
+						isPressable
+						isHoverable
+						variant="bordered">
+						<Card.Body>
+							<Container
+								display={'flex'}
+								direction={'row'}
+								alignItems={'center'}
+								justify={'center'}>
+								<Text size={'$3xl'}>
+									<ImUpload />
+								</Text>
+								<Spacer x={1} />
+								<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+							</Container>
+						</Card.Body>
+					</Card>
+				</FileUploader>
+			)}
 		</FormWrapper>,
 		<FormWrapper
 			title={'three'}
