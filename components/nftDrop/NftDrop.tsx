@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Container, Grid, Input, Loading, Modal, Progress, Row, Spacer, Text } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
-import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload} from '@thirdweb-dev/react'
+import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../../models/interfaces/createNFTFormData'
 import { InputName } from '../../models/enum/createNFTInputs'
@@ -18,15 +18,15 @@ const NftDrop = () => {
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<formDataType>()
-    const [file, setFile] = useState<File>();
-    const [imageUrl, setImageUrl] = useState<string>();
-    const { mutateAsync: upload } = useStorageUpload();
+	const [file, setFile] = useState<File>()
+	const [imageUrl, setImageUrl] = useState<string>()
+	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
 	const [{ data: userWallet }] = useConnect()
 	const connectedAddress = useAddress()
 	const [visible, setVisible] = useState(false)
 	const isMismatched = useNetworkMismatch()
-	const [switchNetwork] = useNetwork()
+	const [, switchNetwork] = useNetwork()
 	const handler = () => {
 		setVisible(true)
 	}
@@ -36,14 +36,14 @@ const NftDrop = () => {
 		console.log('closed')
 	}
 
-    const uploadToIpfs = async () => {
-        const uploadUrl = await upload({
-            data: [file],
-            options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
-        });
-        setImageUrl(uploadUrl[0])
-        console.log(uploadUrl);
-    }
+	const uploadToIpfs = async () => {
+		const uploadUrl = await upload({
+			data: [file],
+			options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
+		})
+		setImageUrl(uploadUrl[0])
+		console.log(uploadUrl)
+	}
 
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
@@ -60,7 +60,7 @@ const NftDrop = () => {
 				return
 			}
 
-			await createNFTicket(formData, sdkAdmin, connectedAddress,imageUrl)
+			await createNFTicket(formData, sdkAdmin, connectedAddress, imageUrl)
 				.then(() => {
 					void swal(
 						'Bravo !',
@@ -217,8 +217,14 @@ const NftDrop = () => {
 				</Modal.Body>
 			</Modal>
 			{/* <Map /> */}
-            <input type="file" onChange={(e) => {if (e.target.files?.item(0) == null) return; setFile(e.target.files.item(0)!)}} />
-            <button onClick={uploadToIpfs}>Upload</button>
+			<input
+				type="file"
+				onChange={(e) => {
+					if (e.target.files?.item(0) == null) return
+					setFile(e.target.files.item(0)!)
+				}}
+			/>
+			<button onClick={uploadToIpfs}>Upload</button>
 		</>
 	)
 }
