@@ -106,7 +106,10 @@ const NftDrop = () => {
 				underlined
 				clearable
 				{...register(InputName.NAME, { required: true })}
-				onChange={handleChange}
+				onChange={(e) => {
+					searchTerm === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleChange(e)
+				}}
 				label={"Nom de l'évènement *"}
 				status={searchTerm === '' && triedToSubmit ? 'error' : 'default'}
 				color={searchTerm === '' && triedToSubmit ? 'error' : 'default'}
