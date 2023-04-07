@@ -1,6 +1,8 @@
 import React, { type SetStateAction, useState } from 'react'
 import {
 	Button,
+	Card,
+	Col,
 	Container,
 	Grid,
 	Input,
@@ -23,6 +25,7 @@ import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '../../hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
 import { InputName } from '../../models/enum/createNFTInputs'
+import { FileUploader } from 'react-drag-drop-files'
 
 const NftDrop = () => {
 	const {
@@ -30,7 +33,7 @@ const NftDrop = () => {
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<formDataType>()
-	const [file, setFile] = useState<File>()
+	// const [file, setFile] = useState<File>()
 	const [imageUrl, setImageUrl] = useState<string>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setinputValue] = useState<string>('')
@@ -42,6 +45,12 @@ const NftDrop = () => {
 	const [visible, setVisible] = useState(false)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
+
+	const [file, setFile] = useState<File>()
+	const handleImageChange = (file: File) => {
+		console.log(file)
+		setFile(file)
+	}
 
 	const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
 		setinputValue(e.target.value)
@@ -108,7 +117,7 @@ const NftDrop = () => {
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
 		<FormWrapper
 			title={"Description de l'évènement"}
-			key={'first-step'}>
+			key={'description-step'}>
 			<Input
 				underlined
 				clearable
@@ -136,9 +145,71 @@ const NftDrop = () => {
 			/>
 		</FormWrapper>,
 		<FormWrapper
-			title={''}
-			key={'two'}>
-			TWO CONTENT
+			title={"Affiche de l'évènement"}
+			key={'image-step'}>
+			{file != null ? (
+				<Card>
+					<Card.Image
+						src={URL.createObjectURL(file)}
+						objectFit="cover"
+						width="100%"
+						height={340}
+						alt="Card image background"
+					/>
+					<Card.Footer
+						isBlurred
+						css={{
+							position: 'absolute',
+							bgBlur: '#0f111466',
+							borderTop: '$borderWeights$light solid $gray800',
+							bottom: 0,
+							zIndex: 1,
+						}}>
+						<Row>
+							<Col>
+								<Row>
+									<Col>
+										<Text
+											color="#d1d1d1"
+											size={12}>
+											${file.name}
+										</Text>
+									</Col>
+								</Row>
+							</Col>
+							<Col>
+								<Row justify="flex-end">
+									<Button
+										onClick={() => {
+											setFile(null)
+										}}
+										auto
+										rounded
+										color={'error'}>
+										<Text
+											css={{ color: 'inherit' }}
+											size={12}
+											weight="bold"
+											transform="uppercase">
+											Supprimer
+										</Text>
+									</Button>
+								</Row>
+							</Col>
+						</Row>
+					</Card.Footer>
+				</Card>
+			) : null}
+			<Spacer y={2} />
+			<FileUploader
+				multiple={false}
+				label={'Cliquez ou déposez une image ici'}
+				required={true}
+				hoverTitle={'Déposez ici'}
+				handleChange={handleImageChange}
+				name="file"
+				types={['JPG', 'PNG']}
+			/>
 		</FormWrapper>,
 		<FormWrapper
 			title={'three'}
