@@ -33,6 +33,7 @@ const NftDrop = () => {
 	const [file, setFile] = useState<File>()
 	const [imageUrl, setImageUrl] = useState<string>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
+	const [inputValue, setinputValue] = useState<string>('')
 
 	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
@@ -41,6 +42,11 @@ const NftDrop = () => {
 	const [visible, setVisible] = useState(false)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
+
+	const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
+		setinputValue(e.target.value)
+	}
+
 	const handler = () => {
 		setVisible(true)
 	}
@@ -61,8 +67,15 @@ const NftDrop = () => {
 
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
-			nextStep()
-			setTriedToSubmit(false)
+			await nextStep()
+				.then(() => {
+					setTriedToSubmit(false)
+					setinputValue('')
+				})
+				.catch((e) => {
+					defaultErrorModal()
+					console.error(e)
+				})
 		} else {
 			if (!userWallet.connected) {
 				noConnectedWalletErrorAlert()
@@ -92,12 +105,6 @@ const NftDrop = () => {
 		}
 	}
 
-	const [searchTerm, setSearchTerm] = useState<string>('')
-
-	const handleChange = (e: { target: { value: SetStateAction<string> } }) => {
-		setSearchTerm(e.target.value)
-	}
-
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
 		<FormWrapper
 			title={"Description de l'évènement"}
@@ -107,13 +114,13 @@ const NftDrop = () => {
 				clearable
 				{...register(InputName.NAME, { required: true })}
 				onChange={(e) => {
-					searchTerm === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleChange(e)
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
 				}}
 				label={"Nom de l'évènement *"}
-				status={searchTerm === '' && triedToSubmit ? 'error' : 'default'}
-				color={searchTerm === '' && triedToSubmit ? 'error' : 'default'}
-				helperText={searchTerm === '' && triedToSubmit ? 'Champ requis' : ''}
+				status={inputValue === '' && triedToSubmit ? 'error' : 'default'}
+				color={inputValue === '' && triedToSubmit ? 'error' : 'default'}
+				helperText={inputValue === '' && triedToSubmit ? 'Champ requis' : ''}
 				onClearClick={() => {
 					setTriedToSubmit(false)
 				}}
@@ -129,7 +136,7 @@ const NftDrop = () => {
 			/>
 		</FormWrapper>,
 		<FormWrapper
-			title={'Two'}
+			title={''}
 			key={'two'}>
 			TWO CONTENT
 		</FormWrapper>,
