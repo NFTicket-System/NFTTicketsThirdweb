@@ -1,5 +1,17 @@
 import React, { type SetStateAction, useState } from 'react'
-import { Button, Container, Grid, Input, Loading, Modal, Progress, Row, Spacer, Textarea } from '@nextui-org/react'
+import {
+	Button,
+	Container,
+	Grid,
+	Input,
+	Loading,
+	Modal,
+	Progress,
+	Row,
+	Spacer,
+	Text,
+	Textarea,
+} from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
@@ -20,6 +32,8 @@ const NftDrop = () => {
 	} = useForm<formDataType>()
 	const [file, setFile] = useState<File>()
 	const [imageUrl, setImageUrl] = useState<string>()
+	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
+
 	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
 	const [{ data: userWallet }] = useConnect()
@@ -48,6 +62,7 @@ const NftDrop = () => {
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
 			nextStep()
+			setTriedToSubmit(false)
 		} else {
 			if (!userWallet.connected) {
 				noConnectedWalletErrorAlert()
@@ -85,22 +100,27 @@ const NftDrop = () => {
 
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
 		<FormWrapper
-			title={"Décription de l'évènement"}
+			title={"Description de l'évènement"}
 			key={'first-step'}>
 			<Input
-				clearable
 				underlined
-				labelPlaceholder="Nom de l'évènement *"
+				clearable
 				{...register(InputName.NAME, { required: true })}
-				color="primary"
 				onChange={handleChange}
-				helperText={searchTerm === '' ? 'Champ requis' : ''}
+				label={"Nom de l'évènement *"}
+				status={searchTerm === '' && triedToSubmit ? 'error' : 'default'}
+				color={searchTerm === '' && triedToSubmit ? 'error' : 'default'}
+				helperText={searchTerm === '' && triedToSubmit ? 'Champ requis' : ''}
+				onClearClick={() => {
+					setTriedToSubmit(false)
+				}}
+				helperColor="error"
 			/>
 			<Spacer y={4} />
+			<Text>Description de l&apos;évènement</Text>
 			<Textarea
 				bordered
 				color="primary"
-				labelPlaceholder="Description de l'évènement"
 				helperText={'Décrivez votre évènement en quelques mots'}
 				{...register(InputName.DESCRIPTION)}
 			/>
@@ -138,7 +158,13 @@ const NftDrop = () => {
 							rounded
 							flat>
 							{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
-							<Button type={'submit'}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
+							<Button
+								onClick={() => {
+									setTriedToSubmit(true)
+								}}
+								type={'submit'}>
+								{isLastStep ? 'Mettre en vente' : 'Suivant'}
+							</Button>
 						</Button.Group>
 					</Row>
 				</Container>
