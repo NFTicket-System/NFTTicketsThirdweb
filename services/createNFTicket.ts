@@ -4,7 +4,8 @@ import { type formDataType } from '../models/interfaces/createNFTFormData'
 export async function createNFTicket(
 	formData: formDataType,
 	sdkAdmin: ThirdwebSDK,
-	connectedAddress: string | undefined
+	connectedAddress: string | undefined,
+    imageUrl:string | undefined
 ) {
 	const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection({
 		name: formData.name,
@@ -19,7 +20,7 @@ export async function createNFTicket(
 	const metaData = {
 		name: formData.name,
 		description: formData.description,
-		image: formData.image,
+		image: imageUrl,
 		properties: {
 			hourEnd: formData.hourEnd,
 			location: formData.location,
@@ -48,6 +49,7 @@ export async function createNFTicket(
 			tokenId: nftObject !== null ? nftObject.id : 0,
 			// when should the listing open up for offers
 			startTimestamp: new Date(),
+
 			// how long the listing will be open for
 			listingDurationInSeconds: 86400,
 			// how many of the asset you want to list

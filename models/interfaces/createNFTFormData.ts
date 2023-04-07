@@ -7,5 +7,4 @@ export interface formDataType {
 	hourStart: string
 	hourEnd: string
 	location: string
-	image: string
 }
