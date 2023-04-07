@@ -48,33 +48,32 @@ const NftDrop = () => {
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
 			nextStep()
-		}
-		handler()
-
-		if (!userWallet.connected) {
-			noConnectedWalletErrorAlert()
 		} else {
-			if (isMismatched) {
+			if (!userWallet.connected) {
+				noConnectedWalletErrorAlert()
+			} else {
+				if (isMismatched) {
+					closeHandler()
+					await switchNetwork?.(ChainId.Mumbai)
+					return
+				}
+				handler()
+				await createNFTicket(formData, sdkAdmin, connectedAddress, imageUrl)
+					.then(() => {
+						void swal(
+							'Bravo !',
+							formData.count > 1
+								? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
+								: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
+							'success'
+						)
+					})
+					.catch((e) => {
+						defaultErrorModal()
+						console.error(e)
+					})
 				closeHandler()
-				await switchNetwork?.(ChainId.Mumbai)
-				return
 			}
-
-			await createNFTicket(formData, sdkAdmin, connectedAddress, imageUrl)
-				.then(() => {
-					void swal(
-						'Bravo !',
-						formData.count > 1
-							? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
-							: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
-						'success'
-					)
-				})
-				.catch((e) => {
-					defaultErrorModal()
-					console.error(e)
-				})
-			closeHandler()
 		}
 	}
 
@@ -85,9 +84,9 @@ const NftDrop = () => {
 	}
 
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
-		<Grid.Container
-			key={'first-step'}
-			direction={'column'}>
+		<FormWrapper
+			title={"Décription de l'évènement"}
+			key={'first-step'}>
 			<Input
 				clearable
 				underlined
@@ -105,11 +104,6 @@ const NftDrop = () => {
 				helperText={'Décrivez votre évènement en quelques mots'}
 				{...register(InputName.DESCRIPTION)}
 			/>
-		</Grid.Container>,
-		<FormWrapper
-			title={'One'}
-			key={'one'}>
-			ONE CONTENT
 		</FormWrapper>,
 		<FormWrapper
 			title={'Two'}
@@ -117,13 +111,8 @@ const NftDrop = () => {
 			TWO CONTENT
 		</FormWrapper>,
 		<FormWrapper
-			title={'Two'}
-			key={'two'}>
-			TWO CONTENT
-		</FormWrapper>,
-		<FormWrapper
-			title={'Two'}
-			key={'two'}>
+			title={'three'}
+			key={'three'}>
 			TWO CONTENT
 		</FormWrapper>,
 	])
@@ -141,7 +130,7 @@ const NftDrop = () => {
 						color="primary"
 						status="primary"
 					/>
-					<Spacer y={2}></Spacer>
+					<Spacer y={4} />
 					{step}
 					<Spacer y={2} />
 					<Row justify={'flex-end'}>
@@ -209,7 +198,6 @@ const NftDrop = () => {
 					labelPlaceholder="Image"
 					{...register(InputName.IMAGE, { required: true })}
 				/> */}
-				<Spacer y={2} />
 				{/* <Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button> */}
 			</form>
 			<Modal
@@ -225,14 +213,14 @@ const NftDrop = () => {
 				</Modal.Body>
 			</Modal>
 			{/* <Map /> */}
-			<input
+			{/*			<input
 				type="file"
 				onChange={(e) => {
 					if (e.target.files?.item(0) == null) return
 					setFile(e.target.files.item(0)!)
 				}}
 			/>
-			<button onClick={uploadToIpfs}>Upload</button>
+			<button onClick={uploadToIpfs}>Upload</button> */}
 		</>
 	)
 }
