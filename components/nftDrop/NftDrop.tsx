@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Grid, Input, Loading, Modal, Progress, Spacer, Text } from '@nextui-org/react'
+import { Button, Container, Grid, Input, Loading, Modal, Progress, Spacer, Text } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
@@ -91,107 +91,121 @@ const NftDrop = () => {
 
 	return (
 		<>
-			<Grid justify={'center'}>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<Text>
-						{currentStepIndex + 1} / {steps.length}
-					</Text>
-					<Progress
-						value={((currentStepIndex + 1) * 100) / steps.length}
-						color="primary"
-						status="primary"
-					/>
-					{step}
+			<Container
+				sm
+				display={'flex'}
+				direction={'column'}
+				alignItems={'center'}>
+				<Progress
+					value={((currentStepIndex + 1) * 100) / steps.length}
+					color="primary"
+					status="primary"
+				/>
+				<Text>
+					{currentStepIndex + 1} / {steps.length}
+				</Text>
+			</Container>
+			<Spacer y={2}></Spacer>
+			<Container
+				sm
+				display={'flex'}
+				direction={'row'}
+				justify={'flex-end'}>
+				<Button.Group>
 					{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
 					<Button onClick={nextStep}>{isLastStep ? 'Mettre en vente' : 'Suivant'}</Button>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Nom de l'évènement"
-						{...register(InputName.NAME, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Description de l'évènement"
-						{...register(InputName.DESCRIPTION, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Date"
-						{...register(InputName.DATE, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Count"
-						{...register(InputName.COUNT, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Price"
-						{...register(InputName.PRICE, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Hour start"
-						{...register(InputName.HOUR_START, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Hour end"
-						{...register(InputName.HOUR_END, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Location"
-						{...register(InputName.LOCATION, { required: true })}
-					/>
-					<Input
-						size={'md'}
-						clearable
-						bordered
-						color={'primary'}
-						labelPlaceholder="Image"
-						{...register(InputName.IMAGE, { required: true })}
-					/>
-					<Spacer y={2} />
-					<Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button>
-				</form>
-				<Modal
-					open={visible}
-					fullScreen>
-					<Modal.Body>
-						<Grid.Container
-							justify={'center'}
-							alignItems={'center'}
-							css={{ height: '100%' }}>
-							<Loading size={'xl'} />
-						</Grid.Container>
-					</Modal.Body>
-				</Modal>
-			</Grid>
+				</Button.Group>
+			</Container>
+			{step}
+
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Nom de l'évènement"
+					{...register(InputName.NAME, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Description de l'évènement"
+					{...register(InputName.DESCRIPTION, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Date"
+					{...register(InputName.DATE, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Count"
+					{...register(InputName.COUNT, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Price"
+					{...register(InputName.PRICE, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Hour start"
+					{...register(InputName.HOUR_START, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Hour end"
+					{...register(InputName.HOUR_END, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Location"
+					{...register(InputName.LOCATION, { required: true })}
+				/>
+				<Input
+					size={'md'}
+					clearable
+					bordered
+					color={'primary'}
+					labelPlaceholder="Image"
+					{...register(InputName.IMAGE, { required: true })}
+				/>
+				<Spacer y={2} />
+				<Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button>
+			</form>
+			<Modal
+				open={visible}
+				fullScreen>
+				<Modal.Body>
+					<Grid.Container
+						justify={'center'}
+						alignItems={'center'}
+						css={{ height: '100%' }}>
+						<Loading size={'xl'} />
+					</Grid.Container>
+				</Modal.Body>
+			</Modal>
 			{/* <Map /> */}
 		</>
 	)
