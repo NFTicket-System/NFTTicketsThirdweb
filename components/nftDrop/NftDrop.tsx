@@ -1,6 +1,8 @@
 import React, { type SetStateAction, useState } from 'react'
 import {
 	Button,
+	Card,
+	Col,
 	Container,
 	Grid,
 	Input,
@@ -11,6 +13,7 @@ import {
 	Spacer,
 	Text,
 	Textarea,
+	useTheme,
 } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
@@ -23,14 +26,18 @@ import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '../../hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
 import { InputName } from '../../models/enum/createNFTInputs'
+import { FileUploader } from 'react-drag-drop-files'
+import styles from '../../styles/NftDrop.module.scss'
+import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 
 const NftDrop = () => {
+	const { isDark } = useTheme()
 	const {
 		register,
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<formDataType>()
-	const [file, setFile] = useState<File>()
+	// const [file, setFile] = useState<File>()
 	const [imageUrl, setImageUrl] = useState<string>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setinputValue] = useState<string>('')
@@ -43,6 +50,11 @@ const NftDrop = () => {
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
 
+	const [file, setFile] = useState<File | null>()
+	const handleImageChange = (file: File) => {
+		setFile(file)
+	}
+
 	const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
 		setinputValue(e.target.value)
 	}
@@ -53,7 +65,6 @@ const NftDrop = () => {
 
 	const closeHandler = () => {
 		setVisible(false)
-		console.log('closed')
 	}
 
 	const uploadToIpfs = async () => {
@@ -108,7 +119,7 @@ const NftDrop = () => {
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
 		<FormWrapper
 			title={"Description de l'évènement"}
-			key={'first-step'}>
+			key={'description-step'}>
 			<Input
 				underlined
 				clearable
@@ -130,15 +141,110 @@ const NftDrop = () => {
 			<Text>Description de l&apos;évènement</Text>
 			<Textarea
 				bordered
-				color="primary"
+				color="default"
 				helperText={'Décrivez votre évènement en quelques mots'}
 				{...register(InputName.DESCRIPTION)}
 			/>
 		</FormWrapper>,
 		<FormWrapper
-			title={''}
-			key={'two'}>
-			TWO CONTENT
+			title={"Affiche de l'évènement"}
+			key={'image-step'}>
+			{file != null ? (
+				<Card>
+					<Card.Image
+						src={URL.createObjectURL(file)}
+						objectFit="cover"
+						width="100%"
+						height={340}
+						alt="Card image background"
+					/>
+					<Card.Footer
+						isBlurred
+						css={
+							isDark === true
+								? {
+										position: 'absolute',
+										bgBlur: '#0f111466',
+										borderTop: '$borderWeights$light solid $gray800',
+										bottom: 0,
+										zIndex: 1,
+								  }
+								: {
+										position: 'absolute',
+										bgBlur: '#ffffff66',
+										borderTop: '$borderWeights$light solid rgba(255, 255, 255, 0.2)',
+										bottom: 0,
+										zIndex: 1,
+								  }
+						}>
+						<Row>
+							<Col>
+								<Text
+									color={isDark === true ? '#d1d1d1' : '#000'}
+									size={'$xl2'}>
+									${file.name}
+								</Text>
+							</Col>
+							<Col>
+								<Row justify="flex-end">
+									<Button
+										onClick={() => {
+											setFile(null)
+										}}
+										auto
+										rounded
+										shadow
+										color={'error'}>
+										<Text
+											css={{ color: 'inherit' }}
+											size={12}
+											weight="bold"
+											transform="uppercase">
+											Supprimer
+										</Text>
+									</Button>
+								</Row>
+							</Col>
+						</Row>
+					</Card.Footer>
+				</Card>
+			) : (
+				<FileUploader
+					multiple={false}
+					classes={styles.drop_area}
+					handleChange={handleImageChange}
+					name="file"
+					types={['JPG', 'PNG']}
+					onTypeError={defaultErrorModal}>
+					<Card
+						isPressable
+						isHoverable
+						variant="bordered">
+						<Card.Body>
+							<Container
+								display={'flex'}
+								direction={'row'}
+								alignItems={'center'}
+								justify={'center'}>
+								<Text size={'$3xl'}>
+									<RiImageAddFill />
+								</Text>
+								<Spacer x={1} />
+								<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+							</Container>
+							<Container
+								justify={'center'}
+								display={'flex'}>
+								<Text
+									size="$xs"
+									color={'secondary'}>
+									Formats acceptés : JPG et PNG
+								</Text>
+							</Container>
+						</Card.Body>
+					</Card>
+				</FileUploader>
+			)}
 		</FormWrapper>,
 		<FormWrapper
 			title={'three'}
