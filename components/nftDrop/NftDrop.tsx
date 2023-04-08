@@ -212,7 +212,6 @@ const NftDrop = () => {
 				<FileUploader
 					multiple={false}
 					classes={styles.drop_area}
-					required={true}
 					handleChange={handleImageChange}
 					name="file"
 					types={['JPG', 'PNG']}
@@ -232,6 +231,15 @@ const NftDrop = () => {
 								</Text>
 								<Spacer x={1} />
 								<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+							</Container>
+							<Container
+								justify={'center'}
+								display={'flex'}>
+								<Text
+									size="$xs"
+									color={'secondary'}>
+									Formats acceptés : JPG et PNG
+								</Text>
 							</Container>
 						</Card.Body>
 					</Card>
