@@ -27,7 +27,8 @@ import { useMultiStepForm } from '../../hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
 import { InputName } from '../../models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
-import { ImUpload } from '@react-icons/all-files/im/ImUpload'
+import styles from '../../styles/NftDrop.module.scss'
+import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 
 const NftDrop = () => {
 	const { isDark } = useTheme()
@@ -210,8 +211,7 @@ const NftDrop = () => {
 			) : (
 				<FileUploader
 					multiple={false}
-					/* label={'Cliquez ou déposez une image ici'}
-                        hoverTitle={'Déposez ici'} */
+					classes={styles.drop_area}
 					required={true}
 					handleChange={handleImageChange}
 					name="file"
@@ -228,7 +228,7 @@ const NftDrop = () => {
 								alignItems={'center'}
 								justify={'center'}>
 								<Text size={'$3xl'}>
-									<ImUpload />
+									<RiImageAddFill />
 								</Text>
 								<Spacer x={1} />
 								<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>

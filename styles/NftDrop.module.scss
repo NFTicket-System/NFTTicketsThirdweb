@@ -1,0 +1,5 @@
+.drop_area {
+	&:focus-within {
+		outline: unset !important;
+	}
+}
