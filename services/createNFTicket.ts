@@ -1,6 +1,26 @@
 import { NATIVE_TOKEN_ADDRESS, type ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../models/interfaces/createNFTFormData'
 
+export function createMetadatas( formData: formDataType, imageUrl: string | undefined ) {
+    const metaData = {
+        name: formData.name,
+        description: formData.description,
+        image: imageUrl,
+        properties: {
+            hourEnd: formData.hourEnd,
+            location: formData.location,
+            hourStart: formData.hourStart,
+            date: formData.date,
+        },
+    }
+    const metaDatas = []
+
+    for ( let i = 0; i < formData.count; i++ ) {
+        metaDatas.push( metaData )
+    }
+    return metaDatas;
+}
+
 export async function createNFTicket(
 	formData: formDataType,
 	sdkAdmin: ThirdwebSDK,
@@ -17,24 +37,9 @@ export async function createNFTicket(
 
 	console.log('CONTRACT')
 
-	const metaData = {
-		name: formData.name,
-		description: formData.description,
-		image: imageUrl,
-		properties: {
-			hourEnd: formData.hourEnd,
-			location: formData.location,
-			hourStart: formData.hourStart,
-			date: formData.date,
-		},
-	}
-	const metaDatas = []
+    const metaDatas = createMetadatas( formData, imageUrl );
 
-	for (let i = 0; i < formData.count; i++) {
-		metaDatas.push(metaData)
-	}
-
-	const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
+    const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
 	console.log('MINT')
 
 	for (const nftObject of mintTransaction) {
