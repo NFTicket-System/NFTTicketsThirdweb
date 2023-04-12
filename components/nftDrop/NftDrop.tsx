@@ -223,33 +223,34 @@ const NftDrop = () => {
 						handleChange={handleImageChange}
 						name="file"
 						types={['JPG', 'PNG']}
+						classes={styles.drop_area}
 						onTypeError={defaultErrorModal}>
 						<Card
 							isPressable
 							isHoverable
 							variant="bordered">
-                            <Card.Body>
-                                <Container
-                                        display={'flex'}
-                                        direction={'row'}
-                                        alignItems={'center'}
-                                        justify={'center'}>
-                                    <Text size={'$3xl'}>
-                                        <RiImageAddFill />
-                                    </Text>
-                                    <Spacer x={1} />
-                                    <Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
-                                </Container>
-                                <Container
-                                        justify={'center'}
-                                        display={'flex'}>
-                                    <Text
-                                            size="$xs"
-                                            color={'secondary'}>
-                                        Formats acceptés : JPG et PNG
-                                    </Text>
-                                </Container>
-                            </Card.Body>
+							<Card.Body>
+								<Container
+									display={'flex'}
+									direction={'row'}
+									alignItems={'center'}
+									justify={'center'}>
+									<Text size={'$3xl'}>
+										<RiImageAddFill />
+									</Text>
+									<Spacer x={1} />
+									<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+								</Container>
+								<Container
+									justify={'center'}
+									display={'flex'}>
+									<Text
+										size="$xs"
+										color={'secondary'}>
+										Formats acceptés : JPG et PNG
+									</Text>
+								</Container>
+							</Card.Body>
 						</Card>
 					</FileUploader>
 
