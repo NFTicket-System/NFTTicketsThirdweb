@@ -122,7 +122,9 @@ const NftDrop = () => {
 			<Input
 				underlined
 				clearable
-				{...register(InputName.NAME, { required: true })}
+				type={'text'}
+				required
+				{...register(InputName.NAME)}
 				onChange={(e) => {
 					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
 					handleInputChange(e)
@@ -208,34 +210,59 @@ const NftDrop = () => {
 					</Card.Footer>
 				</Card>
 			) : (
-				<FileUploader
-					multiple={false}
-					/* label={'Cliquez ou déposez une image ici'}
-                        hoverTitle={'Déposez ici'} */
-					required={true}
-					handleChange={handleImageChange}
-					name="file"
-					types={['JPG', 'PNG']}
-					onTypeError={defaultErrorModal}>
-					<Card
-						isPressable
-						isHoverable
-						variant="bordered">
-						<Card.Body>
-							<Container
-								display={'flex'}
-								direction={'row'}
-								alignItems={'center'}
-								justify={'center'}>
-								<Text size={'$3xl'}>
-									<ImUpload />
-								</Text>
-								<Spacer x={1} />
-								<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
-							</Container>
-						</Card.Body>
-					</Card>
-				</FileUploader>
+				<>
+					<FileUploader
+						multiple={false}
+						/* label={'Cliquez ou déposez une image ici'}
+                                    hoverTitle={'Déposez ici'} */
+						required={true}
+						handleChange={handleImageChange}
+						name="file"
+						types={['JPG', 'PNG']}
+						onTypeError={defaultErrorModal}>
+						<Card
+							isPressable
+							isHoverable
+							variant="bordered">
+							<Card.Body>
+								<Container
+									display={'flex'}
+									direction={'row'}
+									alignItems={'center'}
+									justify={'center'}>
+									<Text size={'$3xl'}>
+										<ImUpload />
+									</Text>
+									<Spacer x={1} />
+									<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+								</Container>
+							</Card.Body>
+						</Card>
+					</FileUploader>
+
+					{file === null && triedToSubmit ? (
+						<>
+							<Spacer y={1} />
+							<Button
+								flat
+								color="error">
+								Veuillez choisir votre
+							</Button>
+
+							{/* <Card variant="flat">
+								<Card.Body>
+									<Container
+										display={'flex'}
+										direction={'row'}
+										alignItems={'center'}
+										justify={'center'}>
+										<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+									</Container>
+								</Card.Body>
+							</Card> */}
+						</>
+					) : null}
+				</>
 			)}
 		</FormWrapper>,
 		<FormWrapper
