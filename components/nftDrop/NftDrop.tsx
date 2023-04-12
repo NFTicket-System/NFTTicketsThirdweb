@@ -27,7 +27,8 @@ import { useMultiStepForm } from '../../hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
 import { InputName } from '../../models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
-import { ImUpload } from '@react-icons/all-files/im/ImUpload'
+import styles from '../../styles/create-event/NftDrop.module.scss'
+import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 
 const NftDrop = () => {
 	const { isDark } = useTheme()
@@ -116,6 +117,7 @@ const NftDrop = () => {
 	}
 
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
+		/* DESCRIPTION START */
 		<FormWrapper
 			title={"Description de l'évènement"}
 			key={'description-step'}>
@@ -147,6 +149,8 @@ const NftDrop = () => {
 				{...register(InputName.DESCRIPTION)}
 			/>
 		</FormWrapper>,
+		/* DESCRIPTION END */
+		/* IMAGE START */
 		<FormWrapper
 			title={"Affiche de l'évènement"}
 			key={'image-step'}>
@@ -224,19 +228,28 @@ const NftDrop = () => {
 							isPressable
 							isHoverable
 							variant="bordered">
-							<Card.Body>
-								<Container
-									display={'flex'}
-									direction={'row'}
-									alignItems={'center'}
-									justify={'center'}>
-									<Text size={'$3xl'}>
-										<ImUpload />
-									</Text>
-									<Spacer x={1} />
-									<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
-								</Container>
-							</Card.Body>
+                            <Card.Body>
+                                <Container
+                                        display={'flex'}
+                                        direction={'row'}
+                                        alignItems={'center'}
+                                        justify={'center'}>
+                                    <Text size={'$3xl'}>
+                                        <RiImageAddFill />
+                                    </Text>
+                                    <Spacer x={1} />
+                                    <Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
+                                </Container>
+                                <Container
+                                        justify={'center'}
+                                        display={'flex'}>
+                                    <Text
+                                            size="$xs"
+                                            color={'secondary'}>
+                                        Formats acceptés : JPG et PNG
+                                    </Text>
+                                </Container>
+                            </Card.Body>
 						</Card>
 					</FileUploader>
 
@@ -265,10 +278,24 @@ const NftDrop = () => {
 				</>
 			)}
 		</FormWrapper>,
+		/* IMAGE END */
+
 		<FormWrapper
-			title={'three'}
-			key={'three'}>
-			TWO CONTENT
+			title={'Dates et heures'}
+			key={'dates-step'}>
+			<Input
+				/*				status={inputValue === '' && triedToSubmit ? 'error' : 'default'}
+				color={inputValue === '' && triedToSubmit ? 'error' : 'default'}
+				helperText={inputValue === '' && triedToSubmit ? 'Champ requis' : ''} */
+				/*		onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}} */
+				clearable
+				underlined
+				label={'Date de début *'}
+				{...register(InputName.DATE)}
+			/>
 		</FormWrapper>,
 	])
 
