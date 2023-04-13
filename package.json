@@ -32,6 +32,7 @@
     "@thirdweb-dev/auth": "^3.0.0",
     "@thirdweb-dev/react": "^3.7.0",
     "@thirdweb-dev/sdk": "^3.7.0",
+    "babel-loader": "^9.1.2",
     "ethers": "^5.7.2",
     "leaflet": "^1.9.3",
     "next": "12.3.0",
@@ -43,6 +44,7 @@
     "react-icons": "^4.8.0",
     "react-leaflet": "^4.2.1",
     "react-multi-carousel": "^2.8.2",
+    "react-refresh": "^0.14.0",
     "react-responsive-carousel": "^3.2.23",
     "react-touch-drag-slider": "^2.2.5",
     "sweetalert": "^2.1.2"
