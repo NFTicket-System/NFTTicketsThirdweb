@@ -375,7 +375,7 @@ const NftDrop = () => {
                             justify={'center'}
                             alignItems={'center'}
                             css={{ height: '100%' }}>
-                        <Text>{creationStep}</Text>
+                        <Text size={50}>{creationStep}</Text>
                     </Grid.Container>
 				</Modal.Body>
 			</Modal>
