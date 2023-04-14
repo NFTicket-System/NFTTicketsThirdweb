@@ -8,4 +8,21 @@ const nextConfig = {
 	},
 }
 
-module.exports = nextConfig
+module.exports = {
+    // ... other configuration options ...
+    webpack: (config) => {
+        // Add babel-loader configuration
+        config.module.rules.push({
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                    presets: ['next/babel'],
+                },
+            },
+        });
+
+        return config;
+    },
+};
