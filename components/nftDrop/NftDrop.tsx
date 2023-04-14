@@ -32,6 +32,8 @@ import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 
 const NftDrop = () => {
 	const { isDark } = useTheme()
+    const [creationStep,setCreationStep] = useState<string>()
+
 	const {
 		register,
 		handleSubmit,
@@ -97,7 +99,7 @@ const NftDrop = () => {
 					return
 				}
 				handler()
-				await createNFTicket(formData, sdkAdmin, connectedAddress, imageUrl)
+				await createNFTicket(formData, sdkAdmin, connectedAddress, imageUrl,setCreationStep)
 					.then(() => {
 						void swal(
 							'Bravo !',
@@ -369,6 +371,12 @@ const NftDrop = () => {
 						css={{ height: '100%' }}>
 						<Loading size={'xl'} />
 					</Grid.Container>
+                    <Grid.Container
+                            justify={'center'}
+                            alignItems={'center'}
+                            css={{ height: '100%' }}>
+                        <Text>{creationStep}</Text>
+                    </Grid.Container>
 				</Modal.Body>
 			</Modal>
 			{/* <Map /> */}

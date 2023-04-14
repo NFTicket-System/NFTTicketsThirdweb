@@ -22,11 +22,13 @@ export function createMetadatas( formData: formDataType, imageUrl: string | unde
 }
 
 export async function createNFTicket(
-	formData: formDataType,
-	sdkAdmin: ThirdwebSDK,
-	connectedAddress: string | undefined,
-    imageUrl:string | undefined
-) {
+    formData: formDataType,
+    sdkAdmin: ThirdwebSDK,
+    connectedAddress: string | undefined,
+    imageUrl: string | undefined
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    , setCreationStep: Function ) {
+    setCreationStep('Création de la collection')
 	const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection({
 		name: formData.name,
 		primary_sale_recipient: connectedAddress ?? '',
@@ -37,10 +39,13 @@ export async function createNFTicket(
 
 	console.log('CONTRACT')
 
+    setCreationStep('Création des NFT')
     const metaDatas = createMetadatas( formData, imageUrl );
 
     const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
 	console.log('MINT')
+
+    setCreationStep('Mise en vente des NFT')
 
 	for (const nftObject of mintTransaction) {
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
@@ -66,6 +71,7 @@ export async function createNFTicket(
 		}
 
 		await marketplace?.direct.createListing(listing)
+
 		console.log('MARKETPLACE')
 	}
 }
