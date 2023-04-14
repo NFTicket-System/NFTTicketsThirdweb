@@ -11,15 +11,13 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
 			isPressable
 			isHoverable
 			variant="bordered">
-			<Card.Body>
-				<Card.Image
-					width="100%"
-					height="100%"
-					src={props.event.imageUrl}
-					alt={props.event.name}
-					objectFit="cover"
-				/>
-			</Card.Body>
+			<Card.Image
+				width="100%"
+				height="100%"
+				src={props.event.urlImage}
+				alt={props.event.libelle}
+				objectFit="cover"
+			/>
 			<Card.Footer
 				isBlurred
 				css={{
@@ -40,7 +38,7 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
 					<Text
 						h4
 						color="white">
-						{props.event.name}
+						{props.event.libelle}
 					</Text>
 				</Col>
 			</Card.Footer>
