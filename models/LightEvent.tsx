@@ -1,12 +1,12 @@
 export class LightEvent {
 
-    constructor(id: number, imageUrl: string, name: string) {
+    constructor(id: number, urlImage: string, libelle: string) {
         this.id = id
-        this.imageUrl = imageUrl
-        this.name = name
+        this.urlImage = urlImage
+        this.libelle = libelle
     }
 
     id: number
-    imageUrl: string
-    name: string
+    urlImage: string
+    libelle: string
 }
