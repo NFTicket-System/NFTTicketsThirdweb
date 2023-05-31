@@ -19,8 +19,6 @@ import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../../models/interfaces/createNFTFormData'
-import swal from 'sweetalert'
-import { createNFTicket } from '../../services/createNFTicket'
 import { noConnectedWalletErrorAlert } from '../../utils/errors/noConnectedWalletErrorAlert'
 import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '../../hooks/useMultiStepForm'
@@ -30,16 +28,18 @@ import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 import { isInputValid, setHelperText } from '../../utils/errors/formCheckValidity'
+import { useRouter } from 'next/router'
+import { createNFTicket } from '../../services/createNFTicket'
+import swal from 'sweetalert'
 
 const NftDrop = () => {
+	const router = useRouter()
 	const { isDark } = useTheme()
 	const {
 		register,
 		handleSubmit,
 		formState: { isSubmitting },
 	} = useForm<formDataType>()
-	// const [file, setFile] = useState<File>()
-	const [imageUrl, setImageUrl] = useState<string>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setInputValue] = useState<string>('')
 
@@ -68,18 +68,17 @@ const NftDrop = () => {
 		setVisible(false)
 	}
 
-	const uploadToIpfs = async () => {
-		const uploadUrl = await upload({
+	const uploadToIpfs = async (): Promise<string> => {
+		const url = await upload({
 			data: [file],
 			options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
 		})
-		setImageUrl(uploadUrl[0])
-		console.log(uploadUrl)
+		console.log(url[0])
+		return url[0]
 	}
 
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
-			console.log('in if')
 			await nextStep()
 				.then(() => {
 					setTriedToSubmit(false)
@@ -90,7 +89,6 @@ const NftDrop = () => {
 					console.error(e)
 				})
 		} else {
-			console.log('in else', formData)
 			if (!userWallet.connected) {
 				noConnectedWalletErrorAlert()
 			} else {
@@ -99,9 +97,14 @@ const NftDrop = () => {
 					await switchNetwork?.(ChainId.Mumbai)
 					return
 				}
+				// show loader modal
 				handler()
-				await createNFTicket(formData, sdkAdmin, connectedAddress, imageUrl)
+				// upload img to ipfs
+				const imgUrl = await uploadToIpfs()
+				// create the ticket
+				await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
 					.then(() => {
+						closeHandler()
 						void swal(
 							'Bravo !',
 							formData.count > 1
@@ -109,12 +112,13 @@ const NftDrop = () => {
 								: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
 							'success'
 						)
+						// router.reload()
 					})
 					.catch((e) => {
+						closeHandler()
 						defaultErrorModal()
 						console.error(e)
 					})
-				closeHandler()
 			}
 		}
 	}
@@ -419,6 +423,7 @@ const NftDrop = () => {
 									Précédent
 								</Button>
 							) : null}
+
 							<Button
 								onClick={() => {
 									setTriedToSubmit(true)
@@ -429,63 +434,6 @@ const NftDrop = () => {
 						</Button.Group>
 					</Row>
 				</Container>
-				{/*			<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Date"
-					{...register(InputName.DATE, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Count"
-					{...register(InputName.COUNT, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Price"
-					{...register(InputName.PRICE, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Hour start"
-					{...register(InputName.HOUR_START, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Hour end"
-					{...register(InputName.HOUR_END, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Location"
-					{...register(InputName.LOCATION, { required: true })}
-				/>
-				<Input
-					size={'md'}
-					clearable
-					bordered
-					color={'primary'}
-					labelPlaceholder="Image"
-					{...register(InputName.IMAGE, { required: true })}
-				/> */}
-				{/* <Button type="submit">{isSubmitting ? 'Loading' : 'Submit'}</Button> */}
 			</form>
 			<Modal
 				open={visible}
@@ -494,20 +442,17 @@ const NftDrop = () => {
 					<Grid.Container
 						justify={'center'}
 						alignItems={'center'}
+						direction={'row'}
 						css={{ height: '100%' }}>
-						<Loading size={'xl'} />
+						<Text h2>Nous ajoutons vos billet à la blockchain</Text>
+						<Spacer x={1} />
+						<Loading
+							type={'points'}
+							size={'xl'}
+						/>
 					</Grid.Container>
 				</Modal.Body>
 			</Modal>
-			{/* <Map /> */}
-			{/*			<input
-				type="file"
-				onChange={(e) => {
-					if (e.target.files?.item(0) == null) return
-					setFile(e.target.files.item(0)!)
-				}}
-			/>
-			<button onClick={uploadToIpfs}>Upload</button> */}
 		</>
 	)
 }
