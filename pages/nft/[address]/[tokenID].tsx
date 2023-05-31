@@ -22,7 +22,10 @@ const NftDetails = () => {
 			<Header></Header>
 			<Container>
 				{isLoading ? (
-					<Row justify="center">
+					<Row
+						justify="center"
+						align={'center'}
+						css={{ height: '50rem' }}>
 						<Loading
 							type="points"
 							size={'lg'}
