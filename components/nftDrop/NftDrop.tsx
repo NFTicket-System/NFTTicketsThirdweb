@@ -29,6 +29,7 @@ import { InputName } from '../../models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
+import { isInputValid, setHelperText } from '../../utils/errors/formCheckValidity'
 
 const NftDrop = () => {
 	const { isDark } = useTheme()
@@ -40,7 +41,7 @@ const NftDrop = () => {
 	// const [file, setFile] = useState<File>()
 	const [imageUrl, setImageUrl] = useState<string>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
-	const [inputValue, setinputValue] = useState<string>('')
+	const [inputValue, setInputValue] = useState<string>('')
 
 	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
@@ -56,7 +57,7 @@ const NftDrop = () => {
 	}
 
 	const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
-		setinputValue(e.target.value)
+		setInputValue(e.target.value)
 	}
 
 	const handler = () => {
@@ -78,16 +79,18 @@ const NftDrop = () => {
 
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
+			console.log('in if')
 			await nextStep()
 				.then(() => {
 					setTriedToSubmit(false)
-					setinputValue('')
+					setInputValue('')
 				})
 				.catch((e) => {
 					defaultErrorModal()
 					console.error(e)
 				})
 		} else {
+			console.log('in else', formData)
 			if (!userWallet.connected) {
 				noConnectedWalletErrorAlert()
 			} else {
@@ -122,23 +125,23 @@ const NftDrop = () => {
 			title={"Description de l'évènement"}
 			key={'description-step'}>
 			<Input
-				underlined
-				clearable
+				{...register(InputName.NAME)}
+				label={"Nom de l'évènement *"}
 				type={'text'}
 				required
-				{...register(InputName.NAME)}
+				clearable
+				underlined
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onClearClick={() => {
+					setTriedToSubmit(false)
+				}}
 				onChange={(e) => {
 					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
 					handleInputChange(e)
 				}}
-				label={"Nom de l'évènement *"}
-				status={inputValue === '' && triedToSubmit ? 'error' : 'default'}
-				color={inputValue === '' && triedToSubmit ? 'error' : 'default'}
-				helperText={inputValue === '' && triedToSubmit ? 'Champ requis' : ''}
-				onClearClick={() => {
-					setTriedToSubmit(false)
-				}}
-				helperColor="error"
 			/>
 			<Spacer y={4} />
 			<Text>Description de l&apos;évènement</Text>
@@ -195,6 +198,7 @@ const NftDrop = () => {
 									<Button
 										onClick={() => {
 											setFile(null)
+											setTriedToSubmit(false)
 										}}
 										auto
 										rounded
@@ -217,8 +221,7 @@ const NftDrop = () => {
 				<>
 					<FileUploader
 						multiple={false}
-						/* label={'Cliquez ou déposez une image ici'}
-                                    hoverTitle={'Déposez ici'} */
+						hoverTitle={'Déposez ici'}
 						required={true}
 						handleChange={handleImageChange}
 						name="file"
@@ -258,46 +261,133 @@ const NftDrop = () => {
 						<>
 							<Spacer y={1} />
 							<Button
-								flat
+								ripple={false}
+								animated={false}
+								bordered
 								color="error">
-								Veuillez choisir votre
+								Veuillez choisir une image pour votre évènement
 							</Button>
-
-							{/* <Card variant="flat">
-								<Card.Body>
-									<Container
-										display={'flex'}
-										direction={'row'}
-										alignItems={'center'}
-										justify={'center'}>
-										<Text>Cliquez ou déposez l&apos;affiche de l&apos;évènement ici</Text>
-									</Container>
-								</Card.Body>
-							</Card> */}
 						</>
 					) : null}
 				</>
 			)}
 		</FormWrapper>,
 		/* IMAGE END */
-
+		/* DATE START */
 		<FormWrapper
 			title={'Dates et heures'}
 			key={'dates-step'}>
 			<Input
-				/*				status={inputValue === '' && triedToSubmit ? 'error' : 'default'}
-				color={inputValue === '' && triedToSubmit ? 'error' : 'default'}
-				helperText={inputValue === '' && triedToSubmit ? 'Champ requis' : ''} */
-				/*		onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
-				}} */
-				clearable
+				{...register(InputName.DATE)}
 				underlined
 				label={'Date de début *'}
-				{...register(InputName.DATE)}
+				required
+				type="date"
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}}
+			/>
+			<Spacer y={2} />
+			<Input
+				underlined
+				label={'Heure de début *'}
+				{...register(InputName.HOUR_START)}
+				required
+				type="time"
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}}
+			/>{' '}
+			<Spacer y={2} />
+			<Input
+				underlined
+				label={'Heure de fin *'}
+				{...register(InputName.HOUR_END)}
+				required
+				type="time"
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}}
 			/>
 		</FormWrapper>,
+		/* DATE END */
+		/* LOCATION START */
+		<FormWrapper
+			title={"Où se déroule votre l'évènement ?"}
+			key={'location-step'}>
+			<Input
+				{...register(InputName.LOCATION)}
+				label={"Adresse de l'évènement *"}
+				type="text"
+				required
+				underlined
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}}
+			/>
+		</FormWrapper>,
+		/* LOCATION END */
+		/* PRICE START */
+		<FormWrapper
+			title={'Prix du billet'}
+			key={'price-count-step'}>
+			<Input
+				{...register(InputName.PRICE)}
+				label={'Prix en € *'}
+				type="number"
+				required
+				underlined
+				initialValue={'0'}
+				min={0}
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}}
+			/>
+			<Spacer y={2} />
+			<Input
+				{...register(InputName.COUNT)}
+				label={'Nombre de billets à mettre en vente *'}
+				type="number"
+				required
+				underlined
+				min={0}
+				initialValue={'1'}
+				status={isInputValid(inputValue, triedToSubmit)}
+				color={isInputValid(inputValue, triedToSubmit)}
+				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperColor="error"
+				onChange={(e) => {
+					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					handleInputChange(e)
+				}}
+			/>
+		</FormWrapper>,
+		/* PRICE END */
 	])
 
 	return (
@@ -320,7 +410,15 @@ const NftDrop = () => {
 						<Button.Group
 							rounded
 							flat>
-							{!isFirstStep ? <Button onClick={previousStep}>Précédent</Button> : null}
+							{!isFirstStep ? (
+								<Button
+									onClick={() => {
+										previousStep()
+										setTriedToSubmit(false)
+									}}>
+									Précédent
+								</Button>
+							) : null}
 							<Button
 								onClick={() => {
 									setTriedToSubmit(true)
