@@ -1,9 +1,10 @@
-import React, { type SetStateAction, useState } from 'react'
+import React, { type ReactNode, type SetStateAction, useState } from 'react'
 import {
 	Button,
 	Card,
 	Col,
 	Container,
+	Dropdown,
 	Grid,
 	Input,
 	Loading,
@@ -31,6 +32,13 @@ import { isInputValid, setHelperText } from '../../utils/errors/formCheckValidit
 import { useRouter } from 'next/router'
 import { createNFTicket } from '../../services/createNFTicket'
 import swal from 'sweetalert'
+import dynamic from 'next/dynamic'
+
+const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
+
+function Marker(props: { position: number[]; children: ReactNode }) {
+	return null
+}
 
 const NftDrop = () => {
 	const router = useRouter()
@@ -334,21 +342,79 @@ const NftDrop = () => {
 		<FormWrapper
 			title={"Où se déroule votre l'évènement ?"}
 			key={'location-step'}>
-			<Input
-				{...register(InputName.LOCATION)}
-				label={"Adresse de l'évènement *"}
-				type="text"
-				required
-				underlined
-				status={isInputValid(inputValue, triedToSubmit)}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
-				helperColor="error"
-				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
-				}}
-			/>
+			<Row
+				align={'flex-end'}
+				justify={'center'}>
+				<Input
+					width={'50%'}
+					{...register(InputName.LOCATION)}
+					label={"Adresse de l'évènement *"}
+					type="text"
+					required
+					status={isInputValid(inputValue, triedToSubmit)}
+					color={isInputValid(inputValue, triedToSubmit)}
+					helperText={setHelperText(inputValue, triedToSubmit)}
+					helperColor="error"
+					onChange={(e) => {
+						inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+						handleInputChange(e)
+					}}
+				/>
+				<Spacer x={1} />
+				<Dropdown placement="bottom-right">
+					<Dropdown.Trigger>
+						<Button>Rechercher</Button>
+					</Dropdown.Trigger>
+					<Dropdown.Menu
+						color="secondary"
+						aria-label="Avatar Actions">
+						<Dropdown.Item
+							key="profile"
+							css={{ height: '$18' }}>
+							<Text
+								b
+								color="inherit"
+								css={{ d: 'flex' }}>
+								Signed in as
+							</Text>
+							<Text
+								b
+								color="inherit"
+								css={{ d: 'flex' }}>
+								zoey@example.com
+							</Text>
+						</Dropdown.Item>
+						<Dropdown.Item
+							key="settings"
+							withDivider>
+							My Settings
+						</Dropdown.Item>
+						<Dropdown.Item key="team_settings">Team Settings</Dropdown.Item>
+						<Dropdown.Item
+							key="analytics"
+							withDivider>
+							Analytics
+						</Dropdown.Item>
+						<Dropdown.Item key="system">System</Dropdown.Item>
+						<Dropdown.Item key="configurations">Configurations</Dropdown.Item>
+						<Dropdown.Item
+							key="help_and_feedback"
+							withDivider>
+							Help & Feedback
+						</Dropdown.Item>
+						<Dropdown.Item
+							key="logout"
+							color="error"
+							withDivider>
+							Log Out
+						</Dropdown.Item>
+					</Dropdown.Menu>
+				</Dropdown>
+			</Row>
+			<Spacer y={2} />
+			<Container style={{ height: '500px', width: '900px' }}>
+				<Map />
+			</Container>
 		</FormWrapper>,
 		/* LOCATION END */
 		/* PRICE START */
@@ -396,7 +462,9 @@ const NftDrop = () => {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form
+				noValidate
+				onSubmit={handleSubmit(onSubmit)}>
 				<Container
 					sm
 					display={'flex'}
