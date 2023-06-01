@@ -7,6 +7,7 @@ import { BigNumber } from 'ethers'
 import Header from '../../../components/header/Header'
 import { buyNft } from '../../../services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '../../../utils/errors/noConnectedWalletErrorAlert'
+import { BuyWithStripe } from '../../../services/buyWithStripe'
 
 const NftDetails = () => {
 	const connectedAddress = useAddress()
@@ -127,6 +128,22 @@ const NftDetails = () => {
 																isMismatched,
 																switchNetwork,
 																marketplace,
+														  })
+												}}
+												size={'lg'}
+												shadow
+												color={'primary'}
+												auto>
+												Commander
+											</Button>
+											<Button
+												onPress={async () => {
+													connectedAddress === undefined
+														? noConnectedWalletErrorAlert()
+														: await BuyWithStripe({
+																nftId: BigNumber.from(tokenID),
+																marketplace,
+																connectedAddress,
 														  })
 												}}
 												size={'lg'}
