@@ -15,8 +15,8 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
                 <Card.Image 
                     width="100%"
                     height="100%"
-                    src={props.event.imageUrl}
-                    alt={props.event.name}
+                    src={props.event.urlImage}
+                    alt={props.event.libelle}
                     objectFit="cover"/>
             </Card.Body>
             <Card.Footer
@@ -33,7 +33,7 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
                         New
                     </Text>
                     <Text h4 color="white">
-                        { props.event.name }
+                        { props.event.libelle }
                     </Text>
                 </Col>
             </Card.Footer>
