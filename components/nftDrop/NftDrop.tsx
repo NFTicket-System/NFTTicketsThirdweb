@@ -4,7 +4,6 @@ import {
 	Card,
 	Col,
 	Container,
-	Dropdown,
 	Grid,
 	Input,
 	Loading,
@@ -19,20 +18,21 @@ import {
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type formDataType } from '../../models/interfaces/createNFTFormData'
-import { noConnectedWalletErrorAlert } from '../../utils/errors/noConnectedWalletErrorAlert'
-import { defaultErrorModal } from '../../utils/errors/defaultErrorAlert'
-import { useMultiStepForm } from '../../hooks/useMultiStepForm'
+import { type formDataType } from '@/models/interfaces/createNFTFormData'
+import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
+import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
+import { useMultiStepForm } from '@/hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
-import { InputName } from '../../models/enum/createNFTInputs'
+import { InputName } from '@/models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
-import { isInputValid, setHelperText } from '../../utils/errors/formCheckValidity'
+import { isInputValid, setHelperText } from '@/utils/errors/formCheckValidity'
 import { useRouter } from 'next/router'
-import { createNFTicket } from '../../services/createNFTicket'
-import swal from 'sweetalert'
 import dynamic from 'next/dynamic'
+import { formatLocationString, getLocationDetails } from '@/services/getLocationDetails'
+import { type NominatimLocation } from '@/models/interfaces/nominatimLocation'
+import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
@@ -50,6 +50,10 @@ const NftDrop = () => {
 	} = useForm<formDataType>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setInputValue] = useState<string>('')
+
+	const [locationInfo, setLocationInfo] = useState<NominatimLocation[]>([])
+	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
+	const [selectedLocation, setSelectedLocation] = useState<string>('')
 
 	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
@@ -94,7 +98,6 @@ const NftDrop = () => {
 				})
 				.catch((e) => {
 					defaultErrorModal()
-					console.error(e)
 				})
 		} else {
 			if (!userWallet.connected) {
@@ -110,7 +113,8 @@ const NftDrop = () => {
 				// upload img to ipfs
 				const imgUrl = await uploadToIpfs()
 				// create the ticket
-				await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
+
+				/*	await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
 					.then(() => {
 						closeHandler()
 						void swal(
@@ -120,13 +124,13 @@ const NftDrop = () => {
 								: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
 							'success'
 						)
-						// router.reload()
 					})
 					.catch((e) => {
 						closeHandler()
 						defaultErrorModal()
-						console.error(e)
-					})
+					}) */
+
+				console.log(formData)
 			}
 		}
 	}
@@ -351,69 +355,74 @@ const NftDrop = () => {
 					label={"Adresse de l'évènement *"}
 					type="text"
 					required
-					status={isInputValid(inputValue, triedToSubmit)}
-					color={isInputValid(inputValue, triedToSubmit)}
-					helperText={setHelperText(inputValue, triedToSubmit)}
+					status={isInputValid(selectedLocation, triedToSubmit)}
+					color={isInputValid(selectedLocation, triedToSubmit)}
+					helperText={setHelperText(selectedLocation, triedToSubmit)}
 					helperColor="error"
 					onChange={(e) => {
-						inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-						handleInputChange(e)
+						selectedLocation === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+						if (inputValue.length >= 7) {
+							try {
+								getLocationDetails(inputValue)
+									.then((r) => {
+										if (r.length > 1) {
+											setLocationInfo(r)
+										}
+									})
+									.catch((e) => {
+										defaultErrorModal()
+										console.error(e)
+									})
+							} catch (e) {
+								defaultErrorModal()
+								console.error(e)
+							}
+						} else {
+							setLocationInfo([])
+						}
 					}}
 				/>
 				<Spacer x={1} />
-				<Dropdown placement="bottom-right">
-					<Dropdown.Trigger>
-						<Button>Rechercher</Button>
-					</Dropdown.Trigger>
-					<Dropdown.Menu
-						color="secondary"
-						aria-label="Avatar Actions">
-						<Dropdown.Item
-							key="profile"
-							css={{ height: '$18' }}>
-							<Text
-								b
-								color="inherit"
-								css={{ d: 'flex' }}>
-								Signed in as
-							</Text>
-							<Text
-								b
-								color="inherit"
-								css={{ d: 'flex' }}>
-								zoey@example.com
-							</Text>
-						</Dropdown.Item>
-						<Dropdown.Item
-							key="settings"
-							withDivider>
-							My Settings
-						</Dropdown.Item>
-						<Dropdown.Item key="team_settings">Team Settings</Dropdown.Item>
-						<Dropdown.Item
-							key="analytics"
-							withDivider>
-							Analytics
-						</Dropdown.Item>
-						<Dropdown.Item key="system">System</Dropdown.Item>
-						<Dropdown.Item key="configurations">Configurations</Dropdown.Item>
-						<Dropdown.Item
-							key="help_and_feedback"
-							withDivider>
-							Help & Feedback
-						</Dropdown.Item>
-						<Dropdown.Item
-							key="logout"
-							color="error"
-							withDivider>
-							Log Out
-						</Dropdown.Item>
-					</Dropdown.Menu>
-				</Dropdown>
 			</Row>
+			<Spacer y={1} />
+			{locationInfo.length > 0 ? (
+				<Card>
+					<Card.Body>
+						{locationInfo.map((location) => (
+							<Text
+								onClick={() => {
+									const formatedTxt = formatLocationString(location)
+
+									handleInputChange({
+										target: {
+											value: formatedTxt,
+										},
+									})
+									setLocationCoord({ lat: Number(location.lat), lon: Number(location.lon) })
+									setSelectedLocation(formatedTxt)
+								}}
+								css={{
+									'&:hover': {
+										color: '$primary',
+										cursor: 'pointer',
+									},
+								}}
+								key={location.place_id}>
+								<GrLocationPin />
+								{formatLocationString(location)}
+							</Text>
+						))}
+					</Card.Body>
+				</Card>
+			) : (
+				''
+			)}
 			<Spacer y={2} />
-			<Container style={{ height: '500px', width: '900px' }}>
-				<Map />
+			<Container style={{ height: '500px', width: '860px', padding: '0' }}>
+				<Map
+					lat={locationCoord.lat}
+					lon={locationCoord.lon}
+				/>
 			</Container>
 		</FormWrapper>,
 		/* LOCATION END */
@@ -462,9 +471,7 @@ const NftDrop = () => {
 
 	return (
 		<>
-			<form
-				noValidate
-				onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(onSubmit)}>
 				<Container
 					sm
 					display={'flex'}

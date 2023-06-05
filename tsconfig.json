@@ -22,6 +22,10 @@
     "paths": {
       "@/components/*": ["components/*"],
       "@/services/*": ["services/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/models/*": ["models/*"],
+      "@/pages/*": ["pages/*"],
+      "@/utils/*": ["utils/*"],
       "@/assets/*": ["assets/*"],
     }
   },
