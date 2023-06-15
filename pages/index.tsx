@@ -40,7 +40,10 @@ const Home: NextPage = () => {
 	//const [events, setEvents] = useState<Array<LightEvent>>([])
 	const [trendemousEvents, setTrendemousEvents] = useState<Array<LightEvent>>([])
 	const [showEvents, setShowEvents] = useState<Array<LightEvent>>([])
+	const [festivalEvents, setFestivalEvents] = useState<Array<LightEvent>>([])
 	const [concertEvents, setConcertEvents] = useState<Array<LightEvent>>([])
+	const [theatreEvents, setTheatreEvents] = useState<Array<LightEvent>>([])
+	const [humorEvents, setHumorEvents] = useState<Array<LightEvent>>([])
 	const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
 	// const fetchAllEvents = useCallback(async () => {
@@ -57,29 +60,19 @@ const Home: NextPage = () => {
 			response.data.map((item: LightEvent) => result.push(item))
 			setTrendemousEvents(result)
 		})
-		console.log("trendemousEvents")
-		console.log(trendemousEvents)
 	}, [])
 
 	const fetchShowEvents = useCallback(async () => {
 		var result: Array<LightEvent> = []
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Foire').then((response) => {
 			response.data.map((item: LightEvent) => result.push(item))
-			console.log("test")
-			console.log(result)
 			setShowEvents(result)
 		})
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Salon').then((response) => {
 			response.data.map((item: LightEvent) => result.push(item))
-			console.log("test2")
-			console.log(result)
 			result.sort((a, b) => a.libelle.localeCompare(b.libelle))
 			setShowEvents(result)
 		})
-
-		console.log("showEvents")
-		console.log(showEvents)
-
 	}, [])
 
 	const fetchConcertsEvents = useCallback(async () => {
@@ -88,9 +81,30 @@ const Home: NextPage = () => {
 			response.data.map((item: LightEvent) => result.push(item))
 			setConcertEvents(result)
 		})
+	}, [])
 
-		console.log("concertEvents")
-		console.log(concertEvents)
+	const fetchFestivalEvents = useCallback(async () => {
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Festival').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setFestivalEvents(result)
+		})
+	}, [])
+
+	const fetchTheatreEvents = useCallback(async () => {
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Theatre').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setTheatreEvents(result)
+		})
+	}, [])
+
+	const fetchHumorEvents = useCallback(async () => {
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Humor').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setHumorEvents(result)
+		})
 	}, [])
 
 	useEffect(() => {
@@ -104,12 +118,21 @@ const Home: NextPage = () => {
 			// All salon and foire events
 			fetchShowEvents().catch(console.error)
 
+			// All Festival events
+			fetchFestivalEvents().catch(console.error)
+
 			// All concert events
 			fetchConcertsEvents().catch(console.error)
 
+			// All theatre events
+			fetchTheatreEvents().catch(console.error)
+
+			// All humor events
+			fetchHumorEvents().catch(console.error)
+
 			setIsEventsAlreadyFetched(true)
 		}
-	}, [fetchTrendemousEvents, fetchShowEvents, fetchConcertsEvents])
+	}, [fetchTrendemousEvents, fetchShowEvents, fetchFestivalEvents, fetchConcertsEvents, fetchTheatreEvents, fetchHumorEvents])
 
 	return (
 		<>
@@ -120,13 +143,18 @@ const Home: NextPage = () => {
 				<Spacer x={4} />
 			</Container>
 			<Spacer y={2} />
+			{/* poopular */}
 			<Grid.Container
 				justify="flex-start"
 				alignItems="baseline"
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3 css={{ wordSpacing:'4px'}}>Évenements populaires</Text>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Évenements populaires
+					</Text>
 				</Grid>
 				<Grid>
 					<Text
@@ -141,13 +169,18 @@ const Home: NextPage = () => {
 			<EventContainer events={trendemousEvents} />
 			<Spacer y={1} />
 			<Divider />
+			{/* concerts */}
 			<Grid.Container
 				justify="flex-start"
 				alignItems="baseline"
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3 css={{ wordSpacing:'4px'}}>Concerts</Text>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Concerts
+					</Text>
 				</Grid>
 				<Grid>
 					<Text
@@ -162,13 +195,18 @@ const Home: NextPage = () => {
 			<EventContainer events={concertEvents} />
 			<Spacer y={1} />
 			<Divider />
+			{/* Foire et salon */}
 			<Grid.Container
 				justify="flex-start"
 				alignItems="baseline"
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3 css={{ wordSpacing:'4px'}}>Foires & Salons</Text>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Foires & Salons
+					</Text>
 				</Grid>
 				<Grid>
 					<Text
@@ -183,13 +221,96 @@ const Home: NextPage = () => {
 			<EventContainer events={showEvents} />
 			<Spacer y={1} />
 			<Divider />
+			{/* Festival */}
 			<Grid.Container
 				justify="flex-start"
 				alignItems="baseline"
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3 css={{ wordSpacing:'4px'}}>Tests avec events mockés</Text>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Festivals
+					</Text>
+				</Grid>
+				<Grid>
+					<Text
+						size={12}
+						weight="bold"
+						transform="uppercase"
+						color="$gray800">
+						Voir plus
+					</Text>
+				</Grid>
+			</Grid.Container>
+			<EventContainer events={festivalEvents} />
+			<Spacer y={1} />
+			<Divider />
+			{/* Theatre */}
+			<Grid.Container
+				justify="flex-start"
+				alignItems="baseline"
+				gap={2}>
+				<Spacer x={1} />
+				<Grid>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Théâtres
+					</Text>
+				</Grid>
+				<Grid>
+					<Text
+						size={12}
+						weight="bold"
+						transform="uppercase"
+						color="$gray800">
+						Voir plus
+					</Text>
+				</Grid>
+			</Grid.Container>
+			<EventContainer events={theatreEvents} />
+			<Spacer y={1} />
+			<Divider />
+			{/* Theatre */}
+			<Grid.Container
+				justify="flex-start"
+				alignItems="baseline"
+				gap={2}>
+				<Spacer x={1} />
+				<Grid>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Humours
+					</Text>
+				</Grid>
+				<Grid>
+					<Text
+						size={12}
+						weight="bold"
+						transform="uppercase"
+						color="$gray800">
+						Voir plus
+					</Text>
+				</Grid>
+			</Grid.Container>
+			<EventContainer events={humorEvents} />
+			<Spacer y={1} />
+			<Divider />
+			{/* mocked */}
+			<Grid.Container
+				justify="flex-start"
+				alignItems="baseline"
+				gap={2}>
+				<Spacer x={1} />
+				<Grid>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Tests avec events mockés
+					</Text>
 				</Grid>
 				<Grid>
 					<Text
