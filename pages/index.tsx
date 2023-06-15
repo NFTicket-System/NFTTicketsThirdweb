@@ -50,6 +50,7 @@ const Home: NextPage = () => {
 	// 	await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
 	// 		var result: Array<LightEvent> = []
 	// 		response.data.map((item: LightEvent) => result.push(item))
+    //      fillEvents(result)
 	// 		setEvents(result)
 	// 	})
 	// }, [])
@@ -58,6 +59,7 @@ const Home: NextPage = () => {
 		await axios.get('http://localhost:8080/api/events/all/light/trendemous').then((response) => {
 			var result: Array<LightEvent> = []
 			response.data.map((item: LightEvent) => result.push(item))
+            fillEvents(result)
 			setTrendemousEvents(result)
 		})
 	}, [])
@@ -66,11 +68,11 @@ const Home: NextPage = () => {
 		var result: Array<LightEvent> = []
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Foire').then((response) => {
 			response.data.map((item: LightEvent) => result.push(item))
-			setShowEvents(result)
 		})
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Salon').then((response) => {
 			response.data.map((item: LightEvent) => result.push(item))
 			result.sort((a, b) => a.libelle.localeCompare(b.libelle))
+            fillEvents(result)
 			setShowEvents(result)
 		})
 	}, [])
@@ -79,6 +81,7 @@ const Home: NextPage = () => {
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Concert').then((response) => {
 			var result: Array<LightEvent> = []
 			response.data.map((item: LightEvent) => result.push(item))
+            fillEvents(result)
 			setConcertEvents(result)
 		})
 	}, [])
@@ -87,6 +90,7 @@ const Home: NextPage = () => {
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Festival').then((response) => {
 			var result: Array<LightEvent> = []
 			response.data.map((item: LightEvent) => result.push(item))
+            fillEvents(result)
 			setFestivalEvents(result)
 		})
 	}, [])
@@ -95,6 +99,7 @@ const Home: NextPage = () => {
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Theatre').then((response) => {
 			var result: Array<LightEvent> = []
 			response.data.map((item: LightEvent) => result.push(item))
+            fillEvents(result)
 			setTheatreEvents(result)
 		})
 	}, [])
@@ -103,6 +108,7 @@ const Home: NextPage = () => {
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Humor').then((response) => {
 			var result: Array<LightEvent> = []
 			response.data.map((item: LightEvent) => result.push(item))
+            fillEvents(result)
 			setHumorEvents(result)
 		})
 	}, [])
@@ -133,6 +139,13 @@ const Home: NextPage = () => {
 			setIsEventsAlreadyFetched(true)
 		}
 	}, [fetchTrendemousEvents, fetchShowEvents, fetchFestivalEvents, fetchConcertsEvents, fetchTheatreEvents, fetchHumorEvents])
+
+	const fillEvents = function(events: LightEvent[]){
+		const initialEventsLength = events.length
+		for (let index = 0; index < (5 - initialEventsLength); index++) {
+			events.push(new LightEvent(-1, '', ''))
+		}
+	}
 
 	return (
 		<>

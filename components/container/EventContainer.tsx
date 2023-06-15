@@ -7,17 +7,12 @@ interface EventContainerProps {
 }
 
 const EventContainer: React.FC<EventContainerProps> = (props: EventContainerProps) => {
-    let caca = props.events
-    const initialEventsLength = props.events.length
-	for (let index = 0; index < (5 - initialEventsLength); index++) {
-		caca.push(new LightEvent(-1, '', ''))
-	}
 	return (
 		<>
 			<Grid.Container
 				gap={2}
 				justify="space-evenly">
-				{caca.map((item) => {
+				{props.events.map((item) => {
 					if (item.id > 0) {
 						return (
 							<Grid
