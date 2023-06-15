@@ -42,6 +42,7 @@ const Home: NextPage = () => {
 	const [showEvents, setShowEvents] = useState<Array<LightEvent>>([])
 	const [concertEvents, setConcertEvents] = useState<Array<LightEvent>>([])
 	const [theatreEvents, setTheatreEvents] = useState<Array<LightEvent>>([])
+	const [humorEvents, setHumorEvents] = useState<Array<LightEvent>>([])
 	const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
 	// const fetchAllEvents = useCallback(async () => {
@@ -89,6 +90,14 @@ const Home: NextPage = () => {
 		})
 	}, [])
 
+	const fetchHumorEvents = useCallback(async () => {
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Humor').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setHumorEvents(result)
+		})
+	}, [])
+
 	useEffect(() => {
 		if (!isEventsAlreadyFetched) {
 			// All events
@@ -106,9 +115,12 @@ const Home: NextPage = () => {
 			// All theatre events
 			fetchTheatreEvents().catch(console.error)
 
+			// All humor events
+			fetchHumorEvents().catch(console.error)
+
 			setIsEventsAlreadyFetched(true)
 		}
-	}, [fetchTrendemousEvents, fetchShowEvents, fetchConcertsEvents, fetchTheatreEvents])
+	}, [fetchTrendemousEvents, fetchShowEvents, fetchConcertsEvents, fetchTheatreEvents, fetchHumorEvents])
 
 	return (
 		<>
@@ -221,6 +233,32 @@ const Home: NextPage = () => {
 				</Grid>
 			</Grid.Container>
 			<EventContainer events={theatreEvents} />
+			<Spacer y={1} />
+			<Divider />
+			{/* Theatre */}
+			<Grid.Container
+				justify="flex-start"
+				alignItems="baseline"
+				gap={2}>
+				<Spacer x={1} />
+				<Grid>
+					<Text
+						h3
+						css={{ wordSpacing: '4px' }}>
+						Humours
+					</Text>
+				</Grid>
+				<Grid>
+					<Text
+						size={12}
+						weight="bold"
+						transform="uppercase"
+						color="$gray800">
+						Voir plus
+					</Text>
+				</Grid>
+			</Grid.Container>
+			<EventContainer events={humorEvents} />
 			<Spacer y={1} />
 			<Divider />
 			{/* mocked */}
