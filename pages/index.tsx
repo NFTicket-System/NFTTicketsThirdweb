@@ -62,15 +62,14 @@ const Home: NextPage = () => {
 	}, [])
 
 	const fetchShowEvents = useCallback(async () => {
+		var result: Array<LightEvent> = []
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Foire').then((response) => {
-			var result: Array<LightEvent> = []
 			response.data.map((item: LightEvent) => result.push(item))
 			console.log("test")
 			console.log(result)
 			setShowEvents(result)
 		})
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Salon').then((response) => {
-			var result = showEvents
 			response.data.map((item: LightEvent) => result.push(item))
 			console.log("test2")
 			console.log(result)
