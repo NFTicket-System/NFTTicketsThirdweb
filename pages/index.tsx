@@ -37,56 +37,80 @@ const Home: NextPage = () => {
 
 	const mockedEvents = [mockedEvent1, mockedEvent2, mockedEvent3, mockedEvent4, mockedEvent5]
 
-	// const [events, setEvents] = useState<Array<LightEvent>>([])
+	//const [events, setEvents] = useState<Array<LightEvent>>([])
 	const [trendemousEvents, setTrendemousEvents] = useState<Array<LightEvent>>([])
+	const [showEvents, setShowEvents] = useState<Array<LightEvent>>([])
 	const [concertEvents, setConcertEvents] = useState<Array<LightEvent>>([])
 	const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
 	// const fetchAllEvents = useCallback(async () => {
-	// 	await axios
-	// 		.get('http://localhost:8080/api/events/all/light')
-	// 		.then((response) => {
-	// 			var result: Array<LightEvent> = []
-	// 			response.data.map((item: LightEvent) => result.push(item))
-	// 			setEvents(result)
-	// 		})
+	// 	await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
+	// 		var result: Array<LightEvent> = []
+	// 		response.data.map((item: LightEvent) => result.push(item))
+	// 		setEvents(result)
+	// 	})
 	// }, [])
 
 	const fetchTrendemousEvents = useCallback(async () => {
-		await axios
-			.get('http://localhost:8080/api/events/all/light/trendemous')
-			.then((response) => {
-				var result: Array<LightEvent> = []
-				response.data.map((item: LightEvent) => result.push(item))
-				setTrendemousEvents(result)
-			})
+		await axios.get('http://localhost:8080/api/events/all/light/trendemous').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setTrendemousEvents(result)
+		})
+		console.log("trendemousEvents")
+		console.log(trendemousEvents)
+	}, [])
+
+	const fetchShowEvents = useCallback(async () => {
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Foire').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			console.log("test")
+			console.log(result)
+			setShowEvents(result)
+		})
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Salon').then((response) => {
+			var result = showEvents
+			response.data.map((item: LightEvent) => result.push(item))
+			console.log("test2")
+			console.log(result)
+			result.sort((a, b) => a.libelle.localeCompare(b.libelle))
+			setShowEvents(result)
+		})
+
+		console.log("showEvents")
+		console.log(showEvents)
+
 	}, [])
 
 	const fetchConcertsEvents = useCallback(async () => {
-		await axios
-			.get('http://localhost:8080/api/events/all/light/byCat/Concert')
-			.then((response) => {
-				var result: Array<LightEvent> = []
-				response.data.map((item: LightEvent) => result.push(item))
-				setConcertEvents(result)
-			})
+		await axios.get('http://localhost:8080/api/events/all/light/byCat/Concert').then((response) => {
+			var result: Array<LightEvent> = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setConcertEvents(result)
+		})
+
+		console.log("concertEvents")
+		console.log(concertEvents)
 	}, [])
 
 	useEffect(() => {
 		if (!isEventsAlreadyFetched) {
 			// All events
-			// fetchAllEvents().catch(console.error)
+			//fetchAllEvents().catch(console.error)
 
 			// All trendemous events
 			fetchTrendemousEvents().catch(console.error)
+
+			// All salon and foire events
+			fetchShowEvents().catch(console.error)
 
 			// All concert events
 			fetchConcertsEvents().catch(console.error)
 
 			setIsEventsAlreadyFetched(true)
 		}
-	}, [fetchTrendemousEvents, fetchConcertsEvents])
-
+	}, [fetchTrendemousEvents, fetchShowEvents, fetchConcertsEvents])
 
 	return (
 		<>
@@ -103,7 +127,7 @@ const Home: NextPage = () => {
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3>Top évenements</Text>
+					<Text h3 css={{ wordSpacing:'4px'}}>Évenements populaires</Text>
 				</Grid>
 				<Grid>
 					<Text
@@ -124,7 +148,7 @@ const Home: NextPage = () => {
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3>Concerts</Text>
+					<Text h3 css={{ wordSpacing:'4px'}}>Concerts</Text>
 				</Grid>
 				<Grid>
 					<Text
@@ -145,7 +169,28 @@ const Home: NextPage = () => {
 				gap={2}>
 				<Spacer x={1} />
 				<Grid>
-					<Text h3>Test</Text>
+					<Text h3 css={{ wordSpacing:'4px'}}>Foires & Salons</Text>
+				</Grid>
+				<Grid>
+					<Text
+						size={12}
+						weight="bold"
+						transform="uppercase"
+						color="$gray800">
+						Voir plus
+					</Text>
+				</Grid>
+			</Grid.Container>
+			<EventContainer events={showEvents} />
+			<Spacer y={1} />
+			<Divider />
+			<Grid.Container
+				justify="flex-start"
+				alignItems="baseline"
+				gap={2}>
+				<Spacer x={1} />
+				<Grid>
+					<Text h3 css={{ wordSpacing:'4px'}}>Tests avec events mockés</Text>
 				</Grid>
 				<Grid>
 					<Text
