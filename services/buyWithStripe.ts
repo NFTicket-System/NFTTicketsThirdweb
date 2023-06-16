@@ -5,6 +5,7 @@ import swal from 'sweetalert'
 import { defaultErrorModal } from '../utils/errors/defaultErrorAlert'
 import { type SwitchChainError } from 'wagmi-core'
 import { type Chain, useBuyNow } from '@thirdweb-dev/react'
+import Stripe from 'stripe'
 
 export async function BuyWithStripe({
 	nftId,
@@ -17,9 +18,9 @@ export async function BuyWithStripe({
 }) {
 	const { mutateAsync: buyNow } = useBuyNow(marketplace)
 	try {
-		// Ensure user is on the correct network
-
-		// Simple one-liner for buying the NFT
+		const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
+			apiVersion: '2022-11-15',
+		})
 		await buyNow({
 			id: nftId, // ID of the listing to buy
 			type: ListingType.Direct, // Direct (0) or Auction (1)
