@@ -7,6 +7,7 @@ import {Container, Divider, Grid, Spacer, Text} from '@nextui-org/react'
 import {LightEvent} from '../models/LightEvent'
 import EventContainer from '../components/container/EventContainer'
 import axios from 'axios'
+import CategoryContainer from "../components/container/CategoryContainer";
 
 const Home: NextPage = () => {
     const mockedEvent1 = new LightEvent(
@@ -171,186 +172,39 @@ const Home: NextPage = () => {
                     <Spacer x={4}/>
                 </Container>
                 <Spacer y={2}/>
+
                 {/* poopular */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Évenements populaires
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={trendemousEvents}/>
+                <CategoryContainer events={trendemousEvents} title={"Évenements populaires"} libelle={"trendemous"}/>
                 <Spacer y={1}/>
                 <Divider/>
+
                 {/* concerts */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Concerts
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={concertEvents}/>
+                <CategoryContainer events={concertEvents} title={"Concerts"} libelle={"Concert"}/>
                 <Spacer y={1}/>
                 <Divider/>
+
                 {/* Foire et salon */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Foires & Salons
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={showEvents}/>
+                <CategoryContainer events={showEvents} title={"Foires & Salons"} libelle={"Foire&Salon"}/>
                 <Spacer y={1}/>
                 <Divider/>
+
                 {/* Festival */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Festivals
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={festivalEvents}/>
+                <CategoryContainer events={festivalEvents} title={"Festivals"} libelle={"Festival"}/>
                 <Spacer y={1}/>
                 <Divider/>
+
                 {/* Theatre */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Théâtres
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={theatreEvents}/>
+                <CategoryContainer events={theatreEvents} title={"Théâtres"} libelle={"Theatre"}/>
                 <Spacer y={1}/>
                 <Divider/>
+
                 {/* Theatre */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Humours
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={humorEvents}/>
+                <CategoryContainer events={humorEvents} title={"Humours"} libelle={"Humor"}/>
                 <Spacer y={1}/>
                 <Divider/>
+
                 {/* mocked */}
-                <Grid.Container
-                        justify="flex-start"
-                        alignItems="baseline"
-                        gap={2}>
-                    <Spacer x={1}/>
-                    <Grid>
-                        <Text
-                                h3
-                                css={{wordSpacing: '4px'}}>
-                            Tests avec events mockés
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Text
-                                size={12}
-                                weight="bold"
-                                transform="uppercase"
-                                color="$gray800">
-                            Voir plus
-                        </Text>
-                    </Grid>
-                </Grid.Container>
-                <EventContainer events={mockedEvents}/>
+                <CategoryContainer events={mockedEvents} title={"Tests avec events mockés"} libelle={"mocked"}/>
                 <Spacer y={2}/>
 
                 <Footer/>
