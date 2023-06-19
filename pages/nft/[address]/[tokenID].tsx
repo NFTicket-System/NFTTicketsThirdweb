@@ -2,12 +2,14 @@ import { Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text } from '
 import { RiMapPinLine } from '@react-icons/all-files/ri/RiMapPinLine'
 import React from 'react'
 import { useRouter } from 'next/router'
-import { useAddress, useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
+import { useAddress, useBuyNow, useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
 import { BigNumber } from 'ethers'
 import Header from '../../../components/header/Header'
 import { buyNft } from '../../../services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '../../../utils/errors/noConnectedWalletErrorAlert'
 import { BuyWithStripe } from '../../../services/buyWithStripe'
+import { Stripe } from 'stripe'
+import { ListingType } from '@thirdweb-dev/sdk'
 
 const NftDetails = () => {
 	const connectedAddress = useAddress()
@@ -144,6 +146,15 @@ const NftDetails = () => {
 																nftId: BigNumber.from(tokenID),
 																marketplace,
 																connectedAddress,
+																amount: 5,
+																creditCard: {
+																	number: '4242424242424242',
+																	expMonth: '12',
+																	expYear: '25',
+																	cvc: '333',
+																},
+																isMismatched,
+																switchNetwork,
 														  })
 												}}
 												size={'lg'}
