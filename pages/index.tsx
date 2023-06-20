@@ -37,18 +37,18 @@ const Home: NextPage = () => {
 
     const mockedEvents = [mockedEvent1, mockedEvent2, mockedEvent3, mockedEvent4, mockedEvent5]
 
-    //const [events, setEvents] = useState<Array<LightEvent>>([])
-    const [trendemousEvents, setTrendemousEvents] = useState<Array<LightEvent>>([])
-    const [showEvents, setShowEvents] = useState<Array<LightEvent>>([])
-    const [festivalEvents, setFestivalEvents] = useState<Array<LightEvent>>([])
-    const [concertEvents, setConcertEvents] = useState<Array<LightEvent>>([])
-    const [theatreEvents, setTheatreEvents] = useState<Array<LightEvent>>([])
-    const [humorEvents, setHumorEvents] = useState<Array<LightEvent>>([])
+    // const [events, setEvents] = useState<LightEvent[]>([])
+    const [trendemousEvents, setTrendemousEvents] = useState<LightEvent[]>([])
+    const [showEvents, setShowEvents] = useState<LightEvent[]>([])
+    const [festivalEvents, setFestivalEvents] = useState<LightEvent[]>([])
+    const [concertEvents, setConcertEvents] = useState<LightEvent[]>([])
+    const [theatreEvents, setTheatreEvents] = useState<LightEvent[]>([])
+    const [humorEvents, setHumorEvents] = useState<LightEvent[]>([])
     const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
     // const fetchAllEvents = useCallback(async () => {
     // 	await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
-    // 		var result: Array<LightEvent> = []
+    // 		var result: LightEvent[] = []
     // 		response.data.map((item: LightEvent) => result.push(item))
     //      fillEvents(result)
     // 		setEvents(result)
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
 
     const fetchTrendemousEvents = useCallback(async () => {
         await axios.get('http://localhost:8080/api/events/all/light/trendemous').then((response) => {
-            var result: Array<LightEvent> = []
+            const result: LightEvent[] = []
             response.data.map((item: LightEvent) => result.push(item))
             fillEvents(result)
             setTrendemousEvents(result)
@@ -65,7 +65,7 @@ const Home: NextPage = () => {
     }, [])
 
     const fetchShowEvents = useCallback(async () => {
-        var result: Array<LightEvent> = []
+        let result: LightEvent[] = []
         await axios.get('http://localhost:8080/api/events/all/light/byCat/Foire').then((response) => {
             response.data.map((item: LightEvent) => result.push(item))
         })
@@ -80,7 +80,7 @@ const Home: NextPage = () => {
 
     const fetchConcertsEvents = useCallback(async () => {
         await axios.get('http://localhost:8080/api/events/all/light/byCat/Concert').then((response) => {
-            var result: Array<LightEvent> = []
+            const result: LightEvent[] = []
             response.data.map((item: LightEvent) => result.push(item))
             fillEvents(result)
             setConcertEvents(result)
@@ -89,7 +89,7 @@ const Home: NextPage = () => {
 
     const fetchFestivalEvents = useCallback(async () => {
         await axios.get('http://localhost:8080/api/events/all/light/byCat/Festival').then((response) => {
-            var result: Array<LightEvent> = []
+            const result: LightEvent[] = []
             response.data.map((item: LightEvent) => result.push(item))
             fillEvents(result)
             setFestivalEvents(result)
@@ -98,7 +98,7 @@ const Home: NextPage = () => {
 
     const fetchTheatreEvents = useCallback(async () => {
         await axios.get('http://localhost:8080/api/events/all/light/byCat/Theatre').then((response) => {
-            var result: Array<LightEvent> = []
+            const result: LightEvent[] = []
             response.data.map((item: LightEvent) => result.push(item))
             fillEvents(result)
             setTheatreEvents(result)
@@ -107,10 +107,8 @@ const Home: NextPage = () => {
 
     const fetchHumorEvents = useCallback(async () => {
         await axios.get('http://localhost:8080/api/events/all/light/byCat/Humor').then((response) => {
-            var result: Array<LightEvent> = []
-            response.data.map((item: LightEvent) => {
-                result.push(item)
-            })
+            const result: LightEvent[] = []
+            response.data.map((item: LightEvent) => result.push(item))
             fillEvents(result)
             setHumorEvents(result)
         })
@@ -119,7 +117,7 @@ const Home: NextPage = () => {
     useEffect(() => {
         if (!isEventsAlreadyFetched) {
             // All events
-            //fetchAllEvents().catch(console.error)
+            // fetchAllEvents().catch(console.error)
 
             // All trendemous events
             fetchTrendemousEvents().catch(console.error)
