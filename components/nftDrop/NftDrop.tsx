@@ -1,4 +1,4 @@
-import React, { type ReactNode, type SetStateAction, useState } from 'react'
+import React, { type SetStateAction, useState } from 'react'
 import {
 	Button,
 	Card,
@@ -27,7 +27,16 @@ import { InputName } from '@/models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
-import { checkDateValid, isInputValid, setDateHelperText, setHelperText } from '@/utils/errors/formCheckValidity'
+import {
+	checkDateValid,
+	isDateValid2Submit,
+	isErrorDateCard2Show,
+	isHoursValid2Submit,
+	isInputValid,
+	isLaterTime,
+	setDateHelperText,
+	setHelperText,
+} from '@/utils/errors/formCheckValidity'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
@@ -36,9 +45,9 @@ import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
-function Marker(props: { position: number[]; children: ReactNode }) {
+/* function Marker(props: { position: number[]; children: ReactNode }) {
 	return null
-}
+} */
 
 const NftDrop = () => {
 	const router = useRouter()
@@ -53,9 +62,18 @@ const NftDrop = () => {
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setInputValue] = useState<string>('')
 
+	/* DATE */
+	const [dateValue, setDateValue] = useState<string>('')
+	const [startHourValue, setStartHourValue] = useState<string>('')
+	const [endHourValue, setEndtHourValue] = useState<string>('')
+	/* DATE */
+
+	/* LOCATION */
 	const [locationInfo, setLocationInfo] = useState<ApiLocationItem[]>([])
 	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
 	const [selectedLocation, setSelectedLocation] = useState<string>('')
+	const [searchResult2Show, setSearchResult2Show] = useState<boolean>(false)
+	/* LOCATION */
 
 	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
@@ -65,7 +83,7 @@ const NftDrop = () => {
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
 
-	const [file, setFile] = useState<File | null>()
+	const [file, setFile] = useState<File | undefined>()
 	const handleImageChange = (file: File) => {
 		setFile(file)
 	}
@@ -99,8 +117,15 @@ const NftDrop = () => {
 					getValues(InputName.NAME) !== '' ? (isOk = true) : (isOk = false)
 					break
 				case 1:
-					console.log(file)
-					file !== null ? (isOk = true) : (isOk = false)
+					file !== undefined ? (isOk = true) : (isOk = false)
+					break
+				case 2:
+					checkDateValid(dateValue) && isLaterTime(startHourValue, endHourValue)
+						? (isOk = true)
+						: (isOk = false)
+					break
+				case 3:
+					selectedLocation !== '' ? (isOk = true) : (isOk = false)
 					break
 				default:
 					isOk = false
@@ -194,7 +219,7 @@ const NftDrop = () => {
 		<FormWrapper
 			title={"Affiche de l'évènement"}
 			key={'image-step'}>
-			{file != null ? (
+			{file !== undefined ? (
 				<Card>
 					<Card.Image
 						src={URL.createObjectURL(file)}
@@ -234,7 +259,7 @@ const NftDrop = () => {
 								<Row justify="flex-end">
 									<Button
 										onClick={() => {
-											setFile(null)
+											setFile(undefined)
 											setTriedToSubmit(false)
 										}}
 										auto
@@ -321,17 +346,11 @@ const NftDrop = () => {
 				label={'Date de début *'}
 				required
 				type="date"
-				status={checkDateValid(inputValue) ? 'default' : 'error'}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setDateHelperText(inputValue, triedToSubmit)}
+				status={isDateValid2Submit(dateValue, triedToSubmit)}
+				helperText={setDateHelperText(dateValue, triedToSubmit)}
 				helperColor="error"
 				onChange={(e) => {
-					e.target.value === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					if (checkDateValid(e.target.value)) {
-						handleInputChange(e)
-					}
-					console.log(e.target.value)
-					console.log(triedToSubmit)
+					setDateValue(e.target.value)
 				}}
 			/>
 			<Spacer y={2} />
@@ -340,16 +359,12 @@ const NftDrop = () => {
 				underlined
 				label={'Heure de début *'}
 				{...register(InputName.HOUR_START)}
-				{...register(InputName.HOUR_START)}
 				required
 				type="time"
-				status={isInputValid(inputValue, triedToSubmit)}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
+				status={isHoursValid2Submit(startHourValue, endHourValue, triedToSubmit)}
 				helperColor="error"
 				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
+					setStartHourValue(e.target.value)
 				}}
 			/>{' '}
 			<Spacer y={2} />
@@ -360,15 +375,26 @@ const NftDrop = () => {
 				{...register(InputName.HOUR_END)}
 				required
 				type="time"
-				status={isInputValid(inputValue, triedToSubmit)}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
+				status={isHoursValid2Submit(startHourValue, endHourValue, triedToSubmit)}
 				helperColor="error"
 				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
+					setEndtHourValue(e.target.value)
 				}}
 			/>
+			{isErrorDateCard2Show(dateValue, startHourValue, endHourValue, triedToSubmit) ? (
+				<></>
+			) : (
+				<>
+					<Spacer y={1} />
+					<Button
+						ripple={false}
+						animated={false}
+						bordered
+						color="error">
+						Veuillez choisir une date et des heures valides
+					</Button>
+				</>
+			)}
 		</FormWrapper>,
 		/* DATE END */
 		/* LOCATION START */
@@ -381,23 +407,22 @@ const NftDrop = () => {
 				<Input
 					aria-label="Location search bar"
 					width={'50%'}
-					{...register(InputName.LOCATION)}
 					label={"Adresse de l'évènement *"}
 					type="text"
 					required
-					/* status={isInputValid(selectedLocation, triedToSubmit)}
+					status={isInputValid(selectedLocation, triedToSubmit)}
 					color={isInputValid(selectedLocation, triedToSubmit)}
 					helperText={setHelperText(selectedLocation, triedToSubmit)}
-					helperColor="error" */
+					helperColor="error"
 					onChange={(e) => {
 						selectedLocation === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
 						if (e.target.value.length >= 7) {
 							try {
 								getLocationDetails(e.target.value)
 									.then((r) => {
-										console.log(r)
 										if (r.length > 0) {
 											setLocationInfo(r)
+											setSearchResult2Show(true)
 										}
 									})
 									.catch((e) => {
@@ -422,26 +447,31 @@ const NftDrop = () => {
 						{locationInfo.map((location) => (
 							<Text
 								onClick={() => {
-									setInputValue(location.properties.label)
 									setLocationCoord({
 										lat: location.geometry.coordinates[1],
 										lon: location.geometry.coordinates[0],
 									})
 									setSelectedLocation(location.properties.label)
+									setValue(InputName.LOCATION, selectedLocation)
+									setSearchResult2Show(false)
 								}}
-								css={{
-									display: 'flex',
-									alignItems: 'center',
-									'&:hover': {
-										color: '#4E3104',
-										cursor: 'pointer',
-										backgroundColor: '$primaryLight',
-										borderRadius: '4px',
-									},
-								}}
+								css={
+									searchResult2Show
+										? {
+												display: 'flex',
+												alignItems: 'center',
+												'&:hover': {
+													color: '#4E3104',
+													cursor: 'pointer',
+													backgroundColor: '$primaryLight',
+													borderRadius: '4px',
+												},
+										  }
+										: {}
+								}
 								key={location.properties.id}>
 								<GrLocationPin />
-								{location.properties.label}
+								{selectedLocation}
 							</Text>
 						))}
 					</Card.Body>
