@@ -103,6 +103,7 @@ const Header = () => {
 						}}>
 						<Input
 							clearable
+							aria-label="Search bar"
 							contentLeft={<IoSearch />}
 							contentLeftStyling={false}
 							css={{

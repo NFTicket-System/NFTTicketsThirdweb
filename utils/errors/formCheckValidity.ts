@@ -6,6 +6,14 @@ export const setHelperText = (inputValue: string, triedToSubmit: boolean): strin
 	return inputValue === '' && triedToSubmit ? 'Champ requis' : ''
 }
 
+export const setDateHelperText = (inputValue: string, triedToSubmit: boolean): string => {
+	if (!checkDateValid(inputValue)) {
+		return 'Veuillez choisir une date valide'
+	} else {
+		return inputValue === '' && triedToSubmit ? 'Champ requis' : ''
+	}
+}
+
 // Is the date choose in the past
 export const checkDateValid = (dateInput: string): boolean => {
 	const formattedDateInput = new Date(

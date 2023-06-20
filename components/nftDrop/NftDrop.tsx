@@ -27,7 +27,7 @@ import { InputName } from '@/models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
-import { isInputValid, setHelperText } from '@/utils/errors/formCheckValidity'
+import { checkDateValid, isInputValid, setDateHelperText, setHelperText } from '@/utils/errors/formCheckValidity'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
@@ -47,6 +47,8 @@ const NftDrop = () => {
 		register,
 		handleSubmit,
 		formState: { isSubmitting },
+		setValue,
+		getValues,
 	} = useForm<formDataType>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setInputValue] = useState<string>('')
@@ -91,14 +93,29 @@ const NftDrop = () => {
 
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
-			await nextStep()
-				.then(() => {
-					setTriedToSubmit(false)
-					setInputValue('')
-				})
-				.catch((e) => {
-					defaultErrorModal()
-				})
+			let isOk = false
+			switch (currentStepIndex) {
+				case 0:
+					getValues(InputName.NAME) !== '' ? (isOk = true) : (isOk = false)
+					break
+				case 1:
+					console.log(file)
+					file !== null ? (isOk = true) : (isOk = false)
+					break
+				default:
+					isOk = false
+			}
+
+			isOk
+				? await nextStep()
+						.then(() => {
+							setTriedToSubmit(false)
+							setInputValue('')
+						})
+						.catch((e) => {
+							defaultErrorModal()
+						})
+				: console.log('ERROR IN STEP')
 		} else {
 			if (!userWallet.connected) {
 				noConnectedWalletErrorAlert()
@@ -111,7 +128,7 @@ const NftDrop = () => {
 				// show loader modal
 				handler()
 				// upload img to ipfs
-				const imgUrl = await uploadToIpfs()
+				// const imgUrl = await uploadToIpfs()
 				// create the ticket
 
 				console.log(formData)
@@ -142,15 +159,16 @@ const NftDrop = () => {
 			title={"Description de l'évènement"}
 			key={'description-step'}>
 			<Input
+				aria-label="Event Name"
 				{...register(InputName.NAME)}
 				label={"Nom de l'évènement *"}
 				type={'text'}
 				required
 				clearable
 				underlined
-				status={isInputValid(inputValue, triedToSubmit)}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
+				status={isInputValid(getValues(InputName.NAME), triedToSubmit)}
+				color={isInputValid(getValues(InputName.NAME), triedToSubmit)}
+				helperText={setHelperText(getValues(InputName.NAME), triedToSubmit)}
 				helperColor="error"
 				onClearClick={() => {
 					setTriedToSubmit(false)
@@ -161,8 +179,10 @@ const NftDrop = () => {
 				}}
 			/>
 			<Spacer y={4} />
+
 			<Text>Description de l&apos;évènement</Text>
 			<Textarea
+				aria-label="Event description"
 				bordered
 				color="default"
 				helperText={'Décrivez votre évènement en quelques mots'}
@@ -274,7 +294,7 @@ const NftDrop = () => {
 						</Card>
 					</FileUploader>
 
-					{file === null && triedToSubmit ? (
+					{getValues(InputName.IMAGE) !== '' && triedToSubmit ? (
 						<>
 							<Spacer y={1} />
 							<Button
@@ -295,22 +315,28 @@ const NftDrop = () => {
 			title={'Dates et heures'}
 			key={'dates-step'}>
 			<Input
+				aria-label="Event Date"
 				{...register(InputName.DATE)}
 				underlined
 				label={'Date de début *'}
 				required
 				type="date"
-				status={isInputValid(inputValue, triedToSubmit)}
+				status={checkDateValid(inputValue) ? 'default' : 'error'}
 				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
+				helperText={setDateHelperText(inputValue, triedToSubmit)}
 				helperColor="error"
 				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					/*				checkDateValid(e.target.value) ? handleInputChange(e) : */
+					e.target.value === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					if (checkDateValid(e.target.value)) {
+						handleInputChange(e)
+					}
+					console.log(e.target.value)
+					console.log(triedToSubmit)
 				}}
 			/>
 			<Spacer y={2} />
 			<Input
+				aria-label="Event Start hour"
 				underlined
 				label={'Heure de début *'}
 				{...register(InputName.HOUR_START)}
@@ -328,6 +354,7 @@ const NftDrop = () => {
 			/>{' '}
 			<Spacer y={2} />
 			<Input
+				aria-label="Event end hour"
 				underlined
 				label={'Heure de fin *'}
 				{...register(InputName.HOUR_END)}
@@ -352,6 +379,7 @@ const NftDrop = () => {
 				align={'flex-end'}
 				justify={'center'}>
 				<Input
+					aria-label="Location search bar"
 					width={'50%'}
 					{...register(InputName.LOCATION)}
 					label={"Adresse de l'évènement *"}
@@ -435,6 +463,7 @@ const NftDrop = () => {
 			title={'Prix du billet'}
 			key={'price-count-step'}>
 			<Input
+				aria-label="Event price"
 				{...register(InputName.PRICE)}
 				label={'Prix en € *'}
 				type="number"
@@ -453,6 +482,7 @@ const NftDrop = () => {
 			/>
 			<Spacer y={2} />
 			<Input
+				aria-label="Event count"
 				{...register(InputName.COUNT)}
 				label={'Nombre de billets à mettre en vente *'}
 				type="number"
