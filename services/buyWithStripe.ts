@@ -12,7 +12,6 @@ import { buyNft } from './buyNFTicket'
 
 export async function BuyWithStripe({
 	nftId,
-	marketplace,
 	connectedAddress,
 	amount,
 	creditCard,
@@ -20,7 +19,6 @@ export async function BuyWithStripe({
 	switchNetwork,
 }: {
 	nftId: BigNumberish
-	marketplace: Marketplace | undefined
 	connectedAddress: string
 	amount: number
 	creditCard: creditCard
@@ -32,13 +30,7 @@ export async function BuyWithStripe({
 		| undefined
 }) {
 	try {
-		await buyNft({
-			nftId: BigNumber.from(nftId),
-			isMismatched,
-			switchNetwork,
-			marketplace,
-		})
-		const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
+		const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY ?? '', {
 			apiVersion: '2022-11-15',
 		})
 		const paymentMethod = await stripe.paymentMethods.create({
@@ -50,17 +42,29 @@ export async function BuyWithStripe({
 				cvc: creditCard.cvc,
 			},
 		})
-		const paymentIntent = await stripe.paymentIntents.create({
-			amount: amount,
-			currency: 'eur',
-			payment_method: paymentMethod.id,
-			confirm: true,
-		})
 		const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
+        const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
+        const marketplace = await sdkAdmin?.getContract(marketplaceAddress ?? '', 'marketplace')
 		const listing = await marketplace?.getListing(nftId)
 		if (listing != null) {
 			const collection = await sdkAdmin.getContract(listing.assetContractAddress, 'nft-collection')
-			await collection.erc721.transfer(connectedAddress, listing.id)
+            console.log(listing.assetContractAddress)
+            console.log(collection.getAddress())
+            // await marketplace?.direct.cancelListing(listing.id)
+            console.log('3')
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
+            void collection.erc721.transfer(connectedAddress,'3')
+            console.log('4')
+
+			// await collection.erc721.transfer(connectedAddress, listing.id)
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: 'eur',
+                payment_method: paymentMethod.id,
+                confirm: true,
+            })
+            console.log('5')
+
 		}
 		// sdkAdmin.wallet
 	} catch (error) {

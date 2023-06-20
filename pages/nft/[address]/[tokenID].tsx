@@ -144,9 +144,8 @@ const NftDetails = () => {
 														? noConnectedWalletErrorAlert()
 														: await BuyWithStripe({
 																nftId: BigNumber.from(tokenID),
-																marketplace,
 																connectedAddress,
-																amount: 5,
+																amount: 50,
 																creditCard: {
 																	number: '4242424242424242',
 																	expMonth: '12',
