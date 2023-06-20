@@ -30,8 +30,8 @@ import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 import { isInputValid, setHelperText } from '@/utils/errors/formCheckValidity'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
-import { formatLocationString, getLocationDetails } from '@/services/getLocationDetails'
-import { type NominatimLocation } from '@/models/interfaces/nominatimLocation'
+import { getLocationDetails } from '@/services/getLocationDetails'
+import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
@@ -51,7 +51,7 @@ const NftDrop = () => {
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 	const [inputValue, setInputValue] = useState<string>('')
 
-	const [locationInfo, setLocationInfo] = useState<NominatimLocation[]>([])
+	const [locationInfo, setLocationInfo] = useState<ApiLocationItem[]>([])
 	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
 	const [selectedLocation, setSelectedLocation] = useState<string>('')
 
@@ -114,6 +114,7 @@ const NftDrop = () => {
 				const imgUrl = await uploadToIpfs()
 				// create the ticket
 
+				console.log(formData)
 				/*	await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
 					.then(() => {
 						closeHandler()
@@ -305,13 +306,14 @@ const NftDrop = () => {
 				helperColor="error"
 				onChange={(e) => {
 					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
+					/*				checkDateValid(e.target.value) ? handleInputChange(e) : */
 				}}
 			/>
 			<Spacer y={2} />
 			<Input
 				underlined
 				label={'Heure de début *'}
+				{...register(InputName.HOUR_START)}
 				{...register(InputName.HOUR_START)}
 				required
 				type="time"
@@ -355,17 +357,18 @@ const NftDrop = () => {
 					label={"Adresse de l'évènement *"}
 					type="text"
 					required
-					status={isInputValid(selectedLocation, triedToSubmit)}
+					/* status={isInputValid(selectedLocation, triedToSubmit)}
 					color={isInputValid(selectedLocation, triedToSubmit)}
 					helperText={setHelperText(selectedLocation, triedToSubmit)}
-					helperColor="error"
+					helperColor="error" */
 					onChange={(e) => {
 						selectedLocation === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-						if (inputValue.length >= 7) {
+						if (e.target.value.length >= 7) {
 							try {
-								getLocationDetails(inputValue)
+								getLocationDetails(e.target.value)
 									.then((r) => {
-										if (r.length > 1) {
+										console.log(r)
+										if (r.length > 0) {
 											setLocationInfo(r)
 										}
 									})
@@ -391,25 +394,26 @@ const NftDrop = () => {
 						{locationInfo.map((location) => (
 							<Text
 								onClick={() => {
-									const formatedTxt = formatLocationString(location)
-
-									handleInputChange({
-										target: {
-											value: formatedTxt,
-										},
+									setInputValue(location.properties.label)
+									setLocationCoord({
+										lat: location.geometry.coordinates[1],
+										lon: location.geometry.coordinates[0],
 									})
-									setLocationCoord({ lat: Number(location.lat), lon: Number(location.lon) })
-									setSelectedLocation(formatedTxt)
+									setSelectedLocation(location.properties.label)
 								}}
 								css={{
+									display: 'flex',
+									alignItems: 'center',
 									'&:hover': {
-										color: '$primary',
+										color: '#4E3104',
 										cursor: 'pointer',
+										backgroundColor: '$primaryLight',
+										borderRadius: '4px',
 									},
 								}}
-								key={location.place_id}>
+								key={location.properties.id}>
 								<GrLocationPin />
-								{formatLocationString(location)}
+								{location.properties.label}
 							</Text>
 						))}
 					</Card.Body>
@@ -471,7 +475,9 @@ const NftDrop = () => {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form
+				noValidate
+				onSubmit={handleSubmit(onSubmit)}>
 				<Container
 					sm
 					display={'flex'}
