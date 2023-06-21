@@ -8,8 +8,6 @@ import Header from '../../../components/header/Header'
 import { buyNft } from '../../../services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '../../../utils/errors/noConnectedWalletErrorAlert'
 import { BuyWithStripe } from '../../../services/buyWithStripe'
-import { Stripe } from 'stripe'
-import { ListingType } from '@thirdweb-dev/sdk'
 
 const NftDetails = () => {
 	const connectedAddress = useAddress()
@@ -115,7 +113,12 @@ const NftDetails = () => {
 												</Text>
 											</Container>
 										</Card.Body>
-										<Card.Footer css={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<Card.Footer
+											css={{
+												display: 'flex',
+												justifyContent: 'flex-end',
+												gap: '10px',
+											}}>
 											<Text weight={'bold'}>
 												{item?.buyoutCurrencyValuePerToken.displayValue}{' '}
 												{item?.buyoutCurrencyValuePerToken.symbol}
@@ -145,15 +148,12 @@ const NftDetails = () => {
 														: await BuyWithStripe({
 																nftId: BigNumber.from(tokenID),
 																connectedAddress,
-																amount: 50,
 																creditCard: {
 																	number: '4242424242424242',
 																	expMonth: '12',
 																	expYear: '25',
 																	cvc: '333',
 																},
-																isMismatched,
-																switchNetwork,
 														  })
 												}}
 												size={'lg'}

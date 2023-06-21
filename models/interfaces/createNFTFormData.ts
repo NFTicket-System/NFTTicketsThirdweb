@@ -11,8 +11,16 @@ export interface formDataType {
 }
 
 export interface creditCard {
-    number:string,
-    expMonth:string,
-    expYear:string,
-    cvc:string
+	number: string
+	expMonth: string
+	expYear: string
+	cvc: string
+}
+
+export interface maticData {
+	market_data: {
+		current_price: {
+			eur: number
+		}
+	}
 }
