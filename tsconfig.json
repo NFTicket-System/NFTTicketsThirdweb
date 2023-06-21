@@ -17,7 +17,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/services/*": ["services/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/models/*": ["models/*"],
+      "@/pages/*": ["pages/*"],
+      "@/utils/*": ["utils/*"],
+      "@/assets/*": ["assets/*"],
+    }
   },
   "include": [
     ".eslintrc.js",

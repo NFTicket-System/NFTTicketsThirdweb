@@ -2,6 +2,7 @@ import React from 'react'
 import { MediaRenderer, useActiveListings, useContract } from '@thirdweb-dev/react'
 import { Link, Loading, Row } from '@nextui-org/react'
 import Header from '../components/header/Header'
+import ScrollToTop from 'react-scroll-to-top'
 
 const AllNft = () => {
 	const { contract: marketplace } = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
@@ -10,7 +11,12 @@ const AllNft = () => {
 	return (
 		<>
 			<Header></Header>
-
+            <ScrollToTop
+                    height={'18'}
+                    width={'18'}
+                    top={50}
+                    smooth
+            />
 			{isLoadingNfts ? (
 				<Row
 					justify="center"
