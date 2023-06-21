@@ -47,6 +47,7 @@
     "react-refresh": "^0.14.0",
     "react-responsive-carousel": "^3.2.23",
     "react-touch-drag-slider": "^2.2.5",
+    "stripe": "^12.9.0",
     "sweetalert": "^2.1.2"
   },
   "devDependencies": {

@@ -9,3 +9,10 @@ export interface formDataType {
 	location: string
 	image: string
 }
+
+export interface creditCard {
+    number:string,
+    expMonth:string,
+    expYear:string,
+    cvc:string
+}
