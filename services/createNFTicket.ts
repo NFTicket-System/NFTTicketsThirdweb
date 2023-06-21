@@ -1,12 +1,34 @@
 import { NATIVE_TOKEN_ADDRESS, type ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type formDataType } from '../models/interfaces/createNFTFormData'
 
+export function createMetadatas( formData: formDataType, imageUrl: string | undefined ) {
+    const metaData = {
+        name: formData.name,
+        description: formData.description,
+        image: imageUrl,
+        properties: {
+            hourEnd: formData.hourEnd,
+            location: formData.location,
+            hourStart: formData.hourStart,
+            date: formData.date,
+        },
+    }
+    const metaDatas = []
+
+    for ( let i = 0; i < formData.count; i++ ) {
+        metaDatas.push( metaData )
+    }
+    return metaDatas;
+}
+
 export async function createNFTicket(
-	formData: formDataType,
-	sdkAdmin: ThirdwebSDK,
-	connectedAddress: string | undefined,
-    imageUrl:string | undefined
-) {
+    formData: formDataType,
+    sdkAdmin: ThirdwebSDK,
+    connectedAddress: string | undefined,
+    imageUrl: string | undefined
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    , setCreationStep: Function ) {
+    setCreationStep('Création de la collection')
 	const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection({
 		name: formData.name,
 		primary_sale_recipient: connectedAddress ?? '',
@@ -17,25 +39,13 @@ export async function createNFTicket(
 
 	console.log('CONTRACT')
 
-	const metaData = {
-		name: formData.name,
-		description: formData.description,
-		image: imageUrl,
-		properties: {
-			hourEnd: formData.hourEnd,
-			location: formData.location,
-			hourStart: formData.hourStart,
-			date: formData.date,
-		},
-	}
-	const metaDatas = []
+    setCreationStep('Création des NFT')
+    const metaDatas = createMetadatas( formData, imageUrl );
 
-	for (let i = 0; i < formData.count; i++) {
-		metaDatas.push(metaData)
-	}
-
-	const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
+    const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
 	console.log('MINT')
+
+    setCreationStep('Mise en vente des NFT')
 
 	for (const nftObject of mintTransaction) {
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
@@ -61,6 +71,7 @@ export async function createNFTicket(
 		}
 
 		await marketplace?.direct.createListing(listing)
+
 		console.log('MARKETPLACE')
 	}
 }

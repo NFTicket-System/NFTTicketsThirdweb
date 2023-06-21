@@ -1,25 +1,29 @@
-import { Card, Col, Text } from '@nextui-org/react'
-import { type LightEvent } from '../../models/LightEvent'
+import { Card, Text, Col } from '@nextui-org/react'
+import { LightEvent } from '../../models/LightEvent'
+import { useRouter } from 'next/router'
 
 interface EventCardProps {
 	event: LightEvent
 }
 
 const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
+	const router = useRouter()
 	return (
 		<Card
 			isPressable
 			isHoverable
-			variant="bordered">
-			<Card.Body>
-				<Card.Image
-					width="100%"
-					height="100%"
-					src={props.event.imageUrl}
-					alt={props.event.name}
-					objectFit="cover"
-				/>
-			</Card.Body>
+			variant="bordered"
+			onClick={() => {
+				router.push(`/event/${props.event.id}`)
+			}}
+            css={{ minHeight: '200px'}}>
+			<Card.Image
+				width="100%"
+				height="100%"
+				src={props.event.urlImage}
+				alt={props.event.libelle}
+				objectFit="cover"
+			/>
 			<Card.Footer
 				isBlurred
 				css={{
@@ -40,7 +44,7 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
 					<Text
 						h4
 						color="white">
-						{props.event.name}
+						{props.event.libelle}
 					</Text>
 				</Col>
 			</Card.Footer>

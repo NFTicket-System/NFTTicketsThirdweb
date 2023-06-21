@@ -1,6 +1,6 @@
 import React from 'react'
 import { MediaRenderer, useActiveListings, useContract } from '@thirdweb-dev/react'
-import { Link, Loading } from '@nextui-org/react'
+import { Link, Loading, Row } from '@nextui-org/react'
 import Header from '../components/header/Header'
 import ScrollToTop from 'react-scroll-to-top'
 
@@ -11,22 +11,29 @@ const AllNft = () => {
 	return (
 		<>
 			<Header></Header>
-			<ScrollToTop
-				height={'18'}
-				width={'18'}
-				top={50}
-				smooth
-			/>
+            <ScrollToTop
+                    height={'18'}
+                    width={'18'}
+                    top={50}
+                    smooth
+            />
 			{isLoadingNfts ? (
-				<Loading
-					type="points"
-					size={'lg'}
-				/>
+				<Row
+					justify="center"
+					align={'center'}
+					css={{ height: '50rem' }}>
+					<Loading
+						type="points"
+						size={'lg'}
+					/>
+				</Row>
 			) : (
-				<div>
+				<div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '15rem' }}>
 					{nfts?.map((nft) => (
 						<div key={nft.id}>
-							<MediaRenderer src={nft.asset.image}></MediaRenderer>
+							<MediaRenderer
+								src={nft.asset.image}
+								height={'250rem'}></MediaRenderer>
 							<h2>
 								<Link href={`/nft/${nft.assetContractAddress}/${nft.id}`}>{nft.asset.name}</Link>
 							</h2>

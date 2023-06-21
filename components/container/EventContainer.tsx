@@ -1,5 +1,5 @@
 import { Grid } from '@nextui-org/react'
-import { type LightEvent } from '../../models/LightEvent'
+import { LightEvent } from '../../models/LightEvent'
 import EventCard from '../card/EventCard'
 
 interface EventContainerProps {
@@ -8,19 +8,25 @@ interface EventContainerProps {
 
 const EventContainer: React.FC<EventContainerProps> = (props: EventContainerProps) => {
 	return (
-		<Grid.Container
-			gap={2}
-			justify="space-around">
-			{props.events.map((item) => {
-				return (
-					<Grid
-						key={item.id}
-						md={2}>
-						<EventCard event={item} />
-					</Grid>
-				)
-			})}
-		</Grid.Container>
+		<>
+			<Grid.Container
+				gap={2}
+				justify="space-evenly">
+				{props.events.map((item) => {
+					if (item.id > 0) {
+						return (
+							<Grid
+								key={item.id}
+								md={2}>
+								<EventCard event={item} />
+							</Grid>
+						)
+					} else {
+						return <Grid md={2} />
+					}
+				})}
+			</Grid.Container>
+		</>
 	)
 }
 
