@@ -78,6 +78,7 @@ const NftDrop = () => {
 			handleButtonClick()
 		}
 	}, [isInfosCorrect])
+	const [creationStep, setCreationStep] = useState<string>()
 	/* CONFIRMATION CONFIRMATION && MODALS */
 
 	/* BLOCKCHAIN */
@@ -156,7 +157,7 @@ const NftDrop = () => {
 						// create the ticket
 						console.log(fileUrl)
 						console.log(formData)
-						await createNFTicket(formData, sdkAdmin, connectedAddress, fileUrl)
+						await createNFTicket(formData, sdkAdmin, connectedAddress, fileUrl, setCreationStep)
 							.then(() => {
 								setLoadingModal(false)
 								void swal(
@@ -560,17 +561,14 @@ const NftDrop = () => {
 					<Grid.Container
 						justify={'center'}
 						alignItems={'center'}
-						direction={'row'}
 						css={{ height: '100%' }}>
-						<Text h2>
-							Nous ajoutons {getValues(InputName.COUNT) > 1 ? 'vos billets' : 'votre billet'} à la
-							blockchain
-						</Text>
-						<Spacer x={1} />
-						<Loading
-							type={'points'}
-							size={'xl'}
-						/>
+						<Loading size={'xl'} />
+					</Grid.Container>
+					<Grid.Container
+						justify={'center'}
+						alignItems={'center'}
+						css={{ height: '100%' }}>
+						<Text size={50}>{creationStep}</Text>
 					</Grid.Container>
 				</Modal.Body>
 			</Modal>
