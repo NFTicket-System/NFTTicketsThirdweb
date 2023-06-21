@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import swal from 'sweetalert'
 import {
 	Button,
 	Card,
@@ -40,6 +41,7 @@ import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
 import { formatEventDate } from '@/utils/errors/tools'
+import { createNFTicket } from '@/services/createNFTicket'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
@@ -70,6 +72,12 @@ const NftDrop = () => {
 	const [showConfirmationModal, setShowConfirmationModal] = useState(false)
 	const [loadingModal, setLoadingModal] = useState(false)
 	const [isInfosCorrect, setIsInfosCorrect] = useState(false)
+	useEffect(() => {
+		if (isInfosCorrect) {
+			// Call your function here
+			handleButtonClick()
+		}
+	}, [isInfosCorrect])
 	/* CONFIRMATION CONFIRMATION && MODALS */
 
 	/* BLOCKCHAIN */
@@ -85,7 +93,6 @@ const NftDrop = () => {
 			data: [file],
 			options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
 		})
-		console.log(url[0])
 		return url[0]
 	}
 	/* BLOCKCHAIN */
@@ -95,6 +102,8 @@ const NftDrop = () => {
 		handleSubmit(onSubmit)()
 	}
 
+	const formRef = useRef(null)
+
 	const { register, handleSubmit, setValue, getValues } = useForm<formDataType>()
 	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 
@@ -103,7 +112,6 @@ const NftDrop = () => {
 			let isOk = false
 			switch (currentStepIndex) {
 				case 0:
-					console.log(getValues(InputName.NAME))
 					getValues(InputName.NAME).length > 0 ? (isOk = true) : (isOk = false)
 					break
 				case 1:
@@ -115,7 +123,6 @@ const NftDrop = () => {
 						: (isOk = false)
 					break
 				case 3:
-					console.log(getValues(InputName.LOCATION))
 					getValues(InputName.LOCATION) !== undefined ? (isOk = true) : (isOk = false)
 					break
 				default:
@@ -140,36 +147,32 @@ const NftDrop = () => {
 					return
 				}
 
-				setShowConfirmationModal(true)
-				console.log('in')
-
 				if (isInfosCorrect) {
-					console.log('innnnnn')
 					setShowConfirmationModal(false)
 					// show loader modal
 					setLoadingModal(true)
 					// upload img to ipfs
-					const imgUrl = await uploadToIpfs()
-					// create the ticket
-					console.log(formData)
-					/* await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
-						.then(() => {
-							closeHandler()
-							void swal(
-								'Bravo !',
-								formData.count > 1
-									? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
-									: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
-								'success'
-							)
-						})
-						.catch((e) => {
-							closeHandler()
-							defaultErrorModal()
-							console.error(e)
-						}) */
-				} else {
-					console.log('ouuut')
+					await uploadToIpfs().then(async (fileUrl) => {
+						// create the ticket
+						console.log(fileUrl)
+						console.log(formData)
+						await createNFTicket(formData, sdkAdmin, connectedAddress, fileUrl)
+							.then(() => {
+								setLoadingModal(false)
+								void swal(
+									'Bravo !',
+									formData.count > 1
+										? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
+										: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
+									'success'
+								)
+							})
+							.catch((e) => {
+								setLoadingModal(false)
+								defaultErrorModal()
+								console.error(e)
+							})
+					})
 				}
 			}
 		}
@@ -186,7 +189,6 @@ const NftDrop = () => {
 				aria-label="Event Name"
 				label={"Nom de l'évènement *"}
 				type={'text'}
-				{...register(InputName.NAME)}
 				required
 				clearable
 				underlined
@@ -200,6 +202,7 @@ const NftDrop = () => {
 				}}
 				onChange={(e) => {
 					getValues(InputName.NAME) === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					setValue(InputName.NAME, e.target.value)
 				}}
 			/>
 			<Spacer y={4} />
@@ -507,6 +510,7 @@ const NftDrop = () => {
 	return (
 		<>
 			<form
+				ref={formRef}
 				noValidate
 				onSubmit={handleSubmit(onSubmit)}>
 				<Container
@@ -540,6 +544,7 @@ const NftDrop = () => {
 								onPress={() => {
 									setTriedToSubmit(true)
 									handleButtonClick()
+									isLastStep ? setShowConfirmationModal(true) : ''
 								}}>
 								{isLastStep ? 'Mettre en vente' : 'Suivant'}
 							</Button>
@@ -557,7 +562,10 @@ const NftDrop = () => {
 						alignItems={'center'}
 						direction={'row'}
 						css={{ height: '100%' }}>
-						<Text h2>Nous ajoutons vos billet à la blockchain</Text>
+						<Text h2>
+							Nous ajoutons {getValues(InputName.COUNT) > 1 ? 'vos billets' : 'votre billet'} à la
+							blockchain
+						</Text>
 						<Spacer x={1} />
 						<Loading
 							type={'points'}
@@ -675,9 +683,9 @@ const NftDrop = () => {
 					</Button>
 					<Button
 						auto
-						onPress={() => {
+						onPress={async () => {
+							setShowConfirmationModal(true)
 							setIsInfosCorrect(true)
-							handleButtonClick()
 						}}>
 						Confirmer
 					</Button>
