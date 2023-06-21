@@ -5,6 +5,7 @@ import {
 	Col,
 	Container,
 	Grid,
+	Image,
 	Input,
 	Loading,
 	Modal,
@@ -30,10 +31,7 @@ import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
 import {
 	checkDateValid,
 	isDateValid2Submit,
-	isErrorDateCard2Show,
-	isHoursValid2Submit,
 	isInputValid,
-	isLaterTime,
 	setDateHelperText,
 	setHelperText,
 } from '@/utils/errors/formCheckValidity'
@@ -42,12 +40,9 @@ import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
+import { formatEventDate } from '@/utils/errors/tools'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
-
-/* function Marker(props: { position: number[]; children: ReactNode }) {
-	return null
-} */
 
 const NftDrop = () => {
 	const router = useRouter()
@@ -68,12 +63,25 @@ const NftDrop = () => {
 	const [endHourValue, setEndtHourValue] = useState<string>('')
 	/* DATE */
 
+	/* FILE */
+	const [file, setFile] = useState<File | undefined>()
+	const handleImageChange = (file: File) => {
+		setFile(file)
+	}
+	/* FILE */
+
 	/* LOCATION */
 	const [locationInfo, setLocationInfo] = useState<ApiLocationItem[]>([])
 	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
 	const [selectedLocation, setSelectedLocation] = useState<string>('')
 	const [searchResult2Show, setSearchResult2Show] = useState<boolean>(false)
 	/* LOCATION */
+
+	/* CONFIRMATION */
+	const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+	const [isInfosCorrect, setIsInfosCorrect] = useState(false)
+
+	/* CONFIRMATION */
 
 	const { mutateAsync: upload } = useStorageUpload()
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
@@ -82,11 +90,6 @@ const NftDrop = () => {
 	const [visible, setVisible] = useState(false)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
-
-	const [file, setFile] = useState<File | undefined>()
-	const handleImageChange = (file: File) => {
-		setFile(file)
-	}
 
 	const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
 		setInputValue(e.target.value)
@@ -120,7 +123,7 @@ const NftDrop = () => {
 					file !== undefined ? (isOk = true) : (isOk = false)
 					break
 				case 2:
-					checkDateValid(dateValue) && isLaterTime(startHourValue, endHourValue)
+					checkDateValid(dateValue) && startHourValue !== '' && endHourValue !== ''
 						? (isOk = true)
 						: (isOk = false)
 					break
@@ -130,7 +133,6 @@ const NftDrop = () => {
 				default:
 					isOk = false
 			}
-
 			isOk
 				? await nextStep()
 						.then(() => {
@@ -150,30 +152,33 @@ const NftDrop = () => {
 					await switchNetwork?.(ChainId.Mumbai)
 					return
 				}
-				// show loader modal
-				handler()
-				// upload img to ipfs
-				// const imgUrl = await uploadToIpfs()
-				// create the ticket
 
-				console.log(formData)
-				/*	await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
-					.then(() => {
-						closeHandler()
-						void swal(
-							'Bravo !',
-							formData.count > 1
-								? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
-								: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
-							'success'
-						)
-					})
-					.catch((e) => {
-						closeHandler()
-						defaultErrorModal()
-					}) */
+				setShowConfirmationModal(true)
 
-				console.log(formData)
+				if (isInfosCorrect) {
+					console.log('INNNN')
+					// show loader modal
+					handler()
+					// upload img to ipfs
+					const imgUrl = await uploadToIpfs()
+					// create the ticket
+					console.log(formData)
+					/*	await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
+                            .then(() => {
+                                closeHandler()
+                                void swal(
+                                    'Bravo !',
+                                    formData.count > 1
+                                        ? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
+                                        : 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
+                                    'success'
+                                )
+                            })
+                            .catch((e) => {
+                                closeHandler()
+                                defaultErrorModal()
+                            }) */
+				}
 			}
 		}
 	}
@@ -258,7 +263,7 @@ const NftDrop = () => {
 							<Col>
 								<Row justify="flex-end">
 									<Button
-										onClick={() => {
+										onPress={() => {
 											setFile(undefined)
 											setTriedToSubmit(false)
 										}}
@@ -361,7 +366,7 @@ const NftDrop = () => {
 				{...register(InputName.HOUR_START)}
 				required
 				type="time"
-				status={isHoursValid2Submit(startHourValue, endHourValue, triedToSubmit)}
+				status={startHourValue === '' && triedToSubmit ? 'error' : 'default'}
 				helperColor="error"
 				onChange={(e) => {
 					setStartHourValue(e.target.value)
@@ -375,26 +380,12 @@ const NftDrop = () => {
 				{...register(InputName.HOUR_END)}
 				required
 				type="time"
-				status={isHoursValid2Submit(startHourValue, endHourValue, triedToSubmit)}
+				status={endHourValue === '' && triedToSubmit ? 'error' : 'default'}
 				helperColor="error"
 				onChange={(e) => {
 					setEndtHourValue(e.target.value)
 				}}
 			/>
-			{isErrorDateCard2Show(dateValue, startHourValue, endHourValue, triedToSubmit) ? (
-				<></>
-			) : (
-				<>
-					<Spacer y={1} />
-					<Button
-						ripple={false}
-						animated={false}
-						bordered
-						color="error">
-						Veuillez choisir une date et des heures valides
-					</Button>
-				</>
-			)}
 		</FormWrapper>,
 		/* DATE END */
 		/* LOCATION START */
@@ -410,17 +401,20 @@ const NftDrop = () => {
 					label={"Adresse de l'évènement *"}
 					type="text"
 					required
+					value={selectedLocation === '' ? '' : selectedLocation}
 					status={isInputValid(selectedLocation, triedToSubmit)}
 					color={isInputValid(selectedLocation, triedToSubmit)}
 					helperText={setHelperText(selectedLocation, triedToSubmit)}
 					helperColor="error"
 					onChange={(e) => {
 						selectedLocation === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+						setSelectedLocation(e.target.value)
 						if (e.target.value.length >= 7) {
 							try {
 								getLocationDetails(e.target.value)
 									.then((r) => {
 										if (r.length > 0) {
+											console.log(r)
 											setLocationInfo(r)
 											setSearchResult2Show(true)
 										}
@@ -441,37 +435,37 @@ const NftDrop = () => {
 				<Spacer x={1} />
 			</Row>
 			<Spacer y={1} />
-			{locationInfo.length > 0 ? (
+			{locationInfo.length > 0 && searchResult2Show ? (
 				<Card>
 					<Card.Body>
 						{locationInfo.map((location) => (
 							<Text
-								onClick={() => {
+								onClick={(e) => {
 									setLocationCoord({
 										lat: location.geometry.coordinates[1],
 										lon: location.geometry.coordinates[0],
 									})
+									console.log(e.target, 'click')
 									setSelectedLocation(location.properties.label)
+									console.log(selectedLocation)
 									setValue(InputName.LOCATION, selectedLocation)
+									console.log(selectedLocation, 'set')
+									console.log(getValues(InputName.LOCATION))
 									setSearchResult2Show(false)
 								}}
-								css={
-									searchResult2Show
-										? {
-												display: 'flex',
-												alignItems: 'center',
-												'&:hover': {
-													color: '#4E3104',
-													cursor: 'pointer',
-													backgroundColor: '$primaryLight',
-													borderRadius: '4px',
-												},
-										  }
-										: {}
-								}
+								css={{
+									display: 'flex',
+									alignItems: 'center',
+									'&:hover': {
+										color: '#4E3104',
+										cursor: 'pointer',
+										backgroundColor: '$primaryLight',
+										borderRadius: '4px',
+									},
+								}}
 								key={location.properties.id}>
 								<GrLocationPin />
-								{selectedLocation}
+								{location.properties.label}
 							</Text>
 						))}
 					</Card.Body>
@@ -501,14 +495,6 @@ const NftDrop = () => {
 				underlined
 				initialValue={'0'}
 				min={0}
-				status={isInputValid(inputValue, triedToSubmit)}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
-				helperColor="error"
-				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
-				}}
 			/>
 			<Spacer y={2} />
 			<Input
@@ -518,16 +504,8 @@ const NftDrop = () => {
 				type="number"
 				required
 				underlined
-				min={0}
+				min={1}
 				initialValue={'1'}
-				status={isInputValid(inputValue, triedToSubmit)}
-				color={isInputValid(inputValue, triedToSubmit)}
-				helperText={setHelperText(inputValue, triedToSubmit)}
-				helperColor="error"
-				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
-				}}
 			/>
 		</FormWrapper>,
 		/* PRICE END */
@@ -557,7 +535,7 @@ const NftDrop = () => {
 							flat>
 							{!isFirstStep ? (
 								<Button
-									onClick={() => {
+									onPress={() => {
 										previousStep()
 										setTriedToSubmit(false)
 									}}>
@@ -566,7 +544,7 @@ const NftDrop = () => {
 							) : null}
 
 							<Button
-								onClick={() => {
+								onPress={() => {
 									setTriedToSubmit(true)
 								}}
 								type={'submit'}>
@@ -593,6 +571,122 @@ const NftDrop = () => {
 						/>
 					</Grid.Container>
 				</Modal.Body>
+			</Modal>
+			<Modal
+				blur
+				width={'60%'}
+				aria-labelledby="confirmation modal"
+				open={showConfirmationModal}
+				onClose={() => {
+					setShowConfirmationModal(false)
+				}}>
+				<Modal.Header>
+					<Col>
+						<Text
+							id="modal-title"
+							size={25}>
+							Veuillez confirmer vos choix
+						</Text>
+						<Text
+							id="modal-title-desc"
+							size={18}>
+							Une fois votre évènement créer et ajouter à la blockchain
+							<Text
+								size={18}
+								b>
+								&nbsp;il ne sera plus modifiable&nbsp;
+							</Text>
+							!
+						</Text>
+					</Col>
+				</Modal.Header>
+				<Modal.Body>
+					<Col>
+						{file !== undefined ? (
+							<Image
+								src={URL.createObjectURL(file)}
+								objectFit="cover"
+								alt="Default Image"
+								width={'70%'}
+								height={200}
+								css={{ borderRadius: '10px' }}
+							/>
+						) : (
+							<></>
+						)}
+						<Spacer y={2} />
+						<Row>
+							<Text
+								b
+								size={18}>
+								Nom de l&apos;évènement :&nbsp;
+							</Text>
+							<Text size={18}>{getValues(InputName.NAME)}</Text>
+							<Spacer x={2} />
+							<Text
+								b
+								size={18}>
+								Description :&nbsp;
+							</Text>
+							<Text size={18}>{getValues(InputName.DESCRIPTION)}</Text>
+						</Row>
+						<Row>
+							<Text
+								b
+								size={18}>
+								Date :&nbsp;
+							</Text>
+							<Text size={18}>
+								{formatEventDate(getValues(InputName.DATE))}, de {getValues(InputName.HOUR_START)}
+								&nbsp;à&nbsp;
+								{getValues(InputName.HOUR_END)}
+							</Text>
+						</Row>
+						<Row>
+							<Text
+								b
+								size={18}>
+								Lieu :&nbsp;
+							</Text>
+							<Text size={18}>{getValues(InputName.LOCATION)}</Text>
+						</Row>
+						<Row>
+							<Text
+								b
+								size={18}>
+								Prix:&nbsp;
+							</Text>
+							<Text size={18}>{getValues(InputName.PRICE)}&nbsp;€</Text>
+							<Spacer x={2} />
+							<Text
+								b
+								size={18}>
+								Nombre de places:&nbsp;
+							</Text>
+							<Text size={18}>{getValues(InputName.COUNT)}</Text>
+						</Row>
+					</Col>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button
+						auto
+						flat
+						color="error"
+						onPress={() => {
+							setShowConfirmationModal(false)
+							setIsInfosCorrect(true)
+						}}>
+						Annuler
+					</Button>
+					<Button
+						auto
+						onPress={() => {
+							setShowConfirmationModal(false)
+							setIsInfosCorrect(false)
+						}}>
+						Confirmer
+					</Button>
+				</Modal.Footer>
 			</Modal>
 		</>
 	)
