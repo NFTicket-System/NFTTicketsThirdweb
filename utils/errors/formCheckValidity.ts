@@ -1,5 +1,5 @@
 export const isInputValid = (inputValue: string, triedToSubmit: boolean): 'error' | 'default' => {
-	return inputValue === '' && triedToSubmit ? 'error' : 'default'
+	return (inputValue === '' || inputValue === undefined) && triedToSubmit ? 'error' : 'default'
 }
 
 export const setHelperText = (inputValue: string, triedToSubmit: boolean): string => {

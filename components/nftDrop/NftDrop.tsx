@@ -1,4 +1,4 @@
-import React, { type SetStateAction, useState } from 'react'
+import React, { useState } from 'react'
 import {
 	Button,
 	Card,
@@ -35,7 +35,6 @@ import {
 	setDateHelperText,
 	setHelperText,
 } from '@/utils/errors/formCheckValidity'
-import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
@@ -45,17 +44,7 @@ import { formatEventDate } from '@/utils/errors/tools'
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
 const NftDrop = () => {
-	const router = useRouter()
 	const { isDark } = useTheme()
-	const {
-		register,
-		handleSubmit,
-		formState: { isSubmitting },
-		setValue,
-		getValues,
-	} = useForm<formDataType>()
-	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
-	const [inputValue, setInputValue] = useState<string>('')
 
 	/* DATE */
 	const [dateValue, setDateValue] = useState<string>('')
@@ -77,31 +66,19 @@ const NftDrop = () => {
 	const [searchResult2Show, setSearchResult2Show] = useState<boolean>(false)
 	/* LOCATION */
 
-	/* CONFIRMATION */
+	/* CONFIRMATION && MODALS */
 	const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+	const [loadingModal, setLoadingModal] = useState(false)
 	const [isInfosCorrect, setIsInfosCorrect] = useState(false)
+	/* CONFIRMATION CONFIRMATION && MODALS */
 
-	/* CONFIRMATION */
-
-	const { mutateAsync: upload } = useStorageUpload()
+	/* BLOCKCHAIN */
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
+	const { mutateAsync: upload } = useStorageUpload()
 	const [{ data: userWallet }] = useConnect()
 	const connectedAddress = useAddress()
-	const [visible, setVisible] = useState(false)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
-
-	const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
-		setInputValue(e.target.value)
-	}
-
-	const handler = () => {
-		setVisible(true)
-	}
-
-	const closeHandler = () => {
-		setVisible(false)
-	}
 
 	const uploadToIpfs = async (): Promise<string> => {
 		const url = await upload({
@@ -111,13 +88,23 @@ const NftDrop = () => {
 		console.log(url[0])
 		return url[0]
 	}
+	/* BLOCKCHAIN */
+
+	/* FORM */
+	const handleButtonClick = () => {
+		handleSubmit(onSubmit)()
+	}
+
+	const { register, handleSubmit, setValue, getValues } = useForm<formDataType>()
+	const [triedToSubmit, setTriedToSubmit] = useState<boolean>(false)
 
 	const onSubmit = async (formData: formDataType) => {
 		if (!isLastStep) {
 			let isOk = false
 			switch (currentStepIndex) {
 				case 0:
-					getValues(InputName.NAME) !== '' ? (isOk = true) : (isOk = false)
+					console.log(getValues(InputName.NAME))
+					getValues(InputName.NAME).length > 0 ? (isOk = true) : (isOk = false)
 					break
 				case 1:
 					file !== undefined ? (isOk = true) : (isOk = false)
@@ -128,7 +115,8 @@ const NftDrop = () => {
 						: (isOk = false)
 					break
 				case 3:
-					selectedLocation !== '' ? (isOk = true) : (isOk = false)
+					console.log(getValues(InputName.LOCATION))
+					getValues(InputName.LOCATION) !== undefined ? (isOk = true) : (isOk = false)
 					break
 				default:
 					isOk = false
@@ -137,7 +125,6 @@ const NftDrop = () => {
 				? await nextStep()
 						.then(() => {
 							setTriedToSubmit(false)
-							setInputValue('')
 						})
 						.catch((e) => {
 							defaultErrorModal()
@@ -148,41 +135,48 @@ const NftDrop = () => {
 				noConnectedWalletErrorAlert()
 			} else {
 				if (isMismatched) {
-					closeHandler()
+					setLoadingModal(false)
 					await switchNetwork?.(ChainId.Mumbai)
 					return
 				}
 
 				setShowConfirmationModal(true)
+				console.log('in')
 
 				if (isInfosCorrect) {
-					console.log('INNNN')
+					console.log('innnnnn')
+					setShowConfirmationModal(false)
 					// show loader modal
-					handler()
+					setLoadingModal(true)
 					// upload img to ipfs
 					const imgUrl = await uploadToIpfs()
 					// create the ticket
 					console.log(formData)
-					/*	await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
-                            .then(() => {
-                                closeHandler()
-                                void swal(
-                                    'Bravo !',
-                                    formData.count > 1
-                                        ? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
-                                        : 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
-                                    'success'
-                                )
-                            })
-                            .catch((e) => {
-                                closeHandler()
-                                defaultErrorModal()
-                            }) */
+					/* await createNFTicket(formData, sdkAdmin, connectedAddress, imgUrl)
+						.then(() => {
+							closeHandler()
+							void swal(
+								'Bravo !',
+								formData.count > 1
+									? 'Vos tickets aux étés ajoutés à la blockchain et sont disponibles à la vente !'
+									: 'Votre ticket a été ajouté à la blockchain et est disponible à la vente !',
+								'success'
+							)
+						})
+						.catch((e) => {
+							closeHandler()
+							defaultErrorModal()
+							console.error(e)
+						}) */
+				} else {
+					console.log('ouuut')
 				}
 			}
 		}
 	}
+	/* FORM */
 
+	/* MULTISTEPS FORM */
 	const { steps, currentStepIndex, step, isFirstStep, previousStep, nextStep, isLastStep } = useMultiStepForm([
 		/* DESCRIPTION START */
 		<FormWrapper
@@ -190,9 +184,9 @@ const NftDrop = () => {
 			key={'description-step'}>
 			<Input
 				aria-label="Event Name"
-				{...register(InputName.NAME)}
 				label={"Nom de l'évènement *"}
 				type={'text'}
+				{...register(InputName.NAME)}
 				required
 				clearable
 				underlined
@@ -202,10 +196,10 @@ const NftDrop = () => {
 				helperColor="error"
 				onClearClick={() => {
 					setTriedToSubmit(false)
+					setValue(InputName.NAME, '')
 				}}
 				onChange={(e) => {
-					inputValue === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
-					handleInputChange(e)
+					getValues(InputName.NAME) === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
 				}}
 			/>
 			<Spacer y={4} />
@@ -402,30 +396,32 @@ const NftDrop = () => {
 					type="text"
 					required
 					value={selectedLocation === '' ? '' : selectedLocation}
-					status={isInputValid(selectedLocation, triedToSubmit)}
-					color={isInputValid(selectedLocation, triedToSubmit)}
-					helperText={setHelperText(selectedLocation, triedToSubmit)}
+					status={isInputValid(getValues(InputName.LOCATION), triedToSubmit)}
+					color={isInputValid(getValues(InputName.LOCATION), triedToSubmit)}
+					helperText={
+						getValues(InputName.LOCATION) === '' && triedToSubmit
+							? 'Veuillez choisir une adresse de la' + ' liste'
+							: ''
+					}
 					helperColor="error"
 					onChange={(e) => {
 						selectedLocation === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
 						setSelectedLocation(e.target.value)
+						setValue(InputName.LOCATION, '')
 						if (e.target.value.length >= 7) {
 							try {
 								getLocationDetails(e.target.value)
 									.then((r) => {
 										if (r.length > 0) {
-											console.log(r)
 											setLocationInfo(r)
 											setSearchResult2Show(true)
 										}
 									})
 									.catch((e) => {
 										defaultErrorModal()
-										console.error(e)
 									})
 							} catch (e) {
 								defaultErrorModal()
-								console.error(e)
 							}
 						} else {
 							setLocationInfo([])
@@ -506,6 +502,7 @@ const NftDrop = () => {
 		</FormWrapper>,
 		/* PRICE END */
 	])
+	/* MULTISTEPS FORM */
 
 	return (
 		<>
@@ -542,16 +539,17 @@ const NftDrop = () => {
 							<Button
 								onPress={() => {
 									setTriedToSubmit(true)
-								}}
-								type={'submit'}>
+									handleButtonClick()
+								}}>
 								{isLastStep ? 'Mettre en vente' : 'Suivant'}
 							</Button>
 						</Button.Group>
 					</Row>
 				</Container>
 			</form>
+			{/* MODALS */}
 			<Modal
-				open={visible}
+				open={loadingModal}
 				fullScreen>
 				<Modal.Body>
 					<Grid.Container
@@ -589,6 +587,7 @@ const NftDrop = () => {
 							Une fois votre évènement créer et ajouter à la blockchain
 							<Text
 								size={18}
+								color={'error'}
 								b>
 								&nbsp;il ne sera plus modifiable&nbsp;
 							</Text>
@@ -596,7 +595,7 @@ const NftDrop = () => {
 						</Text>
 					</Col>
 				</Modal.Header>
-				<Modal.Body>
+				<Modal.Body autoMargin>
 					<Col>
 						{file !== undefined ? (
 							<Image
@@ -611,7 +610,7 @@ const NftDrop = () => {
 							<></>
 						)}
 						<Spacer y={2} />
-						<Row>
+						<Row justify={'center'}>
 							<Text
 								b
 								size={18}>
@@ -626,7 +625,7 @@ const NftDrop = () => {
 							</Text>
 							<Text size={18}>{getValues(InputName.DESCRIPTION)}</Text>
 						</Row>
-						<Row>
+						<Row justify={'center'}>
 							<Text
 								b
 								size={18}>
@@ -638,7 +637,7 @@ const NftDrop = () => {
 								{getValues(InputName.HOUR_END)}
 							</Text>
 						</Row>
-						<Row>
+						<Row justify={'center'}>
 							<Text
 								b
 								size={18}>
@@ -646,7 +645,7 @@ const NftDrop = () => {
 							</Text>
 							<Text size={18}>{getValues(InputName.LOCATION)}</Text>
 						</Row>
-						<Row>
+						<Row justify={'center'}>
 							<Text
 								b
 								size={18}>
@@ -670,20 +669,21 @@ const NftDrop = () => {
 						color="error"
 						onPress={() => {
 							setShowConfirmationModal(false)
-							setIsInfosCorrect(true)
+							setIsInfosCorrect(false)
 						}}>
 						Annuler
 					</Button>
 					<Button
 						auto
 						onPress={() => {
-							setShowConfirmationModal(false)
-							setIsInfosCorrect(false)
+							setIsInfosCorrect(true)
+							handleButtonClick()
 						}}>
 						Confirmer
 					</Button>
 				</Modal.Footer>
 			</Modal>
+			{/* MODALS */}
 		</>
 	)
 }
