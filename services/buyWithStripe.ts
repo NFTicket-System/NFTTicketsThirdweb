@@ -43,28 +43,26 @@ export async function BuyWithStripe({
 			},
 		})
 		const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
-        const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
-        const marketplace = await sdkAdmin?.getContract(marketplaceAddress ?? '', 'marketplace')
+		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
+		const marketplace = await sdkAdmin?.getContract(marketplaceAddress ?? '', 'marketplace')
 		const listing = await marketplace?.getListing(nftId)
 		if (listing != null) {
 			const collection = await sdkAdmin.getContract(listing.assetContractAddress, 'nft-collection')
-            console.log(listing.assetContractAddress)
-            console.log(collection.getAddress())
-            // await marketplace?.direct.cancelListing(listing.id)
-            console.log('3')
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string
-            void collection.erc721.transfer(connectedAddress,'3')
-            console.log('4')
+			console.log(listing.assetContractAddress)
+			console.log(collection.getAddress())
+			// await marketplace?.direct.cancelListing(listing.id)
+			console.log('3')
+			void collection.erc721.transfer(connectedAddress, '3')
+			console.log('4')
 
 			// await collection.erc721.transfer(connectedAddress, listing.id)
-            const paymentIntent = await stripe.paymentIntents.create({
-                amount: amount,
-                currency: 'eur',
-                payment_method: paymentMethod.id,
-                confirm: true,
-            })
-            console.log('5')
-
+			const paymentIntent = await stripe.paymentIntents.create({
+				amount: amount,
+				currency: 'eur',
+				payment_method: paymentMethod.id,
+				confirm: true,
+			})
+			console.log('5')
 		}
 		// sdkAdmin.wallet
 	} catch (error) {
