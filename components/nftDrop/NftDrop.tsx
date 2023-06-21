@@ -445,12 +445,8 @@ const NftDrop = () => {
 										lat: location.geometry.coordinates[1],
 										lon: location.geometry.coordinates[0],
 									})
-									console.log(e.target, 'click')
 									setSelectedLocation(location.properties.label)
-									console.log(selectedLocation)
-									setValue(InputName.LOCATION, selectedLocation)
-									console.log(selectedLocation, 'set')
-									console.log(getValues(InputName.LOCATION))
+									setValue(InputName.LOCATION, location.properties.label)
 									setSearchResult2Show(false)
 								}}
 								css={{
