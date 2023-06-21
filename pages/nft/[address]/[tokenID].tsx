@@ -136,7 +136,7 @@ const NftDetails = () => {
 												shadow
 												color={'primary'}
 												auto>
-												Commander
+												Acheter en crypto
 											</Button>
 											<Button
 												onPress={async () => {
@@ -160,7 +160,7 @@ const NftDetails = () => {
 												shadow
 												color={'primary'}
 												auto>
-												Commander
+												Acheter en carte bleu
 											</Button>
 										</Card.Footer>
 									</Card>

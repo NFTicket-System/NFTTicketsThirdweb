@@ -46,13 +46,15 @@ export async function BuyWithStripe({
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
 		const marketplace = await sdkAdmin?.getContract(marketplaceAddress ?? '', 'marketplace')
 		const listing = await marketplace?.getListing(nftId)
+		console.log(listing)
+		return
 		if (listing != null) {
 			const collection = await sdkAdmin.getContract(listing.assetContractAddress, 'nft-collection')
 			console.log(listing.assetContractAddress)
 			console.log(collection.getAddress())
 			// await marketplace?.direct.cancelListing(listing.id)
 			console.log('3')
-			void collection.erc721.transfer(connectedAddress, '3')
+			void collection.erc721.transfer(connectedAddress, listing.asset.id)
 			console.log('4')
 
 			// await collection.erc721.transfer(connectedAddress, listing.id)
