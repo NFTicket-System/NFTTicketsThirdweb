@@ -1,3 +1,5 @@
+import { type NFTCollection } from '@thirdweb-dev/sdk'
+
 export interface formDataType {
 	count: number
 	name: string
@@ -23,4 +25,9 @@ export interface maticData {
 			eur: number
 		}
 	}
+}
+
+export interface nftInfo {
+	numberOwned: number
+	collection: NFTCollection
 }
