@@ -7,23 +7,29 @@ interface EventContainerProps {
 }
 
 const EventContainer: React.FC<EventContainerProps> = (props: EventContainerProps) => {
+    const maxCatContainerSize: number = 5
+    var indexOfEvent: number = 0
+
 	return (
 		<>
 			<Grid.Container
 				gap={2}
 				justify="space-evenly">
 				{props.events.map((item) => {
-					if (item.id > 0) {
-						return (
-							<Grid
-								key={item.id}
-								md={2}>
-								<EventCard event={item} />
-							</Grid>
-						)
-					} else {
-						return <Grid md={2} />
-					}
+                    if(indexOfEvent < maxCatContainerSize){
+                        if (item.id > 0) {
+                            indexOfEvent++
+                            return (
+                                    <Grid
+                                            key={item.id}
+                                            md={2}>
+                                        <EventCard event={item} />
+                                    </Grid>
+                            )
+                        } else {
+                            return <Grid md={2} />
+                        }
+                    }
 				})}
 			</Grid.Container>
 		</>

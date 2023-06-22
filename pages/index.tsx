@@ -5,9 +5,8 @@ import Footer from '../components/footer/Footer'
 import Caroussel from '../components/caroussel/Caroussel'
 import {Container, Divider, Grid, Spacer, Text} from '@nextui-org/react'
 import {LightEvent} from '../models/LightEvent'
-import EventContainer from '../components/container/EventContainer'
 import axios from 'axios'
-import CategoryContainer from "../components/container/CategoryContainer";
+import CategoryContainer from "../components/container/CategoryContainer"
 
 const Home: NextPage = () => {
     const mockedEvent1 = new LightEvent(
@@ -109,7 +108,9 @@ const Home: NextPage = () => {
     const fetchHumorEvents = useCallback(async () => {
         await axios.get('http://localhost:8080/api/events/all/light/byCat/Humor').then((response) => {
             var result: Array<LightEvent> = []
-            response.data.map((item: LightEvent) => result.push(item))
+            response.data.map((item: LightEvent) => {
+                result.push(item)
+            })
             fillEvents(result)
             setHumorEvents(result)
         })
