@@ -35,12 +35,12 @@ import {
 	isInputValid,
 	setDateHelperText,
 	setHelperText,
-} from '@/utils/errors/formCheckValidity'
+} from '@/utils/formCheckValidity'
 import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
-import { formatEventDate } from '@/utils/errors/tools'
+import { formatEventDate } from '@/utils/tools'
 import { createNFTicket } from '@/services/createNFTicket'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
