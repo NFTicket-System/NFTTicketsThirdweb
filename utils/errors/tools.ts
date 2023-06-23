@@ -16,3 +16,24 @@ export const formatEventDate = (dateString: string): string => {
 		return dateString
 	}
 }
+
+export const formatEventDateTime = (dateTimeString: string): string => {
+	if (dateTimeString !== '') {
+        const date: Date = new Date(dateTimeString);
+
+        const options: Intl.DateTimeFormatOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        };
+
+        const formattedDate: string = date.toLocaleDateString('fr-FR', options);
+        const formattedTime: string = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+
+        return `${formattedDate.split(' à')[0]} - ${formattedTime}`;
+	} else {
+		return dateTimeString
+	}
+}

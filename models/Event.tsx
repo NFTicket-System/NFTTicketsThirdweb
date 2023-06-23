@@ -8,6 +8,8 @@ export class Event {
     timestampCreation: string;
     isTrendemous: boolean;
     urlImage: string;
+    city: string;
+    address: string;
     tickets: Ticket[];
 
     constructor(data: any) {
@@ -20,6 +22,8 @@ export class Event {
         this.timestampCreation = data.timestampCreation;
         this.isTrendemous = data.isTrendemous;
         this.urlImage = data.urlImage;
+        this.city = data.city;
+        this.address = data.address;
         this.tickets = data.tickets.map((ticketData: any) => new Ticket(ticketData));
     }
 }

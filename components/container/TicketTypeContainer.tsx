@@ -20,6 +20,14 @@ const TicketTypeContainer: React.FC<TicketTypeContainerProps> = (props: TicketTy
         return result
     }
 
+    const getLowestPrice = (tickets: Ticket[]): number => {
+        const cheapestTicket = tickets.reduce(
+                (acc, loc) =>
+                        acc.prix < loc.prix ? acc : loc
+        )
+        return cheapestTicket.prix
+    }
+
     return (
             <>
                 <Container xl>
@@ -40,11 +48,11 @@ const TicketTypeContainer: React.FC<TicketTypeContainerProps> = (props: TicketTy
                                             if (type.length > 0) {
                                                 curentIndex++
                                                 const ticketsOfType = getTicketsOfType(type)
-
+                                                const lowestPriceOfType = getLowestPrice(ticketsOfType)
                                                 return (
                                                         <TicketTypeCollapse ticketType={type}
                                                                             ticketsOfType={ticketsOfType}
-                                                                            lowerPrice={10.0}/>
+                                                                            lowerPrice={lowestPriceOfType}/>
                                                 )
                                             } else {
                                                 return <></>

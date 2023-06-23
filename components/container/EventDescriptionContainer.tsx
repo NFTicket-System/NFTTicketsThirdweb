@@ -2,13 +2,16 @@ import {Event} from "../../models/Event"
 import {Card, Col, Container, Grid, Image as RemoteImage, Row, Spacer, Text} from "@nextui-org/react"
 import Image from 'next/image'
 import yellowCalendar from "../../assets/icons/calendrier-yellow.png"
-import blackCalendar from "../../assets/icons/calendrier-black.png"
+import yellowLocalisation from "../../assets/icons/localisateur-yellow.png"
+import {formatEventDateTime} from "@/utils/errors/tools";
 
 interface EventDescriptionContainerProps {
     event: Event | null
 }
 
 const EventDescriptionContainer: React.FC<EventDescriptionContainerProps> = (props: EventDescriptionContainerProps) => {
+    const formatedTimestampStart = formatEventDateTime(props.event ? props.event.timestampStart : "")
+    const formatedTimestampEnd = formatEventDateTime(props.event ? props.event.timestampEnd : "")
     if (props.event)
         return (
                 <>
@@ -43,11 +46,44 @@ const EventDescriptionContainer: React.FC<EventDescriptionContainerProps> = (pro
                                                 width={30}
                                                 height={30}/>
                                         <Spacer/>
-                                        <Text h4 b>
-                                            {props.event.timestampStart} - {props.event.timestampEnd}
-                                        </Text>
+                                        <Col>
+                                            <Row align={"center"}>
+                                                <Text h6>
+                                                    Début :
+                                                </Text>
+                                                <Spacer/>
+                                                <Text h4 b>
+                                                    {formatedTimestampStart}
+                                                </Text>
+                                            </Row>
+                                            <Row align={"center"}>
+                                                <Text h6>
+                                                    Fin :
+                                                </Text>
+                                                <Spacer/>
+                                                <Text h4 b>
+                                                    {formatedTimestampEnd}
+                                                </Text>
+                                            </Row>
+                                        </Col>
                                     </Row>
-                                    <Text>test</Text>
+                                    <Spacer/>
+                                    <Row justify={"flex-start"}>
+                                        <Image
+                                                alt="Icone de localisation"
+                                                src={yellowLocalisation}
+                                                width={30}
+                                                height={30}/>
+                                        <Spacer/>
+                                        <Col>
+                                            <Text h4 b>
+                                                {props.event.city}
+                                            </Text>
+                                            <Text h6>
+                                                {props.event.address}
+                                            </Text>
+                                        </Col>
+                                    </Row>
                                 </Col>
                             </Card.Body>
                         </Card>

@@ -10,19 +10,19 @@ const Footer = () => {
                 <Card.Body>
                     <Row>
                         <Col span={10} css={{marginTop:'2%', marginLeft:'2%'}}>
-                            <Link href='https://github.com/orgs/NFTicket-System/repositories'>
+                            <Link href='https://github.com/NFTicket-System/NFTTicketsThirdweb'>
                                 <Git
                                     width={20}
                                     height={20}
                                     color='white'/>
                                     <Spacer x={0.2}/>
-                                <Text 
+                                <Text
                                     color={'white'}
                                     size={16}>
                                     Notre Github
                                 </Text>
                             </Link>
-                            <Text 
+                            <Text
                                 color={'white'}
                                 size={14}>
                                 Copyright © 2022-2023 NFTickets corp.
@@ -39,7 +39,7 @@ const Footer = () => {
                 </Card.Body>
             </Card>
             <Spacer y={1}/>
-        </Container>         
+        </Container>
   )
 }
 
