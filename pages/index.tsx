@@ -171,7 +171,7 @@ const Home: NextPage = () => {
 
 	return (
 		<>
-			<Header />
+			<Header events={trendemousEvents} />
 			<Spacer x={4} />
 			{/* CAROUSEL */}
 			<Container>
@@ -192,13 +192,12 @@ const Home: NextPage = () => {
 						src="https://images.unsplash.com/photo-1618176581836-9dcf475e2b4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
 						objectFit="cover"
 						width="100%"
-						height={200}
+						height={150}
 						alt="Card image background"
 					/>
 				</Card>
 				<Spacer y={0.5} />
 				<SwiperCarousel events={trendemousEvents} />
-
 				<Spacer x={4} />
 			</Container>
 			{/* CAROUSEL */}

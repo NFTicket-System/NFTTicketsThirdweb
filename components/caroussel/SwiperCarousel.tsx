@@ -16,8 +16,6 @@ interface EventContainerProps {
 }
 
 const SwiperCarousel = (props: EventContainerProps) => {
-	console.log(props.events)
-
 	return (
 		<Swiper
 			spaceBetween={10}
@@ -65,7 +63,6 @@ const SwiperCarousel = (props: EventContainerProps) => {
 									<Row justify="flex-end">
 										<Button
 											onPress={() => {
-												console.log(slide.id)
 												void router.push(`/category/${slide.id}`)
 											}}
 											flat
