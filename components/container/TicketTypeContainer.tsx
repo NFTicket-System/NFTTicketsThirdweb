@@ -1,9 +1,8 @@
-import {Grid, Collapse, Container, Text, Card} from "@nextui-org/react";
+import {Collapse, Container, Text, Card} from "@nextui-org/react";
 import TicketTypeCollapse from "../collapse/TicketTypeCollapse";
 import {Ticket} from "../../models/Event";
 
 interface TicketTypeContainerProps {
-    // @ts-ignore
     tickets: Ticket[],
     ticketTypes: string[]
 }
@@ -32,10 +31,10 @@ const TicketTypeContainer: React.FC<TicketTypeContainerProps> = (props: TicketTy
                                 </Text>
                             </Container>
                         </Card.Header>
-                        <Card.Divider />
+                        <Card.Divider/>
                         <Card.Body>
                             <Container xl>
-                                <Collapse.Group  bordered>
+                                <Collapse.Group bordered>
                                     {props.ticketTypes.map(type => {
                                         if (curentIndex < maxContainerSize) {
                                             if (type.length > 0) {
@@ -43,7 +42,9 @@ const TicketTypeContainer: React.FC<TicketTypeContainerProps> = (props: TicketTy
                                                 const ticketsOfType = getTicketsOfType(type)
 
                                                 return (
-                                                        <TicketTypeCollapse ticketType={type} ticketsOfType={ticketsOfType} lowerPrice={10.0}/>
+                                                        <TicketTypeCollapse ticketType={type}
+                                                                            ticketsOfType={ticketsOfType}
+                                                                            lowerPrice={10.0}/>
                                                 )
                                             } else {
                                                 return <></>

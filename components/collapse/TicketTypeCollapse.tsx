@@ -10,8 +10,6 @@ interface TicketCardProps {
 }
 
 const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) => {
-    // @ts-ignore
-    // @ts-ignore
     return (
             <Collapse title={props.ticketType}>
                 <Row justify="space-between">
@@ -23,7 +21,7 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
                             <Text color="black" b>
                                 Consulter les tickets
                             </Text>
-                            <Spacer y={1}/>
+                            <Spacer/>
                             <Image
                                     width={30}
                                     height={30}

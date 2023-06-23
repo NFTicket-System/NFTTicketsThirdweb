@@ -6,6 +6,7 @@ import axios from "axios";
 import router from "next/router";
 import TicketTypeContainer from "../../components/container/TicketTypeContainer";
 import {Spacer} from "@nextui-org/react";
+import TicketDescriptionContainer from "../../components/container/EventDescriptionContainer";
 
 const EventPage = () => {
     const {eventId} = router.query
@@ -41,8 +42,10 @@ const EventPage = () => {
     return (
             <>
                 <Header/>
-                <TicketTypeContainer tickets={event ? event.tickets : []} ticketTypes={ticketTypes}/>
+                <TicketDescriptionContainer event={event ? event : null}/>
                 <Spacer/>
+                <TicketTypeContainer tickets={event ? event.tickets : []} ticketTypes={ticketTypes}/>
+                <Spacer y={2}/>
                 <Footer/>
             </>
     )
