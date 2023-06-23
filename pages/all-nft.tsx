@@ -54,8 +54,8 @@ const AllNft = () => {
 					</Container>
 				</>
 			)}
-			<Spacer y={3} />
-			<Footer></Footer>
+			<Spacer y={1} />
+			<Footer/>
 		</>
 	)
 }

@@ -204,7 +204,7 @@ const Home: NextPage = () => {
 
                 {/* mocked */}
                 <CategoryContainer events={mockedEvents} title={"Tests avec events mockés"} libelle={"mocked"}/>
-                <Spacer y={2}/>
+                <Spacer y={1}/>
 
                 <Footer/>
             </>
