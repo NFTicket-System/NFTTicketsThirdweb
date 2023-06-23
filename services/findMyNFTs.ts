@@ -1,4 +1,4 @@
-import { NFT, ThirdwebSDK } from '@thirdweb-dev/sdk'
+import { type NFT, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { nftInfo } from '@/models/interfaces/createNFTFormData'
 
 export async function findMyNFTs({ connectedAddress }: { connectedAddress: string }) {

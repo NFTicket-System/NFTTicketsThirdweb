@@ -31,3 +31,9 @@ export interface nftInfo {
 	numberOwned: number
 	collection: NFTCollection
 }
+
+export interface nftData {
+	collectionId: string
+	image: string
+	id: string
+}
