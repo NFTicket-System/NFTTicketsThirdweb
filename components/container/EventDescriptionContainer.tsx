@@ -1,17 +1,21 @@
 import {Event} from "../../models/Event"
-import {Card, Col, Container, Grid, Image as RemoteImage, Row, Spacer, Text} from "@nextui-org/react"
+import {Button, Card, Col, Container, Grid, Image as RemoteImage, Row, Spacer, Text} from "@nextui-org/react"
 import Image from 'next/image'
 import yellowCalendar from "../../assets/icons/calendrier-yellow.png"
 import yellowLocalisation from "../../assets/icons/localisateur-yellow.png"
 import {formatEventDateTime} from "@/utils/errors/tools";
+import {Category} from "@/models/Category";
+import EventCategoryBadge from "@/components/Badge/EventCategoryBadge";
 
 interface EventDescriptionContainerProps {
-    event: Event | null
+    event: Event | null,
+    categories: Category[]
 }
 
 const EventDescriptionContainer: React.FC<EventDescriptionContainerProps> = (props: EventDescriptionContainerProps) => {
     const formatedTimestampStart = formatEventDateTime(props.event ? props.event.timestampStart : "")
     const formatedTimestampEnd = formatEventDateTime(props.event ? props.event.timestampEnd : "")
+
     if (props.event)
         return (
                 <>
@@ -32,7 +36,27 @@ const EventDescriptionContainer: React.FC<EventDescriptionContainerProps> = (pro
                                         </Text>
                                     </Grid>
                                     <Grid xs={12}>
-                                        {/* TODO liste des badges*/}
+                                        <Row align={"flex-start"}>
+                                            {props.event.isTrendemous ?
+                                                    <>
+                                                        <Button size="sm" bordered auto rounded
+                                                                css={{color: "#DFE73B", borderColor: "#DFE73B"}}>
+                                                            Tendance
+                                                        </Button>
+                                                        <Spacer/>
+                                                    </>
+                                                    :
+                                                    <></>
+                                            }
+                                            {props.categories.map((category) => {
+                                                return (
+                                                        <>
+                                                            <EventCategoryBadge category={category}/>
+                                                            <Spacer/>
+                                                        </>
+                                                )
+                                            })}
+                                        </Row>
                                     </Grid>
                                 </Grid.Container>
                             </Card.Header>
