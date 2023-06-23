@@ -25,7 +25,7 @@ const SwiperCarousel = (props: EventContainerProps) => {
 			autoplay={{ delay: 2000 }}
 			modules={[Autoplay, Navigation]}
 			className={styles.carousel}>
-			{props.events.map((slide, index) => (
+			{props.events.map((event, index) => (
 				<SwiperSlide
 					className={styles.slide}
 					key={index}>
@@ -38,14 +38,14 @@ const SwiperCarousel = (props: EventContainerProps) => {
 								<Text
 									h2
 									color="white">
-									{slide.libelle}
+									{event.libelle}
 								</Text>
 							</Col>
 						</Card.Header>
 						<Card.Body css={{ p: 0 }}>
 							<div className={styles.overlay} />
 							<Card.Image
-								src={slide.urlImage}
+								src={event.urlImage}
 								objectFit="cover"
 								width="100%"
 								height="100%"
@@ -63,7 +63,7 @@ const SwiperCarousel = (props: EventContainerProps) => {
 									<Row justify="flex-end">
 										<Button
 											onPress={() => {
-												void router.push(`/category/${slide.id}`)
+												void router.push(`/category/${event.id}`)
 											}}
 											flat
 											auto

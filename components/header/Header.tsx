@@ -74,17 +74,13 @@ const Header = (props: EventContainerProps) => {
 						</Link>
 					</Navbar.Item>
 				</Navbar.Content>
-				<Navbar.Content>
-					<ConnectWallet
-						btnTitle="Connectez votre wallet"
-						colorMode={isDark ?? false ? 'dark' : 'light'}
-					/>
+				<Navbar.Content
+					css={{
+						width: '40%',
+					}}>
 					<Navbar.Item
 						css={{
-							'@xsMax': {
-								w: '100%',
-								jc: 'center',
-							},
+							width: '100%',
 						}}>
 						<Input
 							clearable
@@ -115,6 +111,12 @@ const Header = (props: EventContainerProps) => {
 							}}
 						/>
 					</Navbar.Item>
+				</Navbar.Content>
+				<Navbar.Content>
+					<ConnectWallet
+						btnTitle="Connectez votre wallet"
+						colorMode={isDark ?? false ? 'dark' : 'light'}
+					/>
 					<Navbar.Item>
 						<ThemeSwitcher></ThemeSwitcher>
 					</Navbar.Item>
