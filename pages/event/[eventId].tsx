@@ -1,15 +1,17 @@
 import Footer from "../../components/footer/Footer"
 import Header from "../../components/header/Header"
-import Event from "../../models/Event"
+import {Event, Ticket} from "../../models/Event"
 import {useCallback, useEffect, useState} from "react";
 import axios from "axios";
 import router from "next/router";
+import TicketTypeContainer from "../../components/container/TicketTypeContainer";
+import {Spacer} from "@nextui-org/react";
 
 const EventPage = () => {
     const {eventId} = router.query
 
     const [event, setEvent] = useState<Event>()
-    const [ticketTypes, setTicketTypes] = useState<String[]>([])
+    const [ticketTypes, setTicketTypes] = useState<string[]>([])
     const [isEventAlreadyFetched, setIsEventAlreadyFetched] = useState(false)
 
     const fetchEventAllInfos = useCallback(async () => {
@@ -18,8 +20,8 @@ const EventPage = () => {
             setEvent(responseEvent)
 
             //get all the different types of ticket
-            let responseTicketTypes: String[] = []
-            responseEvent.tickets.forEach(it => {
+            let responseTicketTypes: string[] = []
+            responseEvent.tickets.forEach((it: { type: string }) => {
                 if (!responseTicketTypes.includes(it.type))
                     responseTicketTypes.push(it.type)
             })
@@ -39,6 +41,8 @@ const EventPage = () => {
     return (
             <>
                 <Header/>
+                <TicketTypeContainer tickets={event ? event.tickets : []} ticketTypes={ticketTypes}/>
+                <Spacer/>
                 <Footer/>
             </>
     )

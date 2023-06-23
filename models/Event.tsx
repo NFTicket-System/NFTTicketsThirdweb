@@ -1,4 +1,4 @@
-class Event {
+export class Event {
     id: number;
     libelle: string;
     idCity: number;
@@ -24,7 +24,7 @@ class Event {
     }
 }
 
-class Ticket {
+export class Ticket {
     id: number;
     addressContract: string;
     prix: number;
@@ -35,11 +35,9 @@ class Ticket {
     constructor(data: any) {
         this.id = data.id;
         this.addressContract = data.addressContract;
-        this.prix = data.prix;
+        this.prix = parseFloat(data.prix);;
         this.type = data.type;
         this.date = data.date;
         this.solded = data.solded;
     }
 }
-
-export default Event;
