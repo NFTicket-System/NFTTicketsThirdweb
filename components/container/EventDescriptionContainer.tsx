@@ -3,7 +3,7 @@ import {Button, Card, Col, Container, Grid, Image as RemoteImage, Row, Spacer, T
 import Image from 'next/image'
 import yellowCalendar from "../../assets/icons/calendrier-yellow.png"
 import yellowLocalisation from "../../assets/icons/localisateur-yellow.png"
-import {formatEventDateTime} from "@/utils/errors/tools";
+import {formatEventDateTime} from "@/utils/tools";
 import {Category} from "@/models/Category";
 import EventCategoryBadge from "@/components/Badge/EventCategoryBadge";
 
