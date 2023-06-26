@@ -1,14 +1,23 @@
-import { Avatar, Dropdown, Input, Link, Navbar, Spacer, Text, useTheme } from '@nextui-org/react'
+import { Card, Divider, Input, Link, Navbar, Spacer, Text, useTheme } from '@nextui-org/react'
 import { ConnectWallet } from '@thirdweb-dev/react'
-import React from 'react'
+import React, { useState } from 'react'
 import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import { IoSearch } from '@react-icons/all-files/io5/IoSearch'
+import { type LightEvent } from '@/models/LightEvent'
 
-const Header = () => {
+interface HeaderProps {
+	events: LightEvent[]
+}
+
+const Header = (props: HeaderProps) => {
 	const { isDark } = useTheme()
 	const { asPath } = useRouter()
+
+	console.log(props)
+
+	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
 
 	return (
 		<>
@@ -27,28 +36,6 @@ const Header = () => {
 				shouldHideOnScroll
 				variant={'sticky'}
 				maxWidth="fluid">
-				{/*				<Button
-					color="gradient"
-					auto>
-					Gradient
-				</Button>
-				<Button
-					color={'primary'}
-					auto
-					onPress={async () => {
-						await swal('Good job!', 'You clicked the' + ' button!', 'success')
-					}}>
-					TEST
-				</Button>
-				<Button
-					color={'primary'}
-					flat
-					auto
-					onPress={async () => {
-						await swal('Good job!', 'You clicked the' + ' button!', 'success')
-					}}>
-					TEST
-				</Button> */}
 				<Navbar.Content
 					enableCursorHighlight
 					activeColor={'primary'}
@@ -89,17 +76,13 @@ const Header = () => {
 						</Link>
 					</Navbar.Item>
 				</Navbar.Content>
-				<Navbar.Content>
-					<ConnectWallet
-						btnTitle="Connectez votre wallet"
-						colorMode={isDark ?? false ? 'dark' : 'light'}
-					/>
+				<Navbar.Content
+					css={{
+						width: '40%',
+					}}>
 					<Navbar.Item
 						css={{
-							'@xsMax': {
-								w: '100%',
-								jc: 'center',
-							},
+							width: '100%',
 						}}>
 						<Input
 							clearable
@@ -118,73 +101,76 @@ const Header = () => {
 								},
 							}}
 							placeholder="Recherche..."
+							onChange={(e) => {
+								const filteredEvents = props.events.filter((event) =>
+									event.libelle.toLowerCase().includes(e.target.value.toLowerCase())
+								)
+								e.target.value.length > 0
+									? filteredEvents.length > 0
+										? setSearchTermResults(filteredEvents)
+										: setSearchTermResults([])
+									: setSearchTermResults([])
+							}}
 						/>
 					</Navbar.Item>
-					<Dropdown placement="bottom-right">
-						<Navbar.Item>
-							<Dropdown.Trigger>
-								<Avatar
-									bordered
-									as="button"
-									color="primary"
-									size="md"
-									src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-								/>
-							</Dropdown.Trigger>
-						</Navbar.Item>
-						<Dropdown.Menu
-							aria-label="User menu actions"
-							color="secondary"
-							onAction={(actionKey) => {
-								console.log({ actionKey })
-							}}>
-							<Dropdown.Item
-								key="profile"
-								css={{ height: '$18' }}>
-								<Text
-									b
-									color="inherit"
-									css={{ d: 'flex' }}>
-									Signed in as
-								</Text>
-								<Text
-									b
-									color="inherit"
-									css={{ d: 'flex' }}>
-									zoey@example.com
-								</Text>
-							</Dropdown.Item>
-							<Dropdown.Item
-								key="settings"
-								withDivider>
-								My Settings
-							</Dropdown.Item>
-							<Dropdown.Item key="team_settings">Team Settings</Dropdown.Item>
-							<Dropdown.Item
-								key="analytics"
-								withDivider>
-								Analytics
-							</Dropdown.Item>
-							<Dropdown.Item key="system">System</Dropdown.Item>
-							<Dropdown.Item key="configurations">Configurations</Dropdown.Item>
-							<Dropdown.Item
-								key="help_and_feedback"
-								withDivider>
-								Help & Feedback
-							</Dropdown.Item>
-							<Dropdown.Item
-								key="logout"
-								withDivider
-								color="error">
-								Log Out
-							</Dropdown.Item>
-						</Dropdown.Menu>
-					</Dropdown>
+				</Navbar.Content>
+				<Navbar.Content>
+					<ConnectWallet
+						btnTitle="Connectez votre wallet"
+						colorMode={isDark ?? false ? 'dark' : 'light'}
+					/>
 					<Navbar.Item>
 						<ThemeSwitcher></ThemeSwitcher>
 					</Navbar.Item>
 				</Navbar.Content>
 			</Navbar>
+			{searchTermResults !== undefined ? (
+				<>
+					{searchTermResults.length > 0 ? (
+						<Card
+							css={{
+								margin: 'auto',
+								padding: '0 1em',
+								maxWidth: '50%',
+								marginTop: '1%',
+							}}>
+							<Card.Body>
+								<Text
+									h4
+									b>
+									Évènements disponibles :
+								</Text>
+								<Divider />
+								{searchTermResults.map((searchItem) => (
+									<Text
+										css={{
+											display: 'flex',
+											alignItems: 'center',
+											padding: '7px',
+
+											'&:hover': {
+												color: '#4E3104',
+												cursor: 'pointer',
+												backgroundColor: '$primaryLight',
+												borderRadius: '4px',
+											},
+										}}
+										key={searchItem.id}
+										onClick={() => {
+											void router.push(`/event/${searchItem.id}`)
+										}}>
+										{searchItem.libelle}
+									</Text>
+								))}
+							</Card.Body>
+						</Card>
+					) : (
+						''
+					)}
+				</>
+			) : (
+				<></>
+			)}
 			<Spacer y={2} />
 		</>
 	)

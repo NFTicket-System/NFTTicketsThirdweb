@@ -1,5 +1,5 @@
-import { Card, Text, Col } from '@nextui-org/react'
-import { LightEvent } from '../../models/LightEvent'
+import { Card, Col, Text } from '@nextui-org/react'
+import { type LightEvent } from '@/models/LightEvent'
 import { useRouter } from 'next/router'
 
 interface EventCardProps {
@@ -14,9 +14,9 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
 			isHoverable
 			variant="bordered"
 			onClick={() => {
-				router.push(`/event/${props.event.id}`)
+				void router.push(`/event/${props.event.id}`)
 			}}
-            css={{ minHeight: '200px'}}>
+			css={{ minHeight: '200px' }}>
 			<Card.Image
 				width="100%"
 				height="100%"

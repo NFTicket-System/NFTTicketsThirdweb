@@ -8,7 +8,7 @@ interface EventContainerProps {
 
 const EventContainer: React.FC<EventContainerProps> = (props: EventContainerProps) => {
     const maxCatContainerSize: number = 5
-    var indexOfEvent: number = 0
+    var curentIndex: number = 0
 
 	return (
 		<>
@@ -16,9 +16,9 @@ const EventContainer: React.FC<EventContainerProps> = (props: EventContainerProp
 				gap={2}
 				justify="space-evenly">
 				{props.events.map((item) => {
-                    if(indexOfEvent < maxCatContainerSize){
+                    if(curentIndex < maxCatContainerSize){
                         if (item.id > 0) {
-                            indexOfEvent++
+                            curentIndex++
                             return (
                                     <Grid
                                             key={item.id}

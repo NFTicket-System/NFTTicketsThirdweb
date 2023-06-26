@@ -33,9 +33,21 @@ export interface nftInfo {
 	collection: NFTCollection
 }
 
+
 export interface nftData {
 	collectionId: string
 	image: string
 	id: BigNumber
 	name: string
+}
+
+export interface CreateEventResponse {
+	fieldCount: number
+	affectedRows: number
+	insertId: number
+	serverStatus: number
+	warningCount: number
+	message: string
+	protocol41: boolean
+	changedRows: number
 }
