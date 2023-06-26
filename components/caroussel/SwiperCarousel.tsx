@@ -7,7 +7,7 @@ import 'swiper/css/navigation'
 import styles from 'styles/carousel/SwiperCarousel.module.scss'
 import { Autoplay, Navigation } from 'swiper'
 import { type LightEvent } from '@/models/LightEvent'
-import { Button, Card, Col, Row, Text } from '@nextui-org/react'
+import { Card, Col, Text } from '@nextui-org/react'
 import React from 'react'
 import router from 'next/router'
 
@@ -31,8 +31,12 @@ const SwiperCarousel = (props: EventContainerProps) => {
 					key={index}>
 					<Card
 						isPressable
+						isHoverable
 						variant={'flat'}
-						css={{ w: '100%', h: '100%', boxShadow: 'unset' }}>
+						css={{ w: '100%', h: '100%', boxShadow: 'unset' }}
+						onPress={() => {
+							void router.push(`/event/${event.id}`)
+						}}>
 						<Card.Header css={{ position: 'absolute', zIndex: 2, top: 5 }}>
 							<Col>
 								<Text
@@ -52,7 +56,7 @@ const SwiperCarousel = (props: EventContainerProps) => {
 								alt="Relaxing app background"
 							/>
 						</Card.Body>
-						<Card.Footer
+						{/*						<Card.Footer
 							css={{
 								position: 'absolute',
 								bottom: 0,
@@ -79,7 +83,7 @@ const SwiperCarousel = (props: EventContainerProps) => {
 									</Row>
 								</Col>
 							</Row>
-						</Card.Footer>
+						</Card.Footer> */}
 					</Card>
 				</SwiperSlide>
 			))}

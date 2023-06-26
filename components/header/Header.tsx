@@ -5,7 +5,7 @@ import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
 import router, { useRouter } from 'next/router'
 import { IoSearch } from '@react-icons/all-files/io5/IoSearch'
-import {LightEvent} from "@/models/LightEvent";
+import { type LightEvent } from '@/models/LightEvent'
 
 interface HeaderProps {
 	events: LightEvent[]
@@ -155,7 +155,7 @@ const Header = (props: HeaderProps) => {
 										}}
 										key={searchItem.id}
 										onClick={() => {
-											void router.push(`/category/${searchItem.id}`)
+											void router.push(`/event/${searchItem.id}`)
 										}}>
 										{searchItem.libelle}
 									</Text>
