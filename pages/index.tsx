@@ -214,7 +214,7 @@ const Home: NextPage = () => {
 			<Spacer y={1} />
 			<Divider />
 
-			{/* Theatre */}
+			{/* Humour */}
 			<CategoryContainer
 				events={humorEvents}
 				title={'Humours'}

@@ -9,18 +9,13 @@ const Footer = () => {
             <Card css={ { $$cardColor: '$colors$yellow600' } }>
                 <Card.Body>
                     <Row>
-                        <Col span={10} css={{marginTop:'2%', marginLeft:'2%'}}>
+                        <Col>
                             <Link href='https://github.com/NFTicket-System/NFTTicketsThirdweb'>
                                 <Git
-                                    width={20}
-                                    height={20}
-                                    color='white'/>
+                                    width={40}
+                                    height={40}
+                                    color='black'/>
                                     <Spacer x={0.2}/>
-                                <Text
-                                    color={'white'}
-                                    size={16}>
-                                    Notre Github
-                                </Text>
                             </Link>
                             <Text
                                 color={'white'}
@@ -32,7 +27,7 @@ const Footer = () => {
                             <Logo
                                 width={100}
                                 height={100}
-                                color='white'
+                                color='black'
                                 />
                         </Col>
                     </Row>

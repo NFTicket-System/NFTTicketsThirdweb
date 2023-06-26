@@ -30,14 +30,26 @@ const CategoryContainer: React.FC<CategoryContainerProps> = (props: CategoryCont
                                 size={12}
                                 weight="bold"
                                 transform="uppercase">
-                            <Link
+                            {/* <Link
                                     underline
                                     color="secondary"
                                     onClick={() => {
                                         router.push(`/category/${props.libelle}`)
                                     }}>
                                 Voir plus
-                            </Link>
+                            </Link> */}
+                                <Link
+                                    underline
+                                    color="secondary"
+                                    onClick={() => {
+                                        // router.push(`/category/${props.libelle}`)
+                                        void router.push({
+                                            pathname: `/category/${props.libelle}`,
+                                            query: {libelle: props.libelle}
+                                        })
+                                    }}>
+                                    Voir plus
+                                </Link>
                         </Text>
                     </Grid>
                 </Grid.Container>
