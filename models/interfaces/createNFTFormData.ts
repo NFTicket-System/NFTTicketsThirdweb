@@ -1,4 +1,5 @@
 import { type NFTCollection } from '@thirdweb-dev/sdk'
+import { type BigNumber } from 'ethers'
 
 export interface formDataType {
 	count: number
@@ -30,6 +31,14 @@ export interface maticData {
 export interface nftInfo {
 	numberOwned: number
 	collection: NFTCollection
+}
+
+
+export interface nftData {
+	collectionId: string
+	image: string
+	id: BigNumber
+	name: string
 }
 
 export interface CreateEventResponse {
