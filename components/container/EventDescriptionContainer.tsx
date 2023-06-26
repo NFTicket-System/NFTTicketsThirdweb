@@ -6,6 +6,7 @@ import yellowLocalisation from "../../assets/icons/localisateur-yellow.png"
 import {formatEventDateTime} from "@/utils/tools";
 import {Category} from "@/models/Category";
 import EventCategoryBadge from "@/components/Badge/EventCategoryBadge";
+import router from "next/router";
 
 interface EventDescriptionContainerProps {
     event: Event | null,
@@ -39,8 +40,14 @@ const EventDescriptionContainer: React.FC<EventDescriptionContainerProps> = (pro
                                         <Row align={"flex-start"}>
                                             {props.event.isTrendemous ?
                                                     <>
-                                                        <Button size="sm" bordered auto rounded
-                                                                css={{color: "#DFE73B", borderColor: "#DFE73B"}}>
+                                                        <Button size="sm"
+                                                                bordered
+                                                                auto
+                                                                rounded
+                                                                css={{color: "#DFE73B", borderColor: "#DFE73B"}}
+                                                                onClick={() => {
+                                                                    router.push(`/category/trendemous`)
+                                                                }}>
                                                             Tendance
                                                         </Button>
                                                         <Spacer/>

@@ -1,7 +1,7 @@
 import Footer from "../../components/footer/Footer"
 import Header from "../../components/header/Header"
 import {Event} from "../../models/Event"
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import router from "next/router";
 import TicketTypeContainer from "../../components/container/TicketTypeContainer";
@@ -15,17 +15,20 @@ const EventPage = () => {
     const [event, setEvent] = useState<Event>()
     const [eventCategories, setEventCategories] = useState<Category[]>([])
     const [ticketTypes, setTicketTypes] = useState<string[]>([])
-    const [isEventAlreadyFetched, setIsEventAlreadyFetched] = useState(false)
 
-    const fetchEventAllInfos = useCallback(async () => {
+    const fetchEventAllInfos = async () => {
+        console.log("categories - eventId")
+        console.log(eventId)
         await axios.get(`http://localhost:8080/api/events/all/categoty/event/${eventId}`).then((response) => {
             const result: Category[] = []
             response.data.map((item: Category) => result.push(item))
             setEventCategories(result)
         })
-    }, [])
+    }
 
-    const fetchEventCategories = useCallback(async () => {
+    const fetchEventCategories = async () => {
+        console.log("event - eventId")
+        console.log(eventId)
         await axios.get(`http://localhost:8080/api/events/single/${eventId}`).then((response) => {
             let responseEvent: Event = new Event(response.data)
             setEvent(responseEvent)
@@ -38,30 +41,30 @@ const EventPage = () => {
             })
             setTicketTypes(responseTicketTypes)
         })
-    }, [])
+    }
 
     useEffect(() => {
-        if (!isEventAlreadyFetched) {
-            // All event infos
-            fetchEventAllInfos().catch(console.error)
-
-            // All categories of event
-            fetchEventCategories().catch(console.error)
-
-            setIsEventAlreadyFetched(true)
+        if(!eventId) {
+            return
         }
-    }, [fetchEventAllInfos, fetchEventCategories])
+        // All event infos
+        fetchEventAllInfos().catch(console.error)
 
-    return (
-            <>
-                <Header/>
-                <EventDescriptionContainer event={event ? event : null} categories={eventCategories}/>
-                <Spacer/>
-                <TicketTypeContainer tickets={event ? event.tickets : []} ticketTypes={ticketTypes}/>
-                <Spacer y={2}/>
-                <Footer/>
-            </>
-    )
-}
+        // All categories of event
+        fetchEventCategories().catch(console.error)
+    }, [eventId])
 
-export default EventPage
+
+        return (
+                <>
+                    <Header/>
+                    <EventDescriptionContainer event={event ? event : null} categories={eventCategories}/>
+                    <Spacer/>
+                    <TicketTypeContainer tickets={event ? event.tickets : []} ticketTypes={ticketTypes}/>
+                    <Spacer y={2}/>
+                    <Footer/>
+                </>
+        )
+    }
+
+    export default EventPage
