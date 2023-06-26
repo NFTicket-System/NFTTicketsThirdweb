@@ -21,7 +21,11 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type CreateEventResponse, type formDataType } from '@/models/interfaces/createNFTFormData'
+import {
+	type CreateEventCategories,
+	type CreateEventResponse,
+	type formDataType,
+} from '@/models/interfaces/createNFTFormData'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '@/hooks/useMultiStepForm'
@@ -43,7 +47,12 @@ import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
 import { convertEuroToMATIC, convertToTimestamp, formatEventDate, truncateText } from '@/utils/tools'
-import { createNFTicket, getAllEventsObjCategories, matchCategories } from '@/services/createNFTicket'
+import {
+	createEventCategories,
+	createNFTicket,
+	getAllEventsObjCategories,
+	matchCategories,
+} from '@/services/createNFTicket'
 import { type Category } from '@/models/Category'
 import EventCategoryBadge from '@/components/Badge/EventCategoryBadge'
 
@@ -200,10 +209,14 @@ const NftDrop = () => {
 										const axiosResponse: CreateEventResponse = response.data
 										const createdEventId: number = axiosResponse.insertId
 
-										const ticketCategories = {
+										const ticketCategories: CreateEventCategories = {
 											id: createdEventId,
-											categories: selectedEventIdsCategories.map((category) => category?.id),
+											categories: selectedEventIdsCategories.map((category) =>
+												category != null ? category.id : 1
+											),
 										}
+
+										await createEventCategories(ticketCategories)
 
 										console.log('ticketCATEGORIES', ticketCategories)
 

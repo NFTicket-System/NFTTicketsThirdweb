@@ -1,5 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, type ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type CreateTicket, type formDataType } from '@/models/interfaces/createNFTFormData'
+import { type CreateEventCategories, type CreateTicket, type formDataType } from '@/models/interfaces/createNFTFormData'
 import axios from 'axios'
 import { convertToTimestamp } from '@/utils/tools'
 import { type Category } from '@/models/Category'
@@ -124,5 +124,11 @@ export const matchCategories = (selectedItems: string[]): Array<Category | null>
 	return selectedItems.map((category) => {
 		const matchedObject = objects.find((obj) => obj.libelle === category)
 		return matchedObject != null ? matchedObject : null
+	})
+}
+
+export const createEventCategories = async (categories: CreateEventCategories) => {
+	await axios.post('http://localhost:8080/api/events/categories', categories).catch((error) => {
+		console.error('Error making PUT request:', error)
 	})
 }

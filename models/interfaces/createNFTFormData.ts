@@ -51,3 +51,8 @@ export interface CreateTicket {
 	date: string
 	solded: number
 }
+
+export interface CreateEventCategories {
+	id: number
+	categories: number[]
+}
