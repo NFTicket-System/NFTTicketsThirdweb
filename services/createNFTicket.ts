@@ -1,7 +1,8 @@
 import { NATIVE_TOKEN_ADDRESS, type ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type formDataType } from '@/models/interfaces/createNFTFormData'
+import { type CreateTicket, type formDataType } from '@/models/interfaces/createNFTFormData'
 import axios from 'axios'
 import { convertToTimestamp } from '@/utils/tools'
+import { type Category } from '@/models/Category'
 
 export function createMetadatas(formData: formDataType, imageUrl: string | undefined) {
 	const metaData = {
@@ -38,7 +39,7 @@ export async function createNFTicket(
 		primary_sale_recipient: connectedAddress ?? '',
 	})
 
-	const tickets2Add: any[] = []
+	const tickets2Add: CreateTicket[] = []
 
 	console.log('COLLECTION')
 	const contract = await sdkAdmin?.getContract(collectionContractAddress ?? '', 'nft-collection')
@@ -79,7 +80,7 @@ export async function createNFTicket(
 		console.log('LISTING', listing)
 
 		await marketplace?.direct.createListing(listing).then(() => {
-			const ticket = {
+			const ticket: CreateTicket = {
 				addressContract: listing.assetContractAddress,
 				idEvent: insertId,
 				prix: listing.buyoutPricePerToken,
@@ -96,11 +97,32 @@ export async function createNFTicket(
 	console.log('TICKETS', tickets2Add)
 
 	axios
-		.post('http://localhost:8080/api/events/ticket/ ', tickets2Add)
+		.post('http://localhost:8080/api/events/ticket', tickets2Add)
 		.then((response) => {
 			console.log('POST request successful:', response.data)
 		})
 		.catch((error) => {
 			console.error('Error making POST request:', error)
 		})
+}
+
+let categories: Category[] = []
+export const getAllEventsObjCategories = async (): Promise<Category[]> => {
+	await axios
+		.get('http://localhost:8080/api/events/all/category')
+		.then((res) => {
+			categories = res.data
+		})
+		.catch((error) => {
+			console.error('Error making POST request:', error)
+		})
+	return categories
+}
+
+export const matchCategoriesId = (selectedItems: string[]): Array<number | null> => {
+	const objects: Category[] = categories
+	return selectedItems.map((category) => {
+		const matchedObject = objects.find((obj) => obj.libelle === category)
+		return matchedObject != null ? matchedObject.id : null
+	})
 }

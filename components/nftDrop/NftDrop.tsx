@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {
 	Button,
 	Card,
+	Checkbox,
 	Col,
 	Container,
 	Grid,
@@ -42,12 +43,19 @@ import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
 import { convertEuroToMATIC, convertToTimestamp, formatEventDate } from '@/utils/tools'
-import { createNFTicket } from '@/services/createNFTicket'
+import { createNFTicket, getAllEventsObjCategories, matchCategoriesId } from '@/services/createNFTicket'
+import { type Category } from '@/models/Category'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
 const NftDrop = () => {
 	const { isDark } = useTheme()
+
+	/* EVENT CATEGORIES */
+	const [eventCategories, setEventCategories] = useState<Category[]>([])
+	const [selectedEventCategories, setSelectedEventCategories] = useState<string[]>([])
+	const [selectedEventIdsCategories, setSelectedEventIdsCategories] = useState<Array<number | null>>([])
+	/* EVENT CATEGORIES */
 
 	/* DATE */
 	const [dateValue, setDateValue] = useState<string>('')
@@ -64,7 +72,10 @@ const NftDrop = () => {
 
 	/* LOCATION */
 	const [locationInfo, setLocationInfo] = useState<ApiLocationItem[]>([])
-	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
+	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({
+		lat: 48.866667,
+		lon: 2.333333,
+	})
 	const [selectedLocation, setSelectedLocation] = useState<string>('')
 	const [selectedLocationCity, setSelectedLocationCity] = useState<string>('')
 	const [searchResult2Show, setSearchResult2Show] = useState<boolean>(false)
@@ -187,6 +198,12 @@ const NftDrop = () => {
 									.then(async (response) => {
 										const axiosResponse: CreateEventResponse = response.data
 										const createdEventId: number = axiosResponse.insertId
+										const ticketCategories: any = {
+											id: createdEventId,
+											categories: selectedEventIdsCategories,
+										}
+
+										console.log('ticketCATEGORIES', ticketCategories)
 
 										await createNFTicket(
 											formData,
@@ -237,16 +254,19 @@ const NftDrop = () => {
 				required
 				clearable
 				underlined
-				{...register(InputName.NAME)}
 				status={isInputValid(getValues(InputName.NAME), triedToSubmit)}
 				color={isInputValid(getValues(InputName.NAME), triedToSubmit)}
 				helperText={setHelperText(getValues(InputName.NAME), triedToSubmit)}
 				helperColor="error"
 				onClearClick={() => {
 					setTriedToSubmit(false)
+					setValue(InputName.NAME, '')
 				}}
 				onChange={(e) => {
-					getValues(InputName.NAME).length < 1 ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					setValue(InputName.NAME, e.target.value)
+					getValues(InputName.NAME).length < 1 || e.target.value === ''
+						? setTriedToSubmit(true)
+						: setTriedToSubmit(false)
 				}}
 			/>
 			<Spacer y={4} />
@@ -537,19 +557,26 @@ const NftDrop = () => {
 				underlined
 				initialValue={'0'}
 				min={0}
-				/*				onChange={(e) => {
-					if (e.target.value.length !== 0) {
-						console.log(e.target.value)
-						const eur2Matic = convertEuroToMATIC(Number(e.target.value)).then((result) => {
-							console.log(result)
-							// setValue(InputName.PRICE, String(result))
-						})
-					} else {
-						// setValue(InputName.PRICE, String(0))
-					}
-				}} */
 			/>
 			<Spacer y={2} />
+
+			<Checkbox.Group
+				color="primary"
+				defaultValue={['Concert']}
+				label="Catégorie de l'évènement"
+				onChange={(selectedItems) => {
+					setSelectedEventIdsCategories(matchCategoriesId(selectedItems))
+				}}>
+				{eventCategories.map((category, index) => (
+					<Checkbox
+						key={category.id}
+						value={category.libelle}>
+						{category.libelle}
+					</Checkbox>
+				))}
+			</Checkbox.Group>
+			<Spacer y={2} />
+
 			<Input
 				aria-label="Event count"
 				{...register(InputName.COUNT)}
@@ -564,6 +591,24 @@ const NftDrop = () => {
 		/* PRICE END */
 	])
 	/* MULTISTEPS FORM */
+
+	/* EVENT CATEGORIES */
+	useEffect(() => {
+		/*	const getCats = async () => {
+			await getAllEventsCategories().then((result) => {
+				setEventCategories(result)
+			})
+		} */
+		const getCatsId = async () => {
+			await getAllEventsObjCategories().then((result) => {
+				console.log('IDS', result)
+				setEventCategories(result)
+			})
+		}
+		/* getCats() */
+		getCatsId()
+	}, [isLastStep])
+	/* EVENT CATEGORIES */
 
 	return (
 		<>

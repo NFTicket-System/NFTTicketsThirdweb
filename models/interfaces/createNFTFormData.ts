@@ -42,3 +42,12 @@ export interface CreateEventResponse {
 	protocol41: boolean
 	changedRows: number
 }
+
+export interface CreateTicket {
+	addressContract: string
+	idEvent: number
+	prix: string
+	type: string
+	date: string
+	solded: number
+}
