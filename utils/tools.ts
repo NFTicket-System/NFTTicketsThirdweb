@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ConversionSens } from '@/models/enum/createNFTInputs'
 
 export const formatEventDate = (dateString: string): string => {
 	if (dateString !== '') {
@@ -53,16 +54,18 @@ export const convertToTimestamp = (dateString: string, timeString: string): stri
 	return new Date(year, month, day, hours, minutes).toISOString()
 }
 
-export async function convertEuroToMATIC(amountInEuro: number) {
+export async function convertEuroToMATIC(amountInEuro: number, sens: ConversionSens) {
 	try {
-		// Make a request to CoinGecko API to get the Euro to MATIC exchange rate
-		const response = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=euro&vs_currencies=matic')
-		const exchangeRate = response.data.euro.matic
-
-		// Perform the conversion
-		return amountInEuro * exchangeRate
+		const response = await axios.get(
+			'https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=eur'
+		)
+		if (sens === ConversionSens.MATIC) {
+			return (amountInEuro * response.data['matic-network'].eur).toFixed(2)
+		} else {
+			return (amountInEuro / response.data['matic-network'].eur).toFixed(2)
+		}
 	} catch (error) {
-		console.error('Error converting Euro to MATIC:', error)
+		console.error('Error exchange rate:', error)
 		throw error
 	}
 }

@@ -1,13 +1,15 @@
 import { Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import { RiMapPinLine } from '@react-icons/all-files/ri/RiMapPinLine'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { useAddress, useBuyNow, useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
+import { useAddress, useContract, useListing, useNetwork, useNetworkMismatch } from '@thirdweb-dev/react'
 import { BigNumber } from 'ethers'
 import Header from '../../../components/header/Header'
-import { buyNft } from '../../../services/buyNFTicket'
-import { noConnectedWalletErrorAlert } from '../../../utils/errors/noConnectedWalletErrorAlert'
-import { BuyWithStripe } from '../../../services/buyWithStripe'
+import { buyNft } from '@/services/buyNFTicket'
+import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
+import { BuyWithStripe } from '@/services/buyWithStripe'
+import { convertEuroToMATIC } from '@/utils/tools'
+import { ConversionSens } from '@/models/enum/createNFTInputs'
 
 const NftDetails = () => {
 	const connectedAddress = useAddress()
@@ -17,6 +19,21 @@ const NftDetails = () => {
 	const { data: item, isLoading } = useListing(marketplace, tokenID as string)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
+	const [convertedAmount, setConvertedAmount] = useState<string | null>(null)
+
+	useEffect(() => {
+		async function fetchConvertedAmount() {
+			try {
+				const amountInEuro = Number(item?.buyoutCurrencyValuePerToken.displayValue)
+				const result = await convertEuroToMATIC(amountInEuro, ConversionSens.EUR)
+				setConvertedAmount(String(result))
+			} catch (error) {
+				console.error('Error fetching converted amount:', error)
+			}
+		}
+
+		void fetchConvertedAmount()
+	}, [item?.buyoutCurrencyValuePerToken.displayValue])
 
 	return (
 		<>
@@ -120,8 +137,8 @@ const NftDetails = () => {
 												gap: '10px',
 											}}>
 											<Text weight={'bold'}>
-												{item?.buyoutCurrencyValuePerToken.displayValue}{' '}
-												{item?.buyoutCurrencyValuePerToken.symbol}
+												<>{`${String(convertedAmount)} €`}</>
+												{/* {item?.buyoutCurrencyValuePerToken.symbol} */}
 											</Text>
 											<Spacer x={1}></Spacer>
 											<Button

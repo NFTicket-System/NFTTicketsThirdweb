@@ -9,3 +9,8 @@ export enum InputName {
 	LOCATION = 'location',
 	IMAGE = 'image',
 }
+
+export enum ConversionSens {
+	EUR,
+	MATIC,
+}
