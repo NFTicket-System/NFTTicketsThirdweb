@@ -75,6 +75,15 @@ const Header = (props: HeaderProps) => {
 							</Text>
 						</Link>
 					</Navbar.Item>
+					<Navbar.Item isActive={asPath === '/my-nft'}>
+						<Link href="/my-nft">
+							<Text
+								b
+								color={isDark ?? false ? 'white' : 'black'}>
+								My Nfts
+							</Text>
+						</Link>
+					</Navbar.Item>
 				</Navbar.Content>
 				<Navbar.Content
 					css={{
