@@ -246,7 +246,7 @@ const NftDrop = () => {
 					setTriedToSubmit(false)
 				}}
 				onChange={(e) => {
-					getValues(InputName.NAME) === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					getValues(InputName.NAME).length < 1 ? setTriedToSubmit(true) : setTriedToSubmit(false)
 				}}
 			/>
 			<Spacer y={4} />
