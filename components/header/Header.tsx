@@ -5,8 +5,13 @@ import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
 import { useRouter } from 'next/router'
 import { IoSearch } from '@react-icons/all-files/io5/IoSearch'
+import {LightEvent} from "@/models/LightEvent";
 
-const Header = () => {
+interface HeaderProps {
+	events: LightEvent[]
+}
+
+const Header = (props: HeaderProps) => {
 	const { isDark } = useTheme()
 	const { asPath } = useRouter()
 
