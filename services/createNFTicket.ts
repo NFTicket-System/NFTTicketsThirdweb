@@ -119,10 +119,10 @@ export const getAllEventsObjCategories = async (): Promise<Category[]> => {
 	return categories
 }
 
-export const matchCategoriesId = (selectedItems: string[]): Array<number | null> => {
+export const matchCategories = (selectedItems: string[]): Array<Category | null> => {
 	const objects: Category[] = categories
 	return selectedItems.map((category) => {
 		const matchedObject = objects.find((obj) => obj.libelle === category)
-		return matchedObject != null ? matchedObject.id : null
+		return matchedObject != null ? matchedObject : null
 	})
 }

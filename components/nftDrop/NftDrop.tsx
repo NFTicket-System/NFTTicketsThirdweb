@@ -42,9 +42,10 @@ import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
-import { convertEuroToMATIC, convertToTimestamp, formatEventDate } from '@/utils/tools'
-import { createNFTicket, getAllEventsObjCategories, matchCategoriesId } from '@/services/createNFTicket'
+import { convertEuroToMATIC, convertToTimestamp, formatEventDate, truncateText } from '@/utils/tools'
+import { createNFTicket, getAllEventsObjCategories, matchCategories } from '@/services/createNFTicket'
 import { type Category } from '@/models/Category'
+import EventCategoryBadge from '@/components/Badge/EventCategoryBadge'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
@@ -54,7 +55,7 @@ const NftDrop = () => {
 	/* EVENT CATEGORIES */
 	const [eventCategories, setEventCategories] = useState<Category[]>([])
 	const [selectedEventCategories, setSelectedEventCategories] = useState<string[]>([])
-	const [selectedEventIdsCategories, setSelectedEventIdsCategories] = useState<Array<number | null>>([])
+	const [selectedEventIdsCategories, setSelectedEventIdsCategories] = useState<Array<Category | null>>([])
 	/* EVENT CATEGORIES */
 
 	/* DATE */
@@ -198,9 +199,10 @@ const NftDrop = () => {
 									.then(async (response) => {
 										const axiosResponse: CreateEventResponse = response.data
 										const createdEventId: number = axiosResponse.insertId
-										const ticketCategories: any = {
+
+										const ticketCategories = {
 											id: createdEventId,
-											categories: selectedEventIdsCategories,
+											categories: selectedEventIdsCategories.map((category) => category?.id),
 										}
 
 										console.log('ticketCATEGORIES', ticketCategories)
@@ -565,7 +567,7 @@ const NftDrop = () => {
 				defaultValue={['Concert']}
 				label="Catégorie de l'évènement"
 				onChange={(selectedItems) => {
-					setSelectedEventIdsCategories(matchCategoriesId(selectedItems))
+					setSelectedEventIdsCategories(matchCategories(selectedItems))
 				}}>
 				{eventCategories.map((category, index) => (
 					<Checkbox
@@ -594,18 +596,11 @@ const NftDrop = () => {
 
 	/* EVENT CATEGORIES */
 	useEffect(() => {
-		/*	const getCats = async () => {
-			await getAllEventsCategories().then((result) => {
-				setEventCategories(result)
-			})
-		} */
 		const getCatsId = async () => {
 			await getAllEventsObjCategories().then((result) => {
-				console.log('IDS', result)
 				setEventCategories(result)
 			})
 		}
-		/* getCats() */
 		getCatsId()
 	}, [isLastStep])
 	/* EVENT CATEGORIES */
@@ -718,6 +713,18 @@ const NftDrop = () => {
 						)}
 						<Spacer y={2} />
 						<Row justify={'center'}>
+							{selectedEventIdsCategories.map((category) =>
+								category !== null ? (
+									<>
+										<EventCategoryBadge category={category} />
+										<Spacer y={2} />
+									</>
+								) : (
+									<></>
+								)
+							)}
+						</Row>
+						<Row justify={'center'}>
 							<Text
 								b
 								size={18}>
@@ -730,7 +737,7 @@ const NftDrop = () => {
 								size={18}>
 								Description :&nbsp;
 							</Text>
-							<Text size={18}>{getValues(InputName.DESCRIPTION)}</Text>
+							<Text size={18}>{truncateText(getValues(InputName.DESCRIPTION), 50)}</Text>
 						</Row>
 						<Row justify={'center'}>
 							<Text
