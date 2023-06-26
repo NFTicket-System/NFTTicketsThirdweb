@@ -52,6 +52,7 @@ const Home: NextPage = () => {
 
 	const fetchConcertsEvents = useCallback(async () => {
 		await axios.get('http://localhost:8080/api/events/all/light/byCat/Concert').then((response) => {
+			console.log()
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			fillEvents(result)

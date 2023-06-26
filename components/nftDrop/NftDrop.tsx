@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {
 	Button,
 	Card,
+	Checkbox,
 	Col,
 	Container,
 	Grid,
@@ -20,7 +21,11 @@ import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type CreateEventResponse, type formDataType } from '@/models/interfaces/createNFTFormData'
+import {
+	type CreateEventCategories,
+	type CreateEventResponse,
+	type formDataType,
+} from '@/models/interfaces/createNFTFormData'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '@/hooks/useMultiStepForm'
@@ -41,13 +46,26 @@ import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
-import { convertEuroToMATIC, convertToTimestamp, formatEventDate } from '@/utils/tools'
-import { createNFTicket } from '@/services/createNFTicket'
+import { convertEuroToMATIC, convertToTimestamp, formatEventDate, truncateText } from '@/utils/tools'
+import {
+	createEventCategories,
+	createNFTicket,
+	getAllEventsObjCategories,
+	matchCategories,
+} from '@/services/createNFTicket'
+import { type Category } from '@/models/Category'
+import EventCategoryBadge from '@/components/Badge/EventCategoryBadge'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
 const NftDrop = () => {
 	const { isDark } = useTheme()
+
+	/* EVENT CATEGORIES */
+	const [eventCategories, setEventCategories] = useState<Category[]>([])
+	const [selectedEventCategories, setSelectedEventCategories] = useState<string[]>([])
+	const [selectedEventIdsCategories, setSelectedEventIdsCategories] = useState<Array<Category | null>>([])
+	/* EVENT CATEGORIES */
 
 	/* DATE */
 	const [dateValue, setDateValue] = useState<string>('')
@@ -64,7 +82,10 @@ const NftDrop = () => {
 
 	/* LOCATION */
 	const [locationInfo, setLocationInfo] = useState<ApiLocationItem[]>([])
-	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
+	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({
+		lat: 48.866667,
+		lon: 2.333333,
+	})
 	const [selectedLocation, setSelectedLocation] = useState<string>('')
 	const [selectedLocationCity, setSelectedLocationCity] = useState<string>('')
 	const [searchResult2Show, setSearchResult2Show] = useState<boolean>(false)
@@ -188,6 +209,17 @@ const NftDrop = () => {
 										const axiosResponse: CreateEventResponse = response.data
 										const createdEventId: number = axiosResponse.insertId
 
+										const ticketCategories: CreateEventCategories = {
+											id: createdEventId,
+											categories: selectedEventIdsCategories.map((category) =>
+												category != null ? category.id : 1
+											),
+										}
+
+										await createEventCategories(ticketCategories)
+
+										console.log('ticketCATEGORIES', ticketCategories)
+
 										await createNFTicket(
 											formData,
 											sdkAdmin,
@@ -237,16 +269,19 @@ const NftDrop = () => {
 				required
 				clearable
 				underlined
-				{...register(InputName.NAME)}
 				status={isInputValid(getValues(InputName.NAME), triedToSubmit)}
 				color={isInputValid(getValues(InputName.NAME), triedToSubmit)}
 				helperText={setHelperText(getValues(InputName.NAME), triedToSubmit)}
 				helperColor="error"
 				onClearClick={() => {
 					setTriedToSubmit(false)
+					setValue(InputName.NAME, '')
 				}}
 				onChange={(e) => {
-					getValues(InputName.NAME) === '' ? setTriedToSubmit(true) : setTriedToSubmit(false)
+					setValue(InputName.NAME, e.target.value)
+					getValues(InputName.NAME).length < 1 || e.target.value === ''
+						? setTriedToSubmit(true)
+						: setTriedToSubmit(false)
 				}}
 			/>
 			<Spacer y={4} />
@@ -537,19 +572,26 @@ const NftDrop = () => {
 				underlined
 				initialValue={'0'}
 				min={0}
-				/*				onChange={(e) => {
-					if (e.target.value.length !== 0) {
-						console.log(e.target.value)
-						const eur2Matic = convertEuroToMATIC(Number(e.target.value)).then((result) => {
-							console.log(result)
-							// setValue(InputName.PRICE, String(result))
-						})
-					} else {
-						// setValue(InputName.PRICE, String(0))
-					}
-				}} */
 			/>
 			<Spacer y={2} />
+
+			<Checkbox.Group
+				color="primary"
+				defaultValue={['Concert']}
+				label="Catégorie de l'évènement"
+				onChange={(selectedItems) => {
+					setSelectedEventIdsCategories(matchCategories(selectedItems))
+				}}>
+				{eventCategories.map((category, index) => (
+					<Checkbox
+						key={category.id}
+						value={category.libelle}>
+						{category.libelle}
+					</Checkbox>
+				))}
+			</Checkbox.Group>
+			<Spacer y={2} />
+
 			<Input
 				aria-label="Event count"
 				{...register(InputName.COUNT)}
@@ -564,6 +606,17 @@ const NftDrop = () => {
 		/* PRICE END */
 	])
 	/* MULTISTEPS FORM */
+
+	/* EVENT CATEGORIES */
+	useEffect(() => {
+		const getCatsId = async () => {
+			await getAllEventsObjCategories().then((result) => {
+				setEventCategories(result)
+			})
+		}
+		getCatsId()
+	}, [isLastStep])
+	/* EVENT CATEGORIES */
 
 	return (
 		<>
@@ -673,6 +726,18 @@ const NftDrop = () => {
 						)}
 						<Spacer y={2} />
 						<Row justify={'center'}>
+							{selectedEventIdsCategories.map((category) =>
+								category !== null ? (
+									<>
+										<EventCategoryBadge category={category} />
+										<Spacer y={2} />
+									</>
+								) : (
+									<></>
+								)
+							)}
+						</Row>
+						<Row justify={'center'}>
 							<Text
 								b
 								size={18}>
@@ -685,7 +750,7 @@ const NftDrop = () => {
 								size={18}>
 								Description :&nbsp;
 							</Text>
-							<Text size={18}>{getValues(InputName.DESCRIPTION)}</Text>
+							<Text size={18}>{truncateText(getValues(InputName.DESCRIPTION), 50)}</Text>
 						</Row>
 						<Row justify={'center'}>
 							<Text

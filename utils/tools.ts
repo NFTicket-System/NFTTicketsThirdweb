@@ -69,3 +69,14 @@ export async function convertEuroToMATIC(amountInEuro: number, sens: ConversionS
 		throw error
 	}
 }
+
+export const truncateText = (text: string, maxLength: number) => {
+	if (text !== undefined) {
+		if (text.length > maxLength) {
+			return text.slice(0, maxLength - 3) + '...'
+		}
+		return text
+	} else {
+		return ''
+	}
+}

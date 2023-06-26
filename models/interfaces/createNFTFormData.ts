@@ -51,3 +51,17 @@ export interface CreateEventResponse {
 	protocol41: boolean
 	changedRows: number
 }
+
+export interface CreateTicket {
+	addressContract: string
+	idEvent: number
+	prix: string
+	type: string
+	date: string
+	solded: number
+}
+
+export interface CreateEventCategories {
+	id: number
+	categories: number[]
+}
