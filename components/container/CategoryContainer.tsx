@@ -45,7 +45,7 @@ const CategoryContainer: React.FC<CategoryContainerProps> = (props: CategoryCont
                                         // router.push(`/category/${props.libelle}`)
                                         void router.push({
                                             pathname: `/category/${props.libelle}`,
-                                            query: {libelle: props.libelle}
+                                            query: {events: JSON.stringify(props.events)}
                                         })
                                     }}>
                                     Voir plus
