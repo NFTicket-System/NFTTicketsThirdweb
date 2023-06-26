@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import swal from 'sweetalert'
 import {
 	Button,
 	Card,
@@ -20,7 +19,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type formDataType } from '@/models/interfaces/createNFTFormData'
+import { type CreateEventResponse, type formDataType } from '@/models/interfaces/createNFTFormData'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '@/hooks/useMultiStepForm'
@@ -37,10 +36,12 @@ import {
 	setHelperText,
 } from '@/utils/formCheckValidity'
 import dynamic from 'next/dynamic'
+import axios from 'axios'
+import swal from 'sweetalert'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
-import { formatEventDate } from '@/utils/tools'
+import { convertToTimestamp, formatEventDate } from '@/utils/tools'
 import { createNFTicket } from '@/services/createNFTicket'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
@@ -65,6 +66,7 @@ const NftDrop = () => {
 	const [locationInfo, setLocationInfo] = useState<ApiLocationItem[]>([])
 	const [locationCoord, setLocationCoord] = useState<{ lat: number; lon: number }>({ lat: 48.866667, lon: 2.333333 })
 	const [selectedLocation, setSelectedLocation] = useState<string>('')
+	const [selectedLocationCity, setSelectedLocationCity] = useState<string>('')
 	const [searchResult2Show, setSearchResult2Show] = useState<boolean>(false)
 	/* LOCATION */
 
@@ -164,21 +166,52 @@ const NftDrop = () => {
 						// create the ticket
 						console.log(fileUrl)
 						console.log(formData)
-						await createNFTicket(formData, sdkAdmin, connectedAddress, fileUrl, setCreationStep)
-							.then(() => {
-								setLoadingModal(false)
-								void swal(
-									'Bravo !',
-									formData.count > 1
-										? 'Vos tickets sont disponibles à la vente !'
-										: 'Votre ticket est disponible à la vente !',
-									'success'
+
+						const eventData: any = {
+							libelle: formData.name,
+							timestampStart: convertToTimestamp(formData.date, formData.hourStart),
+							timestampEnd: convertToTimestamp(formData.date, formData.hourEnd),
+							idOrganizer: 1,
+							isTrendemous: 1,
+							urlImage: fileUrl,
+							city: selectedLocationCity,
+							address: selectedLocation,
+						}
+
+						console.log(eventData)
+
+						await axios
+							.post('http://localhost:8080/api/events/', eventData)
+							.then(async (response) => {
+								const axiosResponse: CreateEventResponse = response.data
+								const createdEventId: number = axiosResponse.insertId
+
+								await createNFTicket(
+									formData,
+									sdkAdmin,
+									connectedAddress,
+									fileUrl,
+									setCreationStep,
+									axiosResponse.insertId
 								)
+									.then(() => {
+										setLoadingModal(false)
+										void swal(
+											'Bravo !',
+											formData.count > 1
+												? 'Vos tickets sont disponibles à la vente !'
+												: 'Votre ticket est disponible à la vente !',
+											'success'
+										)
+									})
+									.catch((e) => {
+										setLoadingModal(false)
+										defaultErrorModal()
+										console.error(e)
+									})
 							})
-							.catch((e) => {
-								setLoadingModal(false)
-								defaultErrorModal()
-								console.error(e)
+							.catch((error) => {
+								console.error('Error making PUT request:', error)
 							})
 					})
 				}
@@ -451,8 +484,11 @@ const NftDrop = () => {
 										lat: location.geometry.coordinates[1],
 										lon: location.geometry.coordinates[0],
 									})
-									setSelectedLocation(location.properties.label)
-									setValue(InputName.LOCATION, location.properties.label)
+									setSelectedLocation(location.properties.name)
+									setValue(InputName.LOCATION, location.properties.name)
+									setSelectedLocationCity(
+										`${location.properties.city} ${location.properties.postcode}`
+									)
 									setSearchResult2Show(false)
 								}}
 								css={{
@@ -551,7 +587,7 @@ const NftDrop = () => {
 								onPress={() => {
 									setTriedToSubmit(true)
 									handleButtonClick()
-									isLastStep ? setShowConfirmationModal(true) : ''
+									isLastStep && userWallet.connected ? setShowConfirmationModal(true) : ''
 								}}>
 								{isLastStep ? 'Mettre en vente' : 'Suivant'}
 							</Button>

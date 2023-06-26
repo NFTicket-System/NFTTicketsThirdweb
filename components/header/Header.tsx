@@ -15,6 +15,8 @@ const Header = (props: HeaderProps) => {
 	const { isDark } = useTheme()
 	const { asPath } = useRouter()
 
+	console.log(props)
+
 	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
 
 	return (

@@ -9,35 +9,7 @@ import CategoryContainer from '../components/container/CategoryContainer'
 import SwiperCarousel from '@/components/caroussel/SwiperCarousel'
 
 const Home: NextPage = () => {
-	const mockedEvent1 = new LightEvent(
-		1,
-		'https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/91mjhjhxhVL._SL1500_.jpg',
-		'Red Hot Chili Peppers'
-	)
-	const mockedEvent2 = new LightEvent(
-		2,
-		'https://www.rollingstone.fr/wp-content/uploads/2022/04/solidays-home.jpg',
-		'Solidays 2023'
-	)
-	const mockedEvent3 = new LightEvent(
-		3,
-		'https://www.thenewshouse.com/wp-content/uploads/Entertainment/2022/Arctic-Monkeys-The-Car/Untitled-design-1-900x600.png',
-		'Arctic Monkeys'
-	)
-	const mockedEvent4 = new LightEvent(
-		4,
-		'https://api-cdn.arte.tv/img/v2/image/ksN5Q9drCGcBFB8u3o63MC/1920x1080',
-		'Hellfest 2023'
-	)
-	const mockedEvent5 = new LightEvent(
-		5,
-		'https://cdn.vieillescharrues.asso.fr/wp-content/uploads/2022/12/visuel_OG_VieillesCharrues23_V2.jpg',
-		'Vielles charrues 2023'
-	)
-
-	const mockedEvents = [mockedEvent1, mockedEvent2, mockedEvent3, mockedEvent4, mockedEvent5]
-
-	// const [events, setEvents] = useState<LightEvent[]>([])
+	const [events, setEvents] = useState<LightEvent[]>([])
 	const [trendemousEvents, setTrendemousEvents] = useState<LightEvent[]>([])
 	const [showEvents, setShowEvents] = useState<LightEvent[]>([])
 	const [festivalEvents, setFestivalEvents] = useState<LightEvent[]>([])
@@ -46,14 +18,14 @@ const Home: NextPage = () => {
 	const [humorEvents, setHumorEvents] = useState<LightEvent[]>([])
 	const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
-	// const fetchAllEvents = useCallback(async () => {
-	// 	await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
-	// 		var result: LightEvent[] = []
-	// 		response.data.map((item: LightEvent) => result.push(item))
-	//      fillEvents(result)
-	// 		setEvents(result)
-	// 	})
-	// }, [])
+	const fetchAllEvents = useCallback(async () => {
+		await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
+			const result: LightEvent[] = []
+			response.data.map((item: LightEvent) => result.push(item))
+			fillEvents(result)
+			setEvents(result)
+		})
+	}, [])
 
 	const fetchTrendemousEvents = useCallback(async () => {
 		await axios.get('http://localhost:8080/api/events/all/light/trendemous').then((response) => {
@@ -117,7 +89,7 @@ const Home: NextPage = () => {
 	useEffect(() => {
 		if (!isEventsAlreadyFetched) {
 			// All events
-			// fetchAllEvents().catch(console.error)
+			fetchAllEvents().catch(console.error)
 
 			// All trendemous events
 			fetchTrendemousEvents().catch(console.error)
@@ -140,6 +112,7 @@ const Home: NextPage = () => {
 			setIsEventsAlreadyFetched(true)
 		}
 	}, [
+		fetchAllEvents,
 		fetchTrendemousEvents,
 		fetchShowEvents,
 		fetchFestivalEvents,
@@ -171,7 +144,7 @@ const Home: NextPage = () => {
 
 	return (
 		<>
-			<Header events={trendemousEvents} />
+			<Header events={events} />
 			<Spacer x={4} />
 			{/* CAROUSEL */}
 			{trendemousEvents.length > 0 ? (
@@ -199,23 +172,12 @@ const Home: NextPage = () => {
 					</Card>
 					<Spacer y={0.5} />
 					<SwiperCarousel events={trendemousEvents} />
-					<Spacer x={4} />
 				</Container>
 			) : (
 				<></>
 			)}
-
 			{/* CAROUSEL */}
-
-			{/* poopular */}
-			<CategoryContainer
-				events={trendemousEvents}
-				title={'Évenements populaires'}
-				libelle={'trendemous'}
-			/>
-			<Spacer y={1} />
-			<Divider />
-
+			<Spacer y={4} />
 			{/* concerts */}
 			<CategoryContainer
 				events={concertEvents}
@@ -259,16 +221,6 @@ const Home: NextPage = () => {
 				libelle={'Humor'}
 			/>
 			<Spacer y={1} />
-			<Divider />
-
-			{/* mocked */}
-			<CategoryContainer
-				events={mockedEvents}
-				title={'Tests avec events mockés'}
-				libelle={'mocked'}
-			/>
-			<Spacer y={1} />
-
 			<Footer />
 		</>
 	)

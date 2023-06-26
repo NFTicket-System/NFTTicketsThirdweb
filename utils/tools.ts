@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export const formatEventDate = (dateString: string): string => {
 	if (dateString !== '') {
 		const dateParts = dateString?.split('-')
@@ -19,21 +21,48 @@ export const formatEventDate = (dateString: string): string => {
 
 export const formatEventDateTime = (dateTimeString: string): string => {
 	if (dateTimeString !== '') {
-        const date: Date = new Date(dateTimeString);
+		const date: Date = new Date(dateTimeString)
 
-        const options: Intl.DateTimeFormatOptions = {
-            hour: '2-digit',
-            minute: '2-digit',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        };
+		const options: Intl.DateTimeFormatOptions = {
+			hour: '2-digit',
+			minute: '2-digit',
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		}
 
-        const formattedDate: string = date.toLocaleDateString('fr-FR', options);
-        const formattedTime: string = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+		const formattedDate: string = date.toLocaleDateString('fr-FR', options)
+		const formattedTime: string = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 
-        return `${formattedDate.split(' à')[0]} - ${formattedTime}`;
+		return `${formattedDate.split(' à')[0]} - ${formattedTime}`
 	} else {
 		return dateTimeString
+	}
+}
+
+export const convertToTimestamp = (dateString: string, timeString: string): string => {
+	const dateParts = dateString.split('-')
+	const year = parseInt(dateParts[0], 10)
+	const month = parseInt(dateParts[1], 10) - 1 // January is represented as 0
+	const day = parseInt(dateParts[2], 10)
+
+	const timeParts = timeString.split(':')
+	const hours = parseInt(timeParts[0], 10)
+	const minutes = parseInt(timeParts[1], 10)
+
+	return new Date(year, month, day, hours, minutes).toISOString()
+}
+
+export async function convertEuroToMATIC(amountInEuro: number) {
+	try {
+		// Make a request to CoinGecko API to get the Euro to MATIC exchange rate
+		const response = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=euro&vs_currencies=matic')
+		const exchangeRate = response.data.euro.matic
+
+		// Perform the conversion
+		return amountInEuro * exchangeRate
+	} catch (error) {
+		console.error('Error converting Euro to MATIC:', error)
+		throw error
 	}
 }
