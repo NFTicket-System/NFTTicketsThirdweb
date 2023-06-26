@@ -14,13 +14,14 @@ import ScrollToTop from 'react-scroll-to-top'
 import { findMyNFTs } from '@/services/findMyNFTs'
 import { NATIVE_TOKEN_ADDRESS, type NFT, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type nftData } from '@/models/interfaces/createNFTFormData'
+import QRCode from 'react-qr-code'
+import { NFTCard } from '@/components/NFTCard/NFTCard'
 
 const MyNFT = () => {
 	const connectedAddress = useAddress()
 	const userWallet = useWalletConnect()
 	const marketplace = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
 	const [isLoading, setIsLoading] = useState(true)
-	const [isListing, setIsListing] = useState(false)
 	const [nfts, setNfts] = useState<nftData[]>([])
 	useEffect(() => {
 		if (isLoading) {
@@ -36,7 +37,7 @@ const MyNFT = () => {
 		}
 	})
 
-	const listNFT = async (nft: nftData) => {
+	const listNFT = async (nft: nftData, setIsListing: Function) => {
 		return
 		setIsListing(true)
 		console.log(nft)
@@ -81,29 +82,16 @@ const MyNFT = () => {
 			<h1>Vos NFTs</h1>
 			<div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '15rem' }}>
 				{!isLoading &&
-					nfts?.map((nft) => (
-						<div
-							key={parseInt(nft.id.toString())}
-							style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-							<MediaRenderer
-								src={nft.image}
-								height={'250rem'}
-							/>
-							{nft.name}
-							<button
-								onClick={async () => {
-									await listNFT(nft)
-								}}>
-								{!isListing && 'List nft'}
-								{isListing && (
-									<Loading
-										type={'points'}
-										size={'sm'}
-									/>
-								)}
-							</button>
-						</div>
-					))}
+					nfts?.map((nft) => {
+						return (
+							<>
+								<NFTCard
+									nft={nft}
+									listNFT={listNFT}
+								/>
+							</>
+						)
+					})}
 			</div>
 		</>
 	)

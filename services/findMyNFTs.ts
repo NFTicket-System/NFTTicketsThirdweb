@@ -13,7 +13,7 @@ export async function findMyNFTs({ connectedAddress }: { connectedAddress: strin
 		nfts.push({
 			id: BigNumber.from(nft.metadata.id),
 			image: nft.metadata.image ?? '',
-			collectionId: collection.chainId.toString(),
+			collectionId: collection.erc721.getAddress(),
 			name: nft.metadata.name?.toString() ?? '',
 		})
 	})
