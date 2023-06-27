@@ -32,7 +32,6 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 					</Text>
 					<Button
 						onPress={() => {
-							console.log(nfts)
 							if (nfts !== undefined) {
 								setVisible(true)
 								router
@@ -55,6 +54,7 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 								b>
 								Consulter les tickets
 							</Text>
+							<Spacer x={0.5} />
 							<Image
 								alt={'right arrow'}
 								width={30}
