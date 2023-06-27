@@ -19,6 +19,7 @@ import {
 	Textarea,
 	useTheme,
 } from '@nextui-org/react'
+import swal from 'sweetalert'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
@@ -37,7 +38,6 @@ import { ConversionSens, InputName } from '@/models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
-import swal from 'sweetalert'
 import {
 	checkDateValid,
 	isDateValid2Submit,
@@ -59,6 +59,7 @@ import {
 import { type Category } from '@/models/Category'
 import EventCategoryBadge from '@/components/Badge/EventCategoryBadge'
 import { TicketType } from '@/models/TicketType'
+import { FormDataTypeClass } from '@/models/formDataTypeClass'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
@@ -222,72 +223,77 @@ const NftDrop = () => {
 
 							console.log(eventData)
 
-							const euro2Matic = await convertEuroToMATIC(
-								Number(formData.price),
-								ConversionSens.MATIC
-							).then(async (result) => {
-								formData.price = result
+							await axios
+								.post(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/', eventData)
+								.then(async (response) => {
+									const axiosResponse: CreateEventResponse = response.data
+									const createdEventId: number = axiosResponse.insertId
 
-								await axios
-									.post(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/', eventData)
-									.then(async (response) => {
-										const axiosResponse: CreateEventResponse = response.data
-										const createdEventId: number = axiosResponse.insertId
+									const ticketCategories: CreateEventCategories = {
+										id: createdEventId,
+										categories: selectedEventIdsCategories.map((category) =>
+											category != null ? category.id : 1
+										),
+									}
 
-										const ticketCategories: CreateEventCategories = {
-											id: createdEventId,
-											categories: selectedEventIdsCategories.map((category) =>
-												category != null ? category.id : 1
-											),
-										}
+									await createEventCategories(ticketCategories)
 
-										await createEventCategories(ticketCategories)
+									console.log('ticketCATEGORIES', ticketCategories)
 
-										console.log('ticketCATEGORIES', ticketCategories)
+									for (const item of ticketTypes) {
+										const finalPrice = await convertEuroToMATIC(
+											Number(item.prix),
+											ConversionSens.MATIC
+										)
 
+										const typedFormData = new FormDataTypeClass(
+											Number(item.nbticket),
+											formData.name,
+											formData.description,
+											formData.date,
+											finalPrice,
+											formData.hourStart,
+											formData.hourEnd,
+											formData.location,
+											fileUrl,
+											item.libelle
+										)
 
-                                        ticketTypes.forEach(async (item) => {
-                                            const typedFormData = formData
-                                            typedFormData.name = item.libelle
-                                            typedFormData.price = item.prix
-                                            typedFormData.count = Number(item.nbticket)
-
-                                            await createNFTicket(
-                                                    typedFormData,
-                                                    sdkAdmin,
-                                                    connectedAddress,
-                                                    fileUrl,
-                                                    setCreationStep,
-                                                    axiosResponse.insertId
-                                            )
-                                                    .then(() => {
-                                                        setLoadingModal(false)
-                                                        void swal(
-                                                                'Bravo !',
-                                                                formData.count > 1
-                                                                        ? 'Vos tickets sont disponibles à la vente !'
-                                                                        : 'Votre ticket est disponible à la vente !',
-                                                                'success'
-                                                        )
-                                                    })
-                                                    .catch((e) => {
-                                                        setLoadingModal(false)
-                                                        defaultErrorModal()
-                                                        console.error(e)
-                                                    })
-                                        })
-									})
-									.catch((error) => {
-										console.error('Error making PUT request:', error)
-									})
-							})
+										await createNFTicket(
+											typedFormData,
+											sdkAdmin,
+											connectedAddress,
+											fileUrl,
+											setCreationStep,
+											axiosResponse.insertId
+										)
+									}
+								})
+								.then(() => {
+									setLoadingModal(false)
+									void swal(
+										'Bravo !',
+										formData.count > 1
+											? 'Vos tickets sont disponibles à la vente !'
+											: 'Votre ticket est disponible à la vente !',
+										'success'
+									)
+								})
+								.catch((e) => {
+									setLoadingModal(false)
+									defaultErrorModal()
+									console.error(e)
+								})
+								.catch((error) => {
+									console.error('Error making POST request:', error)
+								})
 						})
 					}
 				} else {
 					setShowConfirmationModal(false)
 					defaultErrorModal()
 				}
-			//}
+			}
 		}
 	}
 	/* FORM */
@@ -847,21 +853,6 @@ const NftDrop = () => {
 							</Text>
 							<Text size={18}>{getValues(InputName.LOCATION)}</Text>
 						</Row>
-						<Row justify={'center'}>
-							<Text
-								b
-								size={18}>
-								Prix:&nbsp;
-							</Text>
-							<Text size={18}>{getValues(InputName.PRICE)}&nbsp;€</Text>
-							<Spacer x={2} />
-							<Text
-								b
-								size={18}>
-								Nombre de places:&nbsp;
-							</Text>
-							<Text size={18}>{getValues(InputName.COUNT)}</Text>
-						</Row>
 						<Row>
 							<Container>
 								<Text
@@ -875,7 +866,9 @@ const NftDrop = () => {
 									bordered>
 									{ticketTypes.map((ticketType) => {
 										return (
-											<Collapse title={ticketType.libelle}>
+											<Collapse
+												expanded
+												title={ticketType.libelle}>
 												<Row justify={'space-evenly'}>
 													<Row align={'center'}>
 														<Text>nombre de ticket : </Text>

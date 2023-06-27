@@ -1,10 +1,12 @@
 import { NATIVE_TOKEN_ADDRESS, type ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { type CreateEventCategories, type CreateTicket, type formDataType } from '@/models/interfaces/createNFTFormData'
+import { type CreateEventCategories, type CreateTicket } from '@/models/interfaces/createNFTFormData'
 import axios from 'axios'
 import { convertToTimestamp } from '@/utils/tools'
 import { type Category } from '@/models/Category'
+import { type FormDataTypeClass } from '@/models/formDataTypeClass'
 
-export function createMetadatas(formData: formDataType, imageUrl: string | undefined) {
+export function createMetadatas(formData: FormDataTypeClass, imageUrl: string | undefined) {
+	console.log('form', formData)
 	const metaData = {
 		name: formData.name,
 		description: formData.description,
@@ -14,6 +16,7 @@ export function createMetadatas(formData: formDataType, imageUrl: string | undef
 			location: formData.location,
 			hourStart: formData.hourStart,
 			date: formData.date,
+			ticketType: formData.ticketType,
 		},
 	}
 	const metaDatas = []
@@ -25,7 +28,7 @@ export function createMetadatas(formData: formDataType, imageUrl: string | undef
 }
 
 export async function createNFTicket(
-	formData: formDataType,
+	formData: FormDataTypeClass,
 	sdkAdmin: ThirdwebSDK,
 	connectedAddress: string | undefined,
 	imageUrl: string | undefined,
@@ -33,9 +36,12 @@ export async function createNFTicket(
 	setCreationStep: Function,
 	insertId: number
 ) {
-	setCreationStep('Création de la collection')
+	console.log('TOTAL', formData)
+
+	setCreationStep(`Création de la collection des billets : ${formData.ticketType}`)
+
 	const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection({
-		name: formData.name,
+		name: formData.ticketType,
 		primary_sale_recipient: connectedAddress ?? '',
 	})
 
@@ -46,13 +52,13 @@ export async function createNFTicket(
 
 	console.log('CONTRACT')
 
-	setCreationStep('Création des NFT')
+	setCreationStep(`Création des NFT: ${formData.ticketType}`)
 	const metaDatas = createMetadatas(formData, imageUrl)
 
 	const mintTransaction = await contract.mintBatchTo(process.env.NEXT_PUBLIC_MADD ?? '', metaDatas)
 	console.log('MINT')
 
-	setCreationStep('Mise en vente des NFT')
+	setCreationStep(`Mise en vente des NFT : ${formData.ticketType}`)
 
 	for (const nftObject of mintTransaction) {
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
@@ -84,7 +90,7 @@ export async function createNFTicket(
 				addressContract: listing.assetContractAddress,
 				idEvent: insertId,
 				prix: listing.buyoutPricePerToken,
-				type: 'Fosse',
+				type: formData.ticketType,
 				date: convertToTimestamp(formData.date, formData.hourStart),
 				solded: 0,
 			}

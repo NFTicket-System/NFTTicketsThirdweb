@@ -30,7 +30,7 @@ const Header = () => {
 	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
 
 	const fetchAllEvents = async () => {
-		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light').then((response) => {
+		await axios.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/all/light`).then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			setLightEvents(result)
@@ -223,9 +223,6 @@ const Header = () => {
 						</Card.Body>
 					</Card>
 				)}
-
-				{/* Rest of the page content */}
-				{/* Place your existing page content JSX here */}
 			</div>
 			<Spacer y={2} />
 			<Modal
