@@ -23,10 +23,12 @@ const MyNFT = () => {
 	const marketplace = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
 	const [isLoading, setIsLoading] = useState(true)
 	const [nfts, setNfts] = useState<nftData[]>([])
+
 	useEffect(() => {
-		if (isLoading) {
+		setIsLoading(true)
+		if (connectedAddress != null) {
 			void findMyNFTs({
-				connectedAddress: connectedAddress != null ? connectedAddress : '',
+				connectedAddress: connectedAddress,
 			})
 				.then((res) => {
 					setNfts(res)
@@ -35,7 +37,7 @@ const MyNFT = () => {
 					setIsLoading(false)
 				})
 		}
-	})
+	}, [connectedAddress])
 
 	const listNFT = async (nft: nftData, setIsListing: Function) => {
 		return
@@ -80,7 +82,22 @@ const MyNFT = () => {
 		<>
 			<Header></Header>
 			<h1>Vos NFTs</h1>
-			<div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '15rem' }}>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'row',
+					flexWrap: 'wrap',
+					gap: '15rem',
+					justifyContent: 'center',
+					alignItems: 'center',
+					minHeight: '800px',
+				}}>
+				{isLoading && (
+					<Loading
+						type="points"
+						size={'lg'}
+					/>
+				)}
 				{!isLoading &&
 					nfts?.map((nft) => {
 						return (
