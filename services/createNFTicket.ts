@@ -97,7 +97,7 @@ export async function createNFTicket(
 	console.log('TICKETS', tickets2Add)
 
 	axios
-		.post('http://localhost:8080/api/events/ticket', tickets2Add)
+		.post(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/ticket', tickets2Add)
 		.then((response) => {
 			console.log('POST request successful:', response.data)
 		})
@@ -109,7 +109,7 @@ export async function createNFTicket(
 let categories: Category[] = []
 export const getAllEventsObjCategories = async (): Promise<Category[]> => {
 	await axios
-		.get('http://localhost:8080/api/events/all/category')
+		.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/category')
 		.then((res) => {
 			categories = res.data
 		})
@@ -128,7 +128,7 @@ export const matchCategories = (selectedItems: string[]): Array<Category | null>
 }
 
 export const createEventCategories = async (categories: CreateEventCategories) => {
-	await axios.post('http://localhost:8080/api/events/categories', categories).catch((error) => {
+	await axios.post(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/categories', categories).catch((error) => {
 		console.error('Error making PUT request:', error)
 	})
 }

@@ -30,7 +30,7 @@ const Header = () => {
 	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
 
 	const fetchAllEvents = async () => {
-		await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light').then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			setLightEvents(result)
@@ -206,7 +206,6 @@ const Header = () => {
 									}}
 									key={searchItem.id}
 									onClick={() => {
-										// void router.push(`/event/${searchItem.id}`)
 										setSearchTermResults([])
 										setVisible(true)
 										router
@@ -229,7 +228,6 @@ const Header = () => {
 				{/* Place your existing page content JSX here */}
 			</div>
 			<Spacer y={2} />
-			{/* eslint-disable-next-line react/jsx-no-undef */}
 			<Modal
 				scroll
 				fullScreen

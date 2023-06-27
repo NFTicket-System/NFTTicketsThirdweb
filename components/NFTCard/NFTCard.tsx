@@ -10,11 +10,29 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 	return (
 		<div
 			key={parseInt(props.nft.id.toString())}
-			style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-			<MediaRenderer
-				src={props.nft.image}
-				height={'250rem'}
-			/>
+			style={{
+				display: 'flex',
+				flexDirection: 'column',
+				justifyContent: 'center',
+				alignItems: 'center',
+				gap: '10px',
+				minWidth: '25rem',
+				minHeight: '20rem',
+			}}>
+			{!displayQrCode && (
+				<MediaRenderer
+					src={props.nft.image}
+					height={'250rem'}
+				/>
+			)}
+			{displayQrCode && (
+				<QRCode
+					size={200}
+					bgColor="black"
+					fgColor="white"
+					value={props.nft.collectionId}
+				/>
+			)}
 			{props.nft.name}
 
 			<button
@@ -35,14 +53,6 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 					/>
 				)}
 			</button>
-			{displayQrCode && (
-				<QRCode
-					size={200}
-					bgColor="white"
-					fgColor="black"
-					value={props.nft.collectionId}
-				/>
-			)}
 		</div>
 	)
 }
