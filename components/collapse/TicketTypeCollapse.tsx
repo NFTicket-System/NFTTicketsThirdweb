@@ -1,8 +1,11 @@
 import { type Ticket } from '../../models/Event'
-import { Button, Collapse, Row, Spacer, Text } from '@nextui-org/react'
+import { Button, Collapse, Row, Text } from '@nextui-org/react'
 import Image from 'next/image'
 import nextIcon from '../../assets/icons/fleche-droite.png'
-import { ThirdwebSDK } from '@thirdweb-dev/sdk'
+import { useActiveListings, useContract } from '@thirdweb-dev/react'
+import React from 'react'
+import router from 'next/router'
+import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 
 interface TicketCardProps {
 	ticketType: string
@@ -11,7 +14,11 @@ interface TicketCardProps {
 }
 
 const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) => {
-	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
+	const collectionAddress = props.ticketsOfType[0].addressContract
+	const { contract } = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
+	const { data: nfts } = useActiveListings(contract, {
+		tokenContract: collectionAddress,
+	})
 
 	return (
 		<Collapse title={props.ticketType}>
@@ -22,18 +29,13 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 					Ticket(s) à partir de {props.lowerPrice} €
 				</Text>
 				<Button
-					onPress={async () => {
-						console.log('pressed')
-
-						const collection = await sdkAdmin.getContract(
-							props.ticketsOfType[0].addressContract,
-							'nft-collection'
-						)
-						console.log(collection)
-
-						/* if (ticket !== undefined) {
-							void router.push(`/event/${ticket.addressContract}/${ticket.tokenId}`)
-						} */
+					onPress={() => {
+						console.log(nfts)
+						if (nfts !== undefined) {
+							void router.push(`/nft/${collectionAddress}/${nfts[0].id}`)
+						} else {
+							defaultErrorModal()
+						}
 					}}>
 					<Row
 						justify={'space-between'}
@@ -43,8 +45,8 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 							b>
 							Consulter les tickets
 						</Text>
-						<Spacer />
 						<Image
+							alt={'right arrow'}
 							width={30}
 							height={30}
 							src={nextIcon}
