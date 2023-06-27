@@ -133,53 +133,70 @@ const Header = (props: HeaderProps) => {
 					</Navbar.Item>
 				</Navbar.Content>
 			</Navbar>
-			{searchTermResults !== undefined ? (
-				<>
-					{searchTermResults.length > 0 ? (
-						<Card
-							css={{
-								margin: 'auto',
-								padding: '0 1em',
-								maxWidth: '50%',
-								marginTop: '1%',
-							}}>
-							<Card.Body>
+			<div style={{ position: 'relative' }}>
+				{searchTermResults !== undefined && searchTermResults.length > 0 && (
+					<Card
+						isHoverable
+						variant={'shadow'}
+						css={{
+							position: 'absolute',
+							top: '0',
+							left: '28%',
+							margin: 'auto',
+							padding: '0 1em',
+							maxWidth: '50%',
+							marginTop: '1%',
+							zIndex: '999',
+						}}>
+						<Card.Body>
+							<Text
+								h4
+								b>
+								Évènements disponibles :
+							</Text>
+							<Divider />
+							{searchTermResults.slice(0, 7).map((searchItem) => (
 								<Text
-									h4
-									b>
-									Évènements disponibles :
+									css={{
+										display: 'flex',
+										alignItems: 'center',
+										padding: '7px',
+										position: 'relative',
+										'&::before': {
+											content: '""',
+											position: 'absolute',
+											top: 0,
+											left: 0,
+											right: 0,
+											bottom: 0,
+											zIndex: -1,
+											transition: 'background-color 0.3s ease',
+										},
+										'&:hover::before': {
+											backgroundColor: 'transparent',
+										},
+										'&:hover': {
+											color: 'primary',
+											cursor: 'pointer',
+											fontSize: '1.2rem',
+											fontWeight: 'bold',
+										},
+									}}
+									key={searchItem.id}
+									onClick={() => {
+										void router.push(`/event/${searchItem.id}`)
+									}}>
+									{searchItem.libelle}
 								</Text>
-								<Divider />
-								{searchTermResults.map((searchItem) => (
-									<Text
-										css={{
-											display: 'flex',
-											alignItems: 'center',
-											padding: '7px',
+							))}
+						</Card.Body>
+					</Card>
+				)}
 
-											'&:hover': {
-												color: '#4E3104',
-												cursor: 'pointer',
-												backgroundColor: '$primaryLight',
-												borderRadius: '4px',
-											},
-										}}
-										key={searchItem.id}
-										onClick={() => {
-											void router.push(`/event/${searchItem.id}`)
-										}}>
-										{searchItem.libelle}
-									</Text>
-								))}
-							</Card.Body>
-						</Card>
-					) : (
-						''
-					)}
-				</>
-			) : (
-				<></>
-			)}
+				{/* Rest of the page content */}
+				{/* Place your existing page content JSX here */}
+			</div>
+
 			<Spacer y={2} />
 		</>
 	)
