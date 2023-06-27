@@ -145,7 +145,7 @@ const Home: NextPage = () => {
 
 	return (
 		<>
-			<Header events={events} />
+			<Header/>
 			<Spacer x={4} />
 			{/* CAROUSEL */}
 			{trendemousEvents.length > 0 ? (
