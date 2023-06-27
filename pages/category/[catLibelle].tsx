@@ -12,7 +12,8 @@ const CategoryPage = () => {
 
 	const fetchEvents = async (libelle: string) => {
 		let url = `${process.env.NEXT_PUBLIC_API_HOSTNAME ?? ''}/api/events/all/light/byCat/${libelle}`
-		if (libelle === 'trendemous') url = `http://localhost:8080/api/events/all/light/${libelle}`
+		if (libelle === 'trendemous')
+			url = `${process.env.NEXT_PUBLIC_API_HOSTNAME ?? ''}/api/events/all/light/${libelle}`
 		await axios.get(url).then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
