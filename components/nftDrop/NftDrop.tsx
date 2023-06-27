@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { FaEraser } from '@react-icons/all-files/fa/FaEraser'
 import {
 	Button,
 	Card,
@@ -129,8 +130,8 @@ const NftDrop = () => {
 	/* TICKETS TYPES */
 	const [ticketTypes, setTicketTypes] = useState<TicketType[]>([])
 	let ticketTypeLabel = ''
-	let ticketTypePrice = ''
-	let ticketTypeCount = ''
+	let ticketTypePrice = '0'
+	let ticketTypeCount = '1'
 	const handleSubmitAddTicketType = (libelle: string, prix: string, nbTicket: string) => {
 		const ticketType = new TicketType(libelle, prix, nbTicket)
 		ticketTypeLabel = ''
@@ -647,7 +648,6 @@ const NftDrop = () => {
 							<Button
 								color="primary"
 								auto
-								ghost
 								rounded
 								onPress={() => {
 									setShowAddTypeTicketModal(true)
@@ -676,6 +676,18 @@ const NftDrop = () => {
 											<Spacer x={0.5} />
 											<Text h4>{ticketType.prix} €</Text>
 										</Row>
+										<Button
+											color="error"
+											rounded
+											ghost
+											iconRight={<FaEraser />}
+											onPress={() => {
+												setTicketTypes(
+													ticketTypes.filter((type) => type.libelle !== ticketType.libelle)
+												)
+											}}>
+											Supprimer
+										</Button>
 									</Row>
 								</Collapse>
 							)
@@ -965,7 +977,7 @@ const NftDrop = () => {
 								required
 								underlined
 								min={1}
-								initialValue={'0'}
+								initialValue={'1'}
 								onChange={(event) => {
 									ticketTypeCount = event.target.value
 								}}
@@ -986,7 +998,9 @@ const NftDrop = () => {
 					<Button
 						auto
 						onPress={() => {
-							handleSubmitAddTicketType(ticketTypeLabel, ticketTypePrice, ticketTypeCount)
+							if (ticketTypeLabel !== '') {
+								handleSubmitAddTicketType(ticketTypeLabel, ticketTypePrice, ticketTypeCount)
+							}
 						}}>
 						Valider
 					</Button>
