@@ -1,4 +1,17 @@
-import { Card, Divider, Input, Link, Navbar, Spacer, Text, useTheme } from '@nextui-org/react'
+import {
+	Card,
+	Divider,
+	Grid,
+	Input,
+	Link,
+	Loading,
+	Modal,
+	Navbar,
+	Spacer,
+	Text,
+	useModal,
+	useTheme,
+} from '@nextui-org/react'
 import { ConnectWallet } from '@thirdweb-dev/react'
 import React, { useEffect, useState } from 'react'
 import Logo from '../icons/Logo'
@@ -11,6 +24,7 @@ import axios from 'axios'
 const Header = () => {
 	const { isDark } = useTheme()
 	const { asPath } = useRouter()
+	const { setVisible, bindings } = useModal()
 
 	const [lightEvents, setLightEvents] = useState<LightEvent[]>([])
 	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
@@ -192,7 +206,17 @@ const Header = () => {
 									}}
 									key={searchItem.id}
 									onClick={() => {
-										void router.push(`/event/${searchItem.id}`)
+										// void router.push(`/event/${searchItem.id}`)
+										setSearchTermResults([])
+										setVisible(true)
+										router
+											.push(`/event/${searchItem.id}`)
+											.then(() => {
+												setVisible(false)
+											})
+											.catch((e: any) => {
+												console.error(e)
+											})
 									}}>
 									{searchItem.libelle}
 								</Text>
@@ -204,8 +228,30 @@ const Header = () => {
 				{/* Rest of the page content */}
 				{/* Place your existing page content JSX here */}
 			</div>
-
 			<Spacer y={2} />
+			{/* eslint-disable-next-line react/jsx-no-undef */}
+			<Modal
+				scroll
+				fullScreen
+				closeButton
+				aria-labelledby="redirect-modal"
+				aria-describedby="redirect-modal"
+				{...bindings}>
+				<Modal.Body>
+					<Grid.Container
+						justify={'center'}
+						alignItems={'center'}
+						direction={'row'}
+						css={{ height: '100%' }}>
+						<Text size={50}>Chargement</Text>
+						<Spacer x={1} />
+						<Loading
+							type={'points'}
+							size={'xl'}
+						/>
+					</Grid.Container>
+				</Modal.Body>
+			</Modal>
 		</>
 	)
 }
