@@ -28,8 +28,8 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 			{displayQrCode && (
 				<QRCode
 					size={200}
-					bgColor="white"
-					fgColor="black"
+					bgColor="black"
+					fgColor="white"
 					value={props.nft.collectionId}
 				/>
 			)}

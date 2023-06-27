@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 	const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
 	const fetchAllEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light').then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			fillEvents(result)
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
 	}, [])
 
 	const fetchTrendemousEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light/trendemous').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/trendemous').then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			fillEvents(result)
@@ -38,10 +38,10 @@ const Home: NextPage = () => {
 
 	const fetchShowEvents = useCallback(async () => {
 		let result: LightEvent[] = []
-		await axios.get('http://localhost:8080/api/events/all/light/byCat/Foire').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Foire').then((response) => {
 			response.data.map((item: LightEvent) => result.push(item))
 		})
-		await axios.get('http://localhost:8080/api/events/all/light/byCat/Salon').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Salon').then((response) => {
 			response.data.map((item: LightEvent) => result.push(item))
 			result = supressDuplicateById(result)
 			result.sort((a, b) => a.libelle.localeCompare(b.libelle))
@@ -51,35 +51,41 @@ const Home: NextPage = () => {
 	}, [])
 
 	const fetchConcertsEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light/byCat/Concert').then((response) => {
-			console.log()
-			const result: LightEvent[] = []
-			response.data.map((item: LightEvent) => result.push(item))
-			fillEvents(result)
-			setConcertEvents(result)
-		})
+		await axios
+			.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Concert')
+			.then((response) => {
+				console.log()
+				const result: LightEvent[] = []
+				response.data.map((item: LightEvent) => result.push(item))
+				fillEvents(result)
+				setConcertEvents(result)
+			})
 	}, [])
 
 	const fetchFestivalEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light/byCat/Festival').then((response) => {
-			const result: LightEvent[] = []
-			response.data.map((item: LightEvent) => result.push(item))
-			fillEvents(result)
-			setFestivalEvents(result)
-		})
+		await axios
+			.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Festival')
+			.then((response) => {
+				const result: LightEvent[] = []
+				response.data.map((item: LightEvent) => result.push(item))
+				fillEvents(result)
+				setFestivalEvents(result)
+			})
 	}, [])
 
 	const fetchTheatreEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light/byCat/Theatre').then((response) => {
-			const result: LightEvent[] = []
-			response.data.map((item: LightEvent) => result.push(item))
-			fillEvents(result)
-			setTheatreEvents(result)
-		})
+		await axios
+			.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Theatre')
+			.then((response) => {
+				const result: LightEvent[] = []
+				response.data.map((item: LightEvent) => result.push(item))
+				fillEvents(result)
+				setTheatreEvents(result)
+			})
 	}, [])
 
 	const fetchHumorEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light/byCat/Humor').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humor').then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			fillEvents(result)
@@ -145,7 +151,7 @@ const Home: NextPage = () => {
 
 	return (
 		<>
-			<Header/>
+			<Header />
 			<Spacer x={4} />
 			{/* CAROUSEL */}
 			{trendemousEvents.length > 0 ? (

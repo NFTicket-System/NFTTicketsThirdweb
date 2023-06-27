@@ -7,7 +7,7 @@ import { type Ticket } from '@/models/Event'
 
 export async function findMyNFTs({ connectedAddress }: { connectedAddress: string }) {
 	const collections: string[] = []
-	await axios.get('http://localhost:8080/api/tickets/all').then((response) => {
+	await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/tickets/all').then((response) => {
 		const result: Ticket[] = []
 		response.data.map((item: Ticket) => result.push(item))
 		result.map((ticket) => collections.push(ticket.addressContract))
