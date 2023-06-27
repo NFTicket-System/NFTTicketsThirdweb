@@ -58,7 +58,6 @@ export interface CreateTicket {
 	type: string
 	date: string
 	solded: number
-	tokenId: number | BigNumber
 }
 
 export interface CreateEvent {

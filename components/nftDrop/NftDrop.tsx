@@ -275,6 +275,9 @@ const NftDrop = () => {
 							})
 						})
 					}
+				} else {
+					setShowConfirmationModal(false)
+					defaultErrorModal()
 				}
 			}
 		}
@@ -850,6 +853,39 @@ const NftDrop = () => {
 								Nombre de places:&nbsp;
 							</Text>
 							<Text size={18}>{getValues(InputName.COUNT)}</Text>
+						</Row>
+						<Row>
+							<Container>
+								<Text
+									b
+									size={18}>
+									Types et nombre des billets
+								</Text>
+								<Spacer y={0.5} />
+								<Collapse.Group
+									accordion={false}
+									bordered>
+									{ticketTypes.map((ticketType) => {
+										return (
+											<Collapse title={ticketType.libelle}>
+												<Row justify={'space-evenly'}>
+													<Row align={'center'}>
+														<Text>nombre de ticket : </Text>
+														<Spacer x={0.5} />
+														<Text h4>{ticketType.nbticket}</Text>
+													</Row>
+													<Spacer />
+													<Row align={'center'}>
+														<Text>prix du ticket : </Text>
+														<Spacer x={0.5} />
+														<Text h4>{ticketType.prix} €</Text>
+													</Row>
+												</Row>
+											</Collapse>
+										)
+									})}
+								</Collapse.Group>
+							</Container>
 						</Row>
 					</Col>
 				</Modal.Body>

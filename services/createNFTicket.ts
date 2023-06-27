@@ -87,7 +87,6 @@ export async function createNFTicket(
 				type: 'Fosse',
 				date: convertToTimestamp(formData.date, formData.hourStart),
 				solded: 0,
-				tokenId: listing.tokenId,
 			}
 			tickets2Add.push(ticket)
 		})

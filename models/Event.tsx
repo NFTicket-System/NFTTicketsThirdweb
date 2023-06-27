@@ -1,5 +1,3 @@
-import { type BigNumber } from 'ethers'
-
 export class Event {
 	id: number
 	libelle: string
@@ -37,7 +35,6 @@ export class Ticket {
 	type: string
 	date: string
 	solded: boolean
-	tokenId: number | BigNumber
 
 	constructor(data: any) {
 		this.id = data.id
@@ -46,6 +43,5 @@ export class Ticket {
 		this.type = data.type
 		this.date = data.date
 		this.solded = data.solded
-		this.tokenId = data.tokenId
 	}
 }
