@@ -245,29 +245,37 @@ const NftDrop = () => {
 
 										console.log('ticketCATEGORIES', ticketCategories)
 
-										await createNFTicket(
-											formData,
-											sdkAdmin,
-											connectedAddress,
-											fileUrl,
-											setCreationStep,
-											axiosResponse.insertId
-										)
-											.then(() => {
-												setLoadingModal(false)
-												void swal(
-													'Bravo !',
-													formData.count > 1
-														? 'Vos tickets sont disponibles à la vente !'
-														: 'Votre ticket est disponible à la vente !',
-													'success'
-												)
-											})
-											.catch((e) => {
-												setLoadingModal(false)
-												defaultErrorModal()
-												console.error(e)
-											})
+
+                                        ticketTypes.forEach(async (item) => {
+                                            const typedFormData = formData
+                                            typedFormData.name = item.libelle
+                                            typedFormData.price = item.prix
+                                            typedFormData.count = Number(item.nbticket)
+
+                                            await createNFTicket(
+                                                    typedFormData,
+                                                    sdkAdmin,
+                                                    connectedAddress,
+                                                    fileUrl,
+                                                    setCreationStep,
+                                                    axiosResponse.insertId
+                                            )
+                                                    .then(() => {
+                                                        setLoadingModal(false)
+                                                        void swal(
+                                                                'Bravo !',
+                                                                formData.count > 1
+                                                                        ? 'Vos tickets sont disponibles à la vente !'
+                                                                        : 'Votre ticket est disponible à la vente !',
+                                                                'success'
+                                                        )
+                                                    })
+                                                    .catch((e) => {
+                                                        setLoadingModal(false)
+                                                        defaultErrorModal()
+                                                        console.error(e)
+                                                    })
+                                        })
 									})
 									.catch((error) => {
 										console.error('Error making PUT request:', error)
@@ -279,7 +287,7 @@ const NftDrop = () => {
 					setShowConfirmationModal(false)
 					defaultErrorModal()
 				}
-			}
+			//}
 		}
 	}
 	/* FORM */
