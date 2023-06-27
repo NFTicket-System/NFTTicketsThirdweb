@@ -319,26 +319,25 @@ const NftDrop = () => {
 				{...register(InputName.DESCRIPTION)}
 			/>
 			<Spacer y={4} />
-            <Container xl>
-                <Checkbox.Group
-                        color="primary"
-                        defaultValue={['Concert']}
-                        label="Catégorie de l'évènement"
-                        orientation="horizontal"
-                        onChange={(selectedItems) => {
-                            setSelectedEventIdsCategories(matchCategories(selectedItems))
-                        }}>
-                    <Grid.Container gap={2}>
-                        {eventCategories.map((category, index) => (
-                                <Grid
-                                        xs={4}
-                                        key={category.id}>
-                                    <Checkbox value={category.libelle}>{category.libelle}</Checkbox>
-                                </Grid>
-                        ))}
-                    </Grid.Container>
-                </Checkbox.Group>
-            </Container>
+			<Container xl>
+				<Checkbox.Group
+					color="primary"
+					label="Catégorie de l'évènement"
+					orientation="horizontal"
+					onChange={(selectedItems) => {
+						setSelectedEventIdsCategories(matchCategories(selectedItems))
+					}}>
+					<Grid.Container gap={2}>
+						{eventCategories.map((category, index) => (
+							<Grid
+								xs={4}
+								key={category.id}>
+								<Checkbox value={category.libelle}>{category.libelle}</Checkbox>
+							</Grid>
+						))}
+					</Grid.Container>
+				</Checkbox.Group>
+			</Container>
 		</FormWrapper>,
 		/* DESCRIPTION END */
 		/* IMAGE START */
@@ -631,29 +630,29 @@ const NftDrop = () => {
 				</Card.Body>
 			</Card>
 			<Row>
-                <Container xl>
-                    <Collapse.Group accordion={false}>
-                        {ticketTypes.map((ticketType) => {
-                            return (
-                                    <Collapse title={ticketType.libelle}>
-                                        <Row justify={"space-evenly"}>
-                                            <Row align={"center"}>
-                                                <Text>nombre de ticket : </Text>
-                                                <Spacer x={0.5}/>
-                                                <Text h4>{ticketType.nbticket}</Text>
-                                            </Row>
-                                            <Spacer/>
-                                            <Row align={"center"}>
-                                                <Text>prix du ticket : </Text>
-                                                <Spacer x={0.5}/>
-                                                <Text h4>{ticketType.prix} €</Text>
-                                            </Row>
-                                        </Row>
-                                    </Collapse>
-                            )
-                        })}
-                    </Collapse.Group>
-                </Container>
+				<Container xl>
+					<Collapse.Group accordion={false}>
+						{ticketTypes.map((ticketType) => {
+							return (
+								<Collapse title={ticketType.libelle}>
+									<Row justify={'space-evenly'}>
+										<Row align={'center'}>
+											<Text>nombre de ticket : </Text>
+											<Spacer x={0.5} />
+											<Text h4>{ticketType.nbticket}</Text>
+										</Row>
+										<Spacer />
+										<Row align={'center'}>
+											<Text>prix du ticket : </Text>
+											<Spacer x={0.5} />
+											<Text h4>{ticketType.prix} €</Text>
+										</Row>
+									</Row>
+								</Collapse>
+							)
+						})}
+					</Collapse.Group>
+				</Container>
 			</Row>
 		</FormWrapper>,
 		/* PRICE END */
