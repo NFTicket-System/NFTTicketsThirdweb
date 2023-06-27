@@ -20,7 +20,7 @@ const EventPage = () => {
 	const fetchEventAllInfos = async () => {
 		console.log('categories - eventId')
 		console.log(eventId)
-		await axios.get(`http://localhost:8080/api/events/all/categoty/event/${eventId}`).then((response) => {
+		await axios.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/all/categoty/event/${eventId}`).then((response) => {
 			const result: Category[] = []
 			response.data.map((item: Category) => result.push(item))
 			setEventCategories(result)
@@ -38,7 +38,7 @@ const EventPage = () => {
 	const fetchEventCategories = async () => {
 		console.log('event - eventId')
 		console.log(eventId)
-		await axios.get(`http://localhost:8080/api/events/single/${eventId}`).then((response) => {
+		await axios.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/single/${eventId}`).then((response) => {
 			const responseEvent: Event = new Event(response.data)
 			setEvent(responseEvent)
 

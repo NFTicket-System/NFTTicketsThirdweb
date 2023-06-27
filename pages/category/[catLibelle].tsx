@@ -1,10 +1,11 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Grid, Text } from '@nextui-org/react'
 import Footer from '../../components/footer/Footer'
 import Header from '../../components/header/Header'
 import { type LightEvent } from '@/models/LightEvent'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import EventContainer from '@/components/container/EventContainer'
+import EventSeeMoreContainer from '@/components/container/EventSeeMoreContainer'
 
 const CategoryPage = () => {
 	const router = useRouter()
@@ -17,7 +18,6 @@ const CategoryPage = () => {
 		await axios.get(url).then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
-			// fillEvents(result)
 			setEventsCategorie(result)
 		})
 	}
@@ -33,18 +33,22 @@ const CategoryPage = () => {
 		setEventsCategorie(parsedEvents)
 	}, [router.query])
 
-	// const fillEvents = (events: LightEvent[]) => {
-	// 	const initialEventsLength = events.length
-	// 	for (let index = 0; index < 5 - initialEventsLength; index++) {
-	// 		events.push(new LightEvent(-1, '', ''))
-	// 	}
-	// }
-
 	return (
 		<>
 			<Header events={[]} />
 
-			<EventContainer events={eventsCategorie} />
+			<Grid.Container direction="column">
+                <Grid>
+                    <Text
+                    h2
+                    css={{marginLeft: '1%'}}>
+                        {router.query.catLibelle}
+                    </Text>
+                </Grid>
+                <Grid>
+                    <EventSeeMoreContainer events={eventsCategorie}/>
+                </Grid>
+            </Grid.Container>
 
 			<Footer />
 		</>
