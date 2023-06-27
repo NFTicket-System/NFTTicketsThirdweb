@@ -28,7 +28,7 @@ const EventPage = () => {
 	}
 
 	const fetchAllEvents = useCallback(async () => {
-		await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light').then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			setEvents(result)

@@ -1,32 +1,31 @@
 import { Card, Divider, Input, Link, Navbar, Spacer, Text, useTheme } from '@nextui-org/react'
 import { ConnectWallet } from '@thirdweb-dev/react'
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
 import router, { useRouter } from 'next/router'
 import { IoSearch } from '@react-icons/all-files/io5/IoSearch'
 import { type LightEvent } from '@/models/LightEvent'
-import axios from "axios";
-
+import axios from 'axios'
 
 const Header = () => {
 	const { isDark } = useTheme()
 	const { asPath } = useRouter()
 
-    const [lightEvents, setLightEvents] = useState<LightEvent[]>([])
+	const [lightEvents, setLightEvents] = useState<LightEvent[]>([])
 	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
 
-    const fetchAllEvents = async () => {
-        await axios.get('http://localhost:8080/api/events/all/light').then((response) => {
-            const result: LightEvent[] = []
-            response.data.map((item: LightEvent) => result.push(item))
-            setLightEvents(result)
-        })
-    }
+	const fetchAllEvents = async () => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light').then((response) => {
+			const result: LightEvent[] = []
+			response.data.map((item: LightEvent) => result.push(item))
+			setLightEvents(result)
+		})
+	}
 
-    useEffect(() => {
-        fetchAllEvents().catch(console.error)
-    }, [fetchAllEvents])
+	useEffect(() => {
+		fetchAllEvents().catch(console.error)
+	}, [fetchAllEvents])
 
 	return (
 		<>

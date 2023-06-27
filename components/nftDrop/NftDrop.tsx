@@ -204,7 +204,7 @@ const NftDrop = () => {
 								formData.price = result
 
 								await axios
-									.post('http://localhost:8080/api/events/', eventData)
+									.post(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/', eventData)
 									.then(async (response) => {
 										const axiosResponse: CreateEventResponse = response.data
 										const createdEventId: number = axiosResponse.insertId
