@@ -154,7 +154,9 @@ const NftDrop = () => {
 			switch (currentStepIndex) {
 				case 0:
 					if (getValues(InputName.NAME)) {
-						getValues(InputName.NAME).length > 0 ? (isOk = true) : (isOk = false)
+						getValues(InputName.NAME).length > 0 && selectedEventIdsCategories.length !== 0
+							? (isOk = true)
+							: (isOk = false)
 					} else {
 						isOk = false
 					}
@@ -319,11 +321,11 @@ const NftDrop = () => {
 			<Spacer y={2} />
 			<Checkbox.Group
 				color="primary"
-				defaultValue={['Concert']}
 				label="Catégorie de l'évènement"
 				orientation="horizontal"
 				onChange={(selectedItems) => {
 					setSelectedEventIdsCategories(matchCategories(selectedItems))
+					console.log(selectedEventIdsCategories)
 				}}>
 				{eventCategories.map((category, index) => (
 					<Checkbox
@@ -333,6 +335,18 @@ const NftDrop = () => {
 					</Checkbox>
 				))}
 			</Checkbox.Group>
+			{selectedEventIdsCategories.length === 0 && triedToSubmit ? (
+				<>
+					<Spacer y={1} />
+					<Button
+						ripple={false}
+						animated={false}
+						bordered
+						color="error">
+						Veuillez choisir une catgerorie pour votre évènement
+					</Button>
+				</>
+			) : null}
 		</FormWrapper>,
 		/* DESCRIPTION END */
 		/* IMAGE START */
