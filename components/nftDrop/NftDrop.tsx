@@ -338,6 +338,18 @@ const NftDrop = () => {
 					</Grid.Container>
 				</Checkbox.Group>
 			</Container>
+			{selectedEventIdsCategories.length === 0 && triedToSubmit ? (
+				<>
+					<Spacer y={1} />
+					<Button
+						ripple={false}
+						animated={false}
+						bordered
+						color="error">
+						Veuillez choisir une catgerorie pour votre évènement
+					</Button>
+				</>
+			) : null}
 		</FormWrapper>,
 		/* DESCRIPTION END */
 		/* IMAGE START */
