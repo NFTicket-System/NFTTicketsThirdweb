@@ -316,23 +316,27 @@ const NftDrop = () => {
 				helperText={'Décrivez votre évènement en quelques mots'}
 				{...register(InputName.DESCRIPTION)}
 			/>
-			<Spacer y={2} />
-			<Checkbox.Group
-				color="primary"
-				defaultValue={['Concert']}
-				label="Catégorie de l'évènement"
-				orientation="horizontal"
-				onChange={(selectedItems) => {
-					setSelectedEventIdsCategories(matchCategories(selectedItems))
-				}}>
-				{eventCategories.map((category, index) => (
-					<Checkbox
-						key={category.id}
-						value={category.libelle}>
-						{category.libelle}
-					</Checkbox>
-				))}
-			</Checkbox.Group>
+			<Spacer y={4} />
+            <Container xl>
+                <Checkbox.Group
+                        color="primary"
+                        defaultValue={['Concert']}
+                        label="Catégorie de l'évènement"
+                        orientation="horizontal"
+                        onChange={(selectedItems) => {
+                            setSelectedEventIdsCategories(matchCategories(selectedItems))
+                        }}>
+                    <Grid.Container gap={2}>
+                        {eventCategories.map((category, index) => (
+                                <Grid
+                                        xs={4}
+                                        key={category.id}>
+                                    <Checkbox value={category.libelle}>{category.libelle}</Checkbox>
+                                </Grid>
+                        ))}
+                    </Grid.Container>
+                </Checkbox.Group>
+            </Container>
 		</FormWrapper>,
 		/* DESCRIPTION END */
 		/* IMAGE START */
@@ -603,43 +607,52 @@ const NftDrop = () => {
 		<FormWrapper
 			title={'Billets'}
 			key={'price-count-step'}>
-			<Grid.Container gap={2}>
-				<Card variant="bordered">
-					<Card.Body>
-						<Container xl>
-							<Row
-								align={'center'}
-								justify={'space-between'}>
-								<Text>Type(s) de ticket(s)</Text>
-								<Button
-									color="primary"
-									auto
-									ghost
-									rounded
-									onPress={() => {
-										setShowAddTypeTicketModal(true)
-									}}>
-									Ajouter un type de billet
-								</Button>
-							</Row>
-						</Container>
-					</Card.Body>
-				</Card>
-				<Grid>
-					<Collapse.Group bordered>
-						{ticketTypes.map((ticketType) => {
-							return (
-								<Collapse
-									bordered
-									title={ticketType.libelle}>
-									<Text>nombre de ticket : {ticketType.nbticket}</Text>
-									<Text>prix du ticket : {ticketType.prix}</Text>
-								</Collapse>
-							)
-						})}
-					</Collapse.Group>
-				</Grid>
-			</Grid.Container>
+			<Card variant="bordered">
+				<Card.Body>
+					<Container xl>
+						<Row
+							align={'center'}
+							justify={'space-between'}>
+							<Text>Type(s) de billet(s)</Text>
+							<Button
+								color="primary"
+								auto
+								ghost
+								rounded
+								onPress={() => {
+									setShowAddTypeTicketModal(true)
+								}}>
+								Ajouter un type de billet
+							</Button>
+						</Row>
+					</Container>
+				</Card.Body>
+			</Card>
+			<Row>
+                <Container xl>
+                    <Collapse.Group accordion={false}>
+                        {ticketTypes.map((ticketType) => {
+                            return (
+                                    <Collapse title={ticketType.libelle}>
+                                        <Row justify={"space-evenly"}>
+                                            <Row align={"center"}>
+                                                <Text>nombre de ticket : </Text>
+                                                <Spacer x={0.5}/>
+                                                <Text h4>{ticketType.nbticket}</Text>
+                                            </Row>
+                                            <Spacer/>
+                                            <Row align={"center"}>
+                                                <Text>prix du ticket : </Text>
+                                                <Spacer x={0.5}/>
+                                                <Text h4>{ticketType.prix} €</Text>
+                                            </Row>
+                                        </Row>
+                                    </Collapse>
+                            )
+                        })}
+                    </Collapse.Group>
+                </Container>
+			</Row>
 		</FormWrapper>,
 		/* PRICE END */
 	])
@@ -873,7 +886,7 @@ const NftDrop = () => {
 								size="lg"
 								labelPlaceholder="Nom du type"
 								onChange={(event) => {
-									ticketTypeLabel = event.target.value
+									ticketTypeLabel = event.target.value.toUpperCase()
 								}}
 							/>
 						</Row>
@@ -902,7 +915,7 @@ const NftDrop = () => {
 								required
 								underlined
 								min={1}
-								initialValue={'1'}
+								initialValue={'0'}
 								onChange={(event) => {
 									ticketTypeCount = event.target.value
 								}}
