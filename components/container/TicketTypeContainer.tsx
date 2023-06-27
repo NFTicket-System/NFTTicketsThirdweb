@@ -14,7 +14,7 @@ const TicketTypeContainer: React.FC<TicketTypeContainerProps> = (props: TicketTy
 	const getTicketsOfType = (type: string): Ticket[] => {
 		const result: Ticket[] = []
 		props.tickets.forEach((it) => {
-			if (it.type == type) result.push(it)
+			if (it.type === type) result.push(it)
 		})
 		return result
 	}

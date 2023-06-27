@@ -22,6 +22,7 @@ import axios from 'axios'
 import { useAddress, useConnect, useNetwork, useNetworkMismatch, useStorageUpload } from '@thirdweb-dev/react'
 import { ChainId, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import {
+	type CreateEvent,
 	type CreateEventCategories,
 	type CreateEventResponse,
 	type formDataType,
@@ -186,12 +187,12 @@ const NftDrop = () => {
 						console.log(fileUrl)
 						console.log(formData)
 
-						const eventData: any = {
+						const eventData: CreateEvent = {
 							libelle: formData.name,
 							timestampStart: convertToTimestamp(formData.date, formData.hourStart),
 							timestampEnd: convertToTimestamp(formData.date, formData.hourEnd),
 							idOrganizer: 1,
-							isTrendemous: 1,
+							isTrendemous: 0,
 							urlImage: fileUrl,
 							city: selectedLocationCity,
 							address: selectedLocation,

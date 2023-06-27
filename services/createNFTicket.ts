@@ -74,7 +74,7 @@ export async function createNFTicket(
 			// address of the currency contract that will be used to pay for the listing
 			currencyContractAddress: NATIVE_TOKEN_ADDRESS,
 			// how much the asset will be sold for
-			buyoutPricePerToken: /* await convertEuroToMATIC(Number(formData.price)) */ formData.price,
+			buyoutPricePerToken: formData.price,
 		}
 
 		console.log('LISTING', listing)
@@ -87,6 +87,7 @@ export async function createNFTicket(
 				type: 'Fosse',
 				date: convertToTimestamp(formData.date, formData.hourStart),
 				solded: 0,
+				tokenId: listing.tokenId,
 			}
 			tickets2Add.push(ticket)
 		})

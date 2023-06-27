@@ -1,6 +1,6 @@
 import React from 'react'
 import { useActiveListings, useContract } from '@thirdweb-dev/react'
-import { Loading, Row, Container, Spacer, Grid, Text } from '@nextui-org/react'
+import { Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import Header from '../components/header/Header'
 import Footer from '../components/footer/Footer'
 import TicketCard from '../components/card/TicketCard'
@@ -8,6 +8,8 @@ import TicketCard from '../components/card/TicketCard'
 const AllNft = () => {
 	const { contract: marketplace } = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
 	const { data: nfts, isLoading: isLoadingNfts } = useActiveListings(marketplace)
+
+	console.log('data', nfts)
 
 	return (
 		<>
@@ -27,35 +29,35 @@ const AllNft = () => {
 				<>
 					<Container css={{ maxWidth: '90%' }}>
 						<Row justify={'flex-start'}>
-						<Text
-						size={32}
-						weight={'bold'}
-						color={'white'}
-						css={{ backgroundColor: 'black', padding: '0 1rem' }}>
-							Ticket NTF disponible :
-						</Text>
+							<Text
+								size={32}
+								weight={'bold'}
+								color={'white'}
+								css={{ backgroundColor: 'black', padding: '0 1rem' }}>
+								Ticket NTF disponible :
+							</Text>
 						</Row>
-						<Spacer y={2}/>
-							<Grid.Container 
+						<Spacer y={2} />
+						<Grid.Container
 							justify="space-evenly"
 							alignItems="baseline"
 							gap={1.5}>
-								{nfts?.map((nft) => (
-									<Grid key={nft.id}>
-										<TicketCard
-											id={nft.id}
-											contractAddress={nft.assetContractAddress}
-											name={nft.asset.name}
-											image={nft.asset.image}
-											/>
-									</Grid>
-								))}
-							</Grid.Container>
+							{nfts?.map((nft) => (
+								<Grid key={nft.id}>
+									<TicketCard
+										id={nft.id}
+										contractAddress={nft.assetContractAddress}
+										name={nft.asset.name}
+										image={nft.asset.image}
+									/>
+								</Grid>
+							))}
+						</Grid.Container>
 					</Container>
 				</>
 			)}
 			<Spacer y={1} />
-			<Footer/>
+			<Footer />
 		</>
 	)
 }

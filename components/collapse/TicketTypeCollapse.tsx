@@ -2,6 +2,7 @@ import { type Ticket } from '../../models/Event'
 import { Button, Collapse, Row, Spacer, Text } from '@nextui-org/react'
 import Image from 'next/image'
 import nextIcon from '../../assets/icons/fleche-droite.png'
+import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 
 interface TicketCardProps {
 	ticketType: string
@@ -10,6 +11,8 @@ interface TicketCardProps {
 }
 
 const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) => {
+	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
+
 	return (
 		<Collapse title={props.ticketType}>
 			<Row justify="space-between">
@@ -19,14 +22,18 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 					Ticket(s) à partir de {props.lowerPrice} €
 				</Text>
 				<Button
-					onPress={() => {
+					onPress={async () => {
 						console.log('pressed')
-						const ticket = props.ticketsOfType.find((ticket) => !ticket.solded)
-						console.log(props.ticketsOfType)
 
-						if (ticket !== null) {
-							// void router.push(`/event/${ticket.addressContract}/${ticket.id}`)
-						}
+						const collection = await sdkAdmin.getContract(
+							props.ticketsOfType[0].addressContract,
+							'nft-collection'
+						)
+						console.log(collection)
+
+						/* if (ticket !== undefined) {
+							void router.push(`/event/${ticket.addressContract}/${ticket.tokenId}`)
+						} */
 					}}>
 					<Row
 						justify={'space-between'}

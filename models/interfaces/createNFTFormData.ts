@@ -33,7 +33,6 @@ export interface nftInfo {
 	collection: NFTCollection
 }
 
-
 export interface nftData {
 	collectionId: string
 	image: string
@@ -59,6 +58,18 @@ export interface CreateTicket {
 	type: string
 	date: string
 	solded: number
+	tokenId: number | BigNumber
+}
+
+export interface CreateEvent {
+	libelle: string
+	timestampStart: string
+	timestampEnd: string
+	idOrganizer: number
+	isTrendemous: number
+	urlImage: string
+	city: string
+	address: string
 }
 
 export interface CreateEventCategories {
