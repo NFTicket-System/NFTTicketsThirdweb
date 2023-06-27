@@ -59,7 +59,6 @@ import {
 import { type Category } from '@/models/Category'
 import EventCategoryBadge from '@/components/Badge/EventCategoryBadge'
 import { TicketType } from '@/models/TicketType'
-import EventCard from '@/components/card/EventCard'
 
 const Map = dynamic(async () => await import('@/components/map/Map'), { ssr: false })
 
@@ -128,18 +127,18 @@ const NftDrop = () => {
 
 	/* TICKETS TYPES */
 	const [ticketTypes, setTicketTypes] = useState<TicketType[]>([])
-    let ticketTypeLabel = ""
-    let ticketTypePrice = ""
-    let ticketTypeCount = ""
-    const handleSubmitAddTicketType = (libelle: string, prix: string, nbTicket: string) => {
-        const ticketType = new TicketType(libelle, prix, nbTicket)
-        ticketTypeLabel = ""
-        ticketTypePrice = ""
-        ticketTypeCount = ""
-        setTicketTypes([...ticketTypes, ticketType])
-        setShowAddTypeTicketModal(false)
-    }
-	/* TICKETS  TYPES*/
+	let ticketTypeLabel = ''
+	let ticketTypePrice = ''
+	let ticketTypeCount = ''
+	const handleSubmitAddTicketType = (libelle: string, prix: string, nbTicket: string) => {
+		const ticketType = new TicketType(libelle, prix, nbTicket)
+		ticketTypeLabel = ''
+		ticketTypePrice = ''
+		ticketTypeCount = ''
+		setTicketTypes([...ticketTypes, ticketType])
+		setShowAddTypeTicketModal(false)
+	}
+	/* TICKETS  TYPES */
 
 	/* FORM */
 	const handleButtonClick = () => {
@@ -197,88 +196,87 @@ const NftDrop = () => {
 					return
 				}
 
-                if(ticketTypes.length > 0) {
-                    if (isInfosCorrect) {
-                        setShowConfirmationModal(false)
-                        // show loader modal
-                        setLoadingModal(true)
-                        // upload img to ipfs
-                        await uploadToIpfs().then(async (fileUrl) => {
-                            // create the ticket
-                            console.log(fileUrl)
-                            console.log(formData)
+				if (ticketTypes.length > 0) {
+					if (isInfosCorrect) {
+						setShowConfirmationModal(false)
+						// show loader modal
+						setLoadingModal(true)
+						// upload img to ipfs
+						await uploadToIpfs().then(async (fileUrl) => {
+							// create the ticket
+							console.log(fileUrl)
+							console.log(formData)
 
-                            const eventData: CreateEvent = {
-                                libelle: formData.name,
-                                timestampStart: convertToTimestamp(formData.date, formData.hourStart),
-                                timestampEnd: convertToTimestamp(formData.date, formData.hourEnd),
-                                idOrganizer: 1,
-                                isTrendemous: 0,
-                                urlImage: fileUrl,
-                                city: selectedLocationCity,
-                                address: selectedLocation,
-                            }
+							const eventData: CreateEvent = {
+								libelle: formData.name,
+								timestampStart: convertToTimestamp(formData.date, formData.hourStart),
+								timestampEnd: convertToTimestamp(formData.date, formData.hourEnd),
+								idOrganizer: 1,
+								isTrendemous: 0,
+								urlImage: fileUrl,
+								city: selectedLocationCity,
+								address: selectedLocation,
+							}
 
-                            console.log(eventData)
+							console.log(eventData)
 
-                            const euro2Matic = await convertEuroToMATIC(Number(formData.price), ConversionSens.MATIC).then(
-                                    async (result) => {
-                                        formData.price = result
+							const euro2Matic = await convertEuroToMATIC(
+								Number(formData.price),
+								ConversionSens.MATIC
+							).then(async (result) => {
+								formData.price = result
 
-                                        await axios
-                                                .post('http://localhost:8080/api/events/', eventData)
-                                                .then(async (response) => {
-                                                    const axiosResponse: CreateEventResponse = response.data
-                                                    const createdEventId: number = axiosResponse.insertId
+								await axios
+									.post('http://localhost:8080/api/events/', eventData)
+									.then(async (response) => {
+										const axiosResponse: CreateEventResponse = response.data
+										const createdEventId: number = axiosResponse.insertId
 
-                                                    const ticketCategories: CreateEventCategories = {
-                                                        id: createdEventId,
-                                                        categories: selectedEventIdsCategories.map((category) =>
-                                                                category != null ? category.id : 1
-                                                        ),
-                                                    }
+										const ticketCategories: CreateEventCategories = {
+											id: createdEventId,
+											categories: selectedEventIdsCategories.map((category) =>
+												category != null ? category.id : 1
+											),
+										}
 
-                                                    await createEventCategories(ticketCategories)
+										await createEventCategories(ticketCategories)
 
-                                                    console.log('ticketCATEGORIES', ticketCategories)
+										console.log('ticketCATEGORIES', ticketCategories)
 
-                                                    await createNFTicket(
-                                                            formData,
-                                                            sdkAdmin,
-                                                            connectedAddress,
-                                                            fileUrl,
-                                                            setCreationStep,
-                                                            axiosResponse.insertId
-                                                    )
-                                                            .then(() => {
-                                                                setLoadingModal(false)
-                                                                void swal(
-                                                                        'Bravo !',
-                                                                        formData.count > 1
-                                                                                ? 'Vos tickets sont disponibles à la vente !'
-                                                                                : 'Votre ticket est disponible à la vente !',
-                                                                        'success'
-                                                                )
-                                                            })
-                                                            .catch((e) => {
-                                                                setLoadingModal(false)
-                                                                defaultErrorModal()
-                                                                console.error(e)
-                                                            })
-                                                })
-                                                .catch((error) => {
-                                                    console.error('Error making PUT request:', error)
-                                                })
-                                    }
-                            )
-                        })
-                    }
-                }
+										await createNFTicket(
+											formData,
+											sdkAdmin,
+											connectedAddress,
+											fileUrl,
+											setCreationStep,
+											axiosResponse.insertId
+										)
+											.then(() => {
+												setLoadingModal(false)
+												void swal(
+													'Bravo !',
+													formData.count > 1
+														? 'Vos tickets sont disponibles à la vente !'
+														: 'Votre ticket est disponible à la vente !',
+													'success'
+												)
+											})
+											.catch((e) => {
+												setLoadingModal(false)
+												defaultErrorModal()
+												console.error(e)
+											})
+									})
+									.catch((error) => {
+										console.error('Error making PUT request:', error)
+									})
+							})
+						})
+					}
+				}
 			}
 		}
 	}
-
-
 	/* FORM */
 
 	/* MULTISTEPS FORM */
@@ -874,9 +872,9 @@ const NftDrop = () => {
 								bordered
 								size="lg"
 								labelPlaceholder="Nom du type"
-                                onChange={(event) => {
-                                    ticketTypeLabel = event.target.value
-                                }}
+								onChange={(event) => {
+									ticketTypeLabel = event.target.value
+								}}
 							/>
 						</Row>
 						<Spacer y={2} />
@@ -891,10 +889,9 @@ const NftDrop = () => {
 								underlined
 								initialValue={'0'}
 								min={0}
-                                onChange={(event) => {
-                                    ticketTypePrice = event.target.value
-                                }
-                                }
+								onChange={(event) => {
+									ticketTypePrice = event.target.value
+								}}
 							/>
 							<Spacer x={2} />
 
@@ -906,9 +903,9 @@ const NftDrop = () => {
 								underlined
 								min={1}
 								initialValue={'1'}
-                                onChange={(event) => {
-                                    ticketTypeCount = event.target.value
-                                }}
+								onChange={(event) => {
+									ticketTypeCount = event.target.value
+								}}
 							/>
 						</Row>
 					</Col>
@@ -918,12 +915,16 @@ const NftDrop = () => {
 						auto
 						flat
 						color="error"
-						onPress={() => setShowAddTypeTicketModal(false)}>
+						onPress={() => {
+							setShowAddTypeTicketModal(false)
+						}}>
 						Close
 					</Button>
 					<Button
 						auto
-						onPress={() => handleSubmitAddTicketType(ticketTypeLabel, ticketTypePrice, ticketTypeCount)}>
+						onPress={() => {
+							handleSubmitAddTicketType(ticketTypeLabel, ticketTypePrice, ticketTypeCount)
+						}}>
 						Valider
 					</Button>
 				</Modal.Footer>

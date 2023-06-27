@@ -25,7 +25,7 @@ const Header = () => {
 
 	useEffect(() => {
 		fetchAllEvents().catch(console.error)
-	}, [fetchAllEvents])
+	}, [])
 
 	return (
 		<>
