@@ -79,18 +79,20 @@ const Home: NextPage = () => {
 			.then((response) => {
 				const result: LightEvent[] = []
 				response.data.map((item: LightEvent) => result.push(item))
-				fillEvents(result)
+				// fillEvents(result)
 				setTheatreEvents(result)
 			})
 	}, [])
 
 	const fetchHumorEvents = useCallback(async () => {
-		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humour').then((response) => {
-			const result: LightEvent[] = []
-			response.data.map((item: LightEvent) => result.push(item))
-			fillEvents(result)
-			setHumorEvents(result)
-		})
+		await axios
+			.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humour')
+			.then((response) => {
+				const result: LightEvent[] = []
+				response.data.map((item: LightEvent) => result.push(item))
+				fillEvents(result)
+				setHumorEvents(result)
+			})
 	}, [])
 
 	useEffect(() => {

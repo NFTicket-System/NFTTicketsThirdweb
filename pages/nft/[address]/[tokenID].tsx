@@ -1,4 +1,4 @@
-import { Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
+import { Button, Card, Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import { RiMapPinLine } from '@react-icons/all-files/ri/RiMapPinLine'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -8,6 +8,7 @@ import Header from '../../../components/header/Header'
 import { buyNft } from '@/services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import { BuyWithStripe } from '@/services/buyWithStripe'
+import axios from 'axios'
 import { convertEuroToMATIC } from '@/utils/tools'
 import { ConversionSens } from '@/models/enum/createNFTInputs'
 
@@ -19,22 +20,43 @@ const NftDetails = () => {
 	const { data: item, isLoading } = useListing(marketplace, tokenID as string)
 	const isMismatched = useNetworkMismatch()
 	const [, switchNetwork] = useNetwork()
-	const [convertedAmount, setConvertedAmount] = useState<string | null>(null)
+	const [isAllTicketsLoaded, setIsAllTicketsLoaded] = useState(isLoading)
+	const [formatedLocation, setformatedLocation] = useState<string>('')
+	const [convertedPrice, setConvertedPrice] = useState<string>('0')
+
+	const getEventLocation = async (label: string) => {
+		await axios
+			.get(
+				`${process.env.NEXT_PUBLIC_API_HOSTNAME ?? 'http://localhost:8080'}/api/events/single/location/${label}`
+			)
+			.then((response: { data: Array<{ address: string; city: string }> }) => {
+				setformatedLocation(`${response.data[0].address}, ${response.data[0].city}`)
+			})
+			.catch(() => {
+				setformatedLocation('')
+			})
+	}
+
+	const getAmountInEuro = async (price: string) => {
+		await convertEuroToMATIC(Number(price), ConversionSens.EUR)
+			.then((result: string) => {
+				setConvertedPrice(result)
+			})
+			.catch(() => {
+				setConvertedPrice('erreur')
+			})
+	}
 
 	useEffect(() => {
-		async function fetchConvertedAmount() {
-			try {
-				const amountInEuro = Number(item?.buyoutCurrencyValuePerToken.displayValue)
-				const result = await convertEuroToMATIC(amountInEuro, ConversionSens.EUR)
-				setConvertedAmount(String(result))
-			} catch (error) {
-				console.error('Error fetching converted amount:', error)
+		if (isAllTicketsLoaded !== isLoading) {
+			console.log('ITEM', item)
+			if (item != null) {
+				void getEventLocation(String(item.asset.name))
+				void getAmountInEuro(item?.buyoutCurrencyValuePerToken.displayValue)
 			}
 		}
-
-		console.log(item)
-		void fetchConvertedAmount()
-	}, [item?.buyoutCurrencyValuePerToken.displayValue])
+		setIsAllTicketsLoaded(isLoading)
+	}, [isLoading])
 
 	return (
 		<>
@@ -81,18 +103,23 @@ const NftDetails = () => {
 											height={400}
 											alt="Card image background"
 										/>
-										<Card.Header css={{ position: 'absolute', zIndex: 2, top: 5 }}>
-											<Col>
+										{formatedLocation !== '' ? (
+											<Card.Header css={{ position: 'absolute', zIndex: 2, top: 5 }}>
 												<Text
 													size={24}
 													color="white"
 													weight="bold">
-													<RiMapPinLine />
-													{(item?.asset.properties as { location: string })?.location ??
-														'Location missing'}
+													<Row align={'center'}>
+														<RiMapPinLine />
+														&nbsp;
+														{(item?.asset.properties as { location: string })?.location ??
+															'Location missing'}
+													</Row>
 												</Text>
-											</Col>
-										</Card.Header>
+											</Card.Header>
+										) : (
+											<></>
+										)}
 									</Card>
 								</Grid>
 								<Grid xs={6}>
@@ -123,13 +150,20 @@ const NftDetails = () => {
 													{(item?.asset.properties as { hourEnd: string })?.hourEnd ??
 														'End Hour Missing'}
 												</Text>
-												<Text
-													size={18}
-													weight="bold">
-													<RiMapPinLine />
-													{(item?.asset.properties as { location: string })?.location ??
-														'Location missing'}
-												</Text>
+												{formatedLocation !== '' ? (
+													<Text
+														size={18}
+														color="white"
+														weight="bold">
+														<Row align={'center'}>
+															<RiMapPinLine />
+															&nbsp;
+															{formatedLocation}
+														</Row>
+													</Text>
+												) : (
+													<></>
+												)}
 											</Container>
 										</Card.Body>
 										<Card.Footer
@@ -139,7 +173,7 @@ const NftDetails = () => {
 												gap: '10px',
 											}}>
 											<Text weight={'bold'}>
-												<>{`${String(convertedAmount)} €`}</>
+												<>{`${convertedPrice} €`}</>
 												{/* {item?.buyoutCurrencyValuePerToken.symbol} */}
 											</Text>
 											<Spacer x={1}></Spacer>

@@ -5,7 +5,6 @@ import nextIcon from '../../assets/icons/fleche-droite.png'
 import { useActiveListings, useContract } from '@thirdweb-dev/react'
 import React, { useEffect, useState } from 'react'
 import router from 'next/router'
-import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 
 interface TicketCardProps {
 	ticketType: string
@@ -24,18 +23,17 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 
 	useEffect(() => {
 		if (isAllTicketsLoaded !== isLoading) {
-			console.log(props)
 			if (nfts !== undefined) {
-				router
-					.push(`/nft/${collectionAddress}/${nfts[0].id}`)
-					.then(() => {
-						setVisible(false)
-					})
-					.catch((e: any) => {
-						console.error(e)
-					})
-			} else {
-				defaultErrorModal()
+				if (bindings.open) {
+					router
+						.push(`/nft/${collectionAddress}/${nfts[0].id}`)
+						.then(() => {
+							setVisible(false)
+						})
+						.catch((e: any) => {
+							console.error(e)
+						})
+				}
 			}
 		}
 		setIsAllTicketsLoaded(isLoading)

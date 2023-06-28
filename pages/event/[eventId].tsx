@@ -9,6 +9,8 @@ import { Spacer } from '@nextui-org/react'
 import EventDescriptionContainer from '../../components/container/EventDescriptionContainer'
 import { type Category } from '@/models/Category'
 import { type LightEvent } from '@/models/LightEvent'
+import { convertEuroToMATIC } from '@/utils/tools'
+import { ConversionSens } from '@/models/enum/createNFTInputs'
 
 const EventPage = () => {
 	const { eventId } = router.query
@@ -37,20 +39,34 @@ const EventPage = () => {
 		})
 	}, [])
 
-	const fetchEventCategories = async () => {
-		console.log('event - eventId')
-		console.log(eventId)
-		await axios.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/single/${eventId}`).then((response) => {
-			const responseEvent: Event = new Event(response.data)
-			setEvent(responseEvent)
+	const getAmountInEuro = async (price: number): Promise<number> => {
+		try {
+			const result = await convertEuroToMATIC(price, ConversionSens.EUR)
+			return Number(result)
+		} catch (error) {
+			console.error(error)
+			throw error
+		}
+	}
 
-			// get all the different types of ticket
-			const responseTicketTypes: string[] = []
-			responseEvent.tickets.forEach((it: { type: string }) => {
-				if (!responseTicketTypes.includes(it.type)) responseTicketTypes.push(it.type)
+	const fetchEventCategories = async () => {
+		// console.log('event - eventId')
+		// console.log(eventId)
+		await axios
+			.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME ?? 'http://localhost:8080'}/api/events/single/${eventId}`)
+			.then(async (response) => {
+				const responseEvent: Event = new Event(response.data)
+				for (const responseEventElement of responseEvent.tickets) {
+					responseEventElement.prix = await getAmountInEuro(responseEventElement.prix)
+				}
+				setEvent(responseEvent)
+				const responseTicketTypes: string[] = []
+				responseEvent.tickets.forEach((it: { type: string }) => {
+					if (!responseTicketTypes.includes(it.type)) responseTicketTypes.push(it.type)
+				})
+
+				setTicketTypes(responseTicketTypes)
 			})
-			setTicketTypes(responseTicketTypes)
-		})
 	}
 
 	useEffect(() => {
@@ -69,7 +85,7 @@ const EventPage = () => {
 
 	return (
 		<>
-			<Header events={events} />
+			<Header />
 			<EventDescriptionContainer
 				event={event != null ? event : null}
 				categories={eventCategories}
