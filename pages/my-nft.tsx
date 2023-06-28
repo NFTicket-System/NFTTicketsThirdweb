@@ -85,8 +85,6 @@ const MyNFT = () => {
 			<div
 				style={{
 					display: 'flex',
-					flexDirection: 'row',
-					flexWrap: 'wrap',
 					gap: '15rem',
 					justifyContent: 'center',
 					alignItems: 'center',
