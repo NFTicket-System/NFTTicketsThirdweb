@@ -34,7 +34,7 @@ const AllNft = () => {
 								weight={'bold'}
 								color={'white'}
 								css={{ backgroundColor: 'black', padding: '0 1rem' }}>
-								Ticket NTF disponible :
+								Ticket NFT disponible :
 							</Text>
 						</Row>
 						<Spacer y={2} />
