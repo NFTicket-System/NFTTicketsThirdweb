@@ -3,7 +3,7 @@ import { Button, Collapse, Grid, Loading, Modal, Row, Spacer, Text, useModal } f
 import Image from 'next/image'
 import nextIcon from '../../assets/icons/fleche-droite.png'
 import { useActiveListings, useContract } from '@thirdweb-dev/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import router from 'next/router'
 import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 
@@ -16,10 +16,29 @@ interface TicketCardProps {
 const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) => {
 	const collectionAddress = props.ticketsOfType[0].addressContract
 	const { contract } = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
-	const { data: nfts } = useActiveListings(contract, {
+	const { data: nfts, isLoading } = useActiveListings(contract, {
 		tokenContract: collectionAddress,
 	})
 	const { setVisible, bindings } = useModal()
+	const [isAllTicketsLoaded, setIsAllTicketsLoaded] = useState(isLoading)
+
+	useEffect(() => {
+		if (isAllTicketsLoaded !== isLoading) {
+			if (nfts !== undefined) {
+				router
+					.push(`/nft/${collectionAddress}/${nfts[0].id}`)
+					.then(() => {
+						setVisible(false)
+					})
+					.catch((e: any) => {
+						console.error(e)
+					})
+			} else {
+				defaultErrorModal()
+			}
+		}
+		setIsAllTicketsLoaded(isLoading)
+	}, [isLoading])
 
 	return (
 		<>
@@ -32,19 +51,7 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 					</Text>
 					<Button
 						onPress={() => {
-							if (nfts !== undefined) {
-								setVisible(true)
-								router
-									.push(`/nft/${collectionAddress}/${nfts[0].id}`)
-									.then(() => {
-										setVisible(false)
-									})
-									.catch((e: any) => {
-										console.error(e)
-									})
-							} else {
-								defaultErrorModal()
-							}
+							setVisible(true)
 						}}>
 						<Row
 							justify={'space-between'}
