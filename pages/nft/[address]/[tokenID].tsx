@@ -32,6 +32,7 @@ const NftDetails = () => {
 			}
 		}
 
+		console.log(item)
 		void fetchConvertedAmount()
 	}, [item?.buyoutCurrencyValuePerToken.displayValue])
 
@@ -71,7 +72,16 @@ const NftDetails = () => {
 							<Grid.Container justify="center">
 								<Grid xs={6}>
 									<Card>
-										<Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+										<Card.Image
+											showSkeleton
+											src={item?.asset.image ?? ''}
+											objectFit="cover"
+											width="100%"
+											maxDelay={10000}
+											height={400}
+											alt="Card image background"
+										/>
+										<Card.Header css={{ position: 'absolute', zIndex: 2, top: 5 }}>
 											<Col>
 												<Text
 													size={24}
@@ -83,15 +93,6 @@ const NftDetails = () => {
 												</Text>
 											</Col>
 										</Card.Header>
-										<Card.Image
-											showSkeleton
-											src={item?.asset.image ?? ''}
-											objectFit="cover"
-											width="100%"
-											maxDelay={10000}
-											height={400}
-											alt="Card image background"
-										/>
 									</Card>
 								</Grid>
 								<Grid xs={6}>
@@ -125,6 +126,7 @@ const NftDetails = () => {
 												<Text
 													size={18}
 													weight="bold">
+													<RiMapPinLine />
 													{(item?.asset.properties as { location: string })?.location ??
 														'Location missing'}
 												</Text>

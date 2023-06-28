@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { Grid, Text } from '@nextui-org/react'
+import React, { useEffect, useState } from 'react'
+import { Card, Col, Grid, Spacer, Text } from '@nextui-org/react'
 import Footer from '../../components/footer/Footer'
 import Header from '../../components/header/Header'
 import { type LightEvent } from '@/models/LightEvent'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import EventSeeMoreContainer from '@/components/container/EventSeeMoreContainer'
+import { getCategoryBackground } from '@/utils/tools'
+import { EventTypeCategories } from '@/models/enum/createNFTInputs'
 
 const CategoryPage = () => {
 	const router = useRouter()
@@ -35,20 +37,39 @@ const CategoryPage = () => {
 
 	return (
 		<>
-			<Header events={[]} />
+			<Header />
 
 			<Grid.Container direction="column">
-                <Grid>
-                    <Text
-                    h2
-                    css={{marginLeft: '1%'}}>
-                        {router.query.catLibelle}
-                    </Text>
-                </Grid>
-                <Grid>
-                    <EventSeeMoreContainer events={eventsCategorie}/>
-                </Grid>
-            </Grid.Container>
+				<Grid css={{ margin: '1%' }}>
+					<Text h2>
+						{router.query.catLibelle !== 'trendemous'
+							? router.query.catLibelle === EventTypeCategories.FOIRE
+								? 'Foires & Salons'
+								: router.query.catLibelle
+							: 'Tendence'}
+					</Text>
+					<Card>
+						<Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+							<Col></Col>
+						</Card.Header>
+						<Card.Image
+							css={{
+								borderRadius: '7px',
+							}}
+							src={getCategoryBackground(String(router.query.catLibelle))}
+							objectFit="cover"
+							width="100%"
+							height={250}
+							alt="Card image background"
+						/>
+					</Card>
+				</Grid>
+				<Grid css={{ margin: '1%' }}>
+					<Text h2>Tous les évènements disponibles :</Text>
+					<Spacer y={1} />
+					<EventSeeMoreContainer events={eventsCategorie} />
+				</Grid>
+			</Grid.Container>
 
 			<Footer />
 		</>

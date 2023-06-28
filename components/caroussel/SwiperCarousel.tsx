@@ -15,6 +15,7 @@ interface EventContainerProps {
 	events: LightEvent[]
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 const swiperStyles = {
 	'--swiper-navigation-color': '#fff',
 	'--swiper-pagination-color': '#fff',
@@ -55,6 +56,7 @@ const SwiperCarousel = (props: EventContainerProps) => {
 						<Card.Body css={{ p: 0 }}>
 							<div className={styles.overlay} />
 							<Card.Image
+								showSkeleton
 								src={event.urlImage}
 								objectFit="cover"
 								width="100%"

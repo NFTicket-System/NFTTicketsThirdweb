@@ -14,3 +14,19 @@ export enum ConversionSens {
 	EUR,
 	MATIC,
 }
+
+export enum EventTypeCategories {
+	CONCERT = 'Concert',
+	CONFERENCE = 'Conference',
+	CULTURE = 'Culture',
+	FESTIVAL = 'Festival',
+	FOIRE = 'Foire&Salon',
+	HUMOUR = 'Humour',
+	JAZZ = 'Jazz',
+	METAL = 'Metal',
+	POP = 'Pop',
+	ROCK = 'Rock',
+	SALON = 'Salon',
+	SPORTIF = 'Sportif',
+	THEATRE = 'Theatre',
+}

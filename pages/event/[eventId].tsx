@@ -20,11 +20,13 @@ const EventPage = () => {
 	const fetchEventAllInfos = async () => {
 		console.log('categories - eventId')
 		console.log(eventId)
-		await axios.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/all/categoty/event/${eventId}`).then((response) => {
-			const result: Category[] = []
-			response.data.map((item: Category) => result.push(item))
-			setEventCategories(result)
-		})
+		await axios
+			.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/all/categoty/event/${eventId}`)
+			.then((response) => {
+				const result: Category[] = []
+				response.data.map((item: Category) => result.push(item))
+				setEventCategories(result)
+			})
 	}
 
 	const fetchAllEvents = useCallback(async () => {

@@ -1,4 +1,4 @@
-import { type Ticket } from '../../models/Event'
+import { type Ticket } from '@/models/Event'
 import { Button, Collapse, Grid, Loading, Modal, Row, Spacer, Text, useModal } from '@nextui-org/react'
 import Image from 'next/image'
 import nextIcon from '../../assets/icons/fleche-droite.png'
@@ -24,6 +24,7 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 
 	useEffect(() => {
 		if (isAllTicketsLoaded !== isLoading) {
+			console.log(props)
 			if (nfts !== undefined) {
 				router
 					.push(`/nft/${collectionAddress}/${nfts[0].id}`)
