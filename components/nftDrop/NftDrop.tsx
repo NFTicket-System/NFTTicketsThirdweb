@@ -652,7 +652,9 @@ const NftDrop = () => {
 								onPress={() => {
 									setShowAddTypeTicketModal(true)
 								}}>
-								Ajouter un type de billet
+                                <Text color="black" b>
+                                    Ajouter un type de billet
+                                </Text>
 							</Button>
 						</Row>
 					</Container>
@@ -731,15 +733,16 @@ const NftDrop = () => {
 					<Spacer y={2} />
 					<Row justify={'flex-end'}>
 						<Button.Group
-							rounded
-							flat>
+                                color="primary">
 							{!isFirstStep ? (
 								<Button
 									onPress={() => {
 										previousStep()
 										setTriedToSubmit(false)
 									}}>
-									Précédent
+                                    <Text color="black" b>
+                                        Précédent
+                                    </Text>
 								</Button>
 							) : null}
 
@@ -749,10 +752,13 @@ const NftDrop = () => {
 									handleButtonClick()
 									isLastStep && userWallet.connected ? setShowConfirmationModal(true) : ''
 								}}>
-								{isLastStep ? 'Mettre en vente' : 'Suivant'}
+                                <Text color="black" b>
+                                    {isLastStep ? 'Mettre en vente' : 'Suivant'}
+                                </Text>
 							</Button>
 						</Button.Group>
 					</Row>
+                    <Spacer />
 				</Container>
 			</form>
 			{/* MODALS */}
@@ -919,7 +925,9 @@ const NftDrop = () => {
 							setShowConfirmationModal(true)
 							setIsInfosCorrect(true)
 						}}>
-						Confirmer
+                        <Text color="black" b>
+                            Confimer
+                        </Text>
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -993,7 +1001,7 @@ const NftDrop = () => {
 						onPress={() => {
 							setShowAddTypeTicketModal(false)
 						}}>
-						Close
+                        Fermer
 					</Button>
 					<Button
 						auto
@@ -1002,7 +1010,9 @@ const NftDrop = () => {
 								handleSubmitAddTicketType(ticketTypeLabel, ticketTypePrice, ticketTypeCount)
 							}
 						}}>
-						Valider
+                        <Text color="black" b>
+                            Valider
+                        </Text>
 					</Button>
 				</Modal.Footer>
 			</Modal>
