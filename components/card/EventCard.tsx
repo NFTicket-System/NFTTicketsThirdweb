@@ -16,7 +16,7 @@ const EventCard: React.FC<EventCardProps> = (props: EventCardProps) => {
 			onClick={() => {
 				void router.push(`/event/${props.event.id}`)
 			}}
-			css={{ minHeight: '200px' }}>
+			css={{ minHeight: '200px', maxHeight: '300px' }}>
 			<Card.Image
 				width="100%"
 				height="100%"

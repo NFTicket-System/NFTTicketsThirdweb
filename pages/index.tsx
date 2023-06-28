@@ -85,7 +85,7 @@ const Home: NextPage = () => {
 	}, [])
 
 	const fetchHumorEvents = useCallback(async () => {
-		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humor').then((response) => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humour').then((response) => {
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			fillEvents(result)
@@ -225,7 +225,7 @@ const Home: NextPage = () => {
 			<CategoryContainer
 				events={humorEvents}
 				title={'Humours'}
-				libelle={'Humor'}
+				libelle={'Humour'}
 			/>
 			<Spacer y={1} />
 			<Footer />
