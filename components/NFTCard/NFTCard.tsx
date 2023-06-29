@@ -1,5 +1,5 @@
 import { MediaRenderer } from '@thirdweb-dev/react'
-import {Button, Card, Loading} from '@nextui-org/react'
+import { Button, Card, Loading } from '@nextui-org/react'
 import QRCode from 'react-qr-code'
 import React, { useState } from 'react'
 import { type nftData } from '@/models/interfaces/createNFTFormData'
@@ -18,9 +18,9 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 				gap: '10px',
 				minWidth: '25rem',
 				minHeight: '20rem',
-                paddingBottom:'10px',
+				paddingBottom: '10px',
 			}}
-        variant={"bordered"}>
+			variant={'bordered'}>
 			{!displayQrCode && (
 				<MediaRenderer
 					src={props.nft.image}
@@ -32,7 +32,7 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 					size={200}
 					bgColor="black"
 					fgColor="white"
-					value={props.nft.collectionId}
+					value={`${props.nft.id};${props.nft.collectionId}`}
 				/>
 			)}
 			{props.nft.name}
