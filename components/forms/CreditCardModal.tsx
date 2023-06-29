@@ -30,6 +30,18 @@ const CreditCardModal = ({
 		return `${expiryMonth}${expiryYear}`
 	}
 
+	const isAllFieldsFull = (): boolean => {
+		return (
+			cardNumber.trim() !== '' &&
+			cardNumber.trim().length === 16 &&
+			name.trim() !== '' &&
+			getExpiry().trim() !== '' &&
+			getExpiry().trim().length === 4 &&
+			cvc.trim() !== '' &&
+			cvc.trim().length === 3
+		)
+	}
+
 	return (
 		<Modal
 			width={'50%'}
@@ -123,7 +135,7 @@ const CreditCardModal = ({
 								aria-label="csv"
 								label={'CSV'}
 								required
-								type="number"
+								type="text"
 								value={cvc}
 								maxLength={3}
 								onChange={(e) => {
@@ -149,6 +161,7 @@ const CreditCardModal = ({
 				</Button>
 				<Button
 					auto
+					disabled={!isAllFieldsFull()}
 					onPress={async () => {
 						onClose()
 						await BuyWithStripe({
