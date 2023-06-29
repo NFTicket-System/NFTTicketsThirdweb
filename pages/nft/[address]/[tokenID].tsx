@@ -177,19 +177,6 @@ const NftDetails = () => {
 											<Button
 												onPress={async () => {
 													setModalIsOpen(true)
-													/*
-													connectedAddress === undefined
-														? noConnectedWalletErrorAlert()
-														: await BuyWithStripe({
-																nftId: BigNumber.from(tokenID),
-																connectedAddress,
-																creditCard: {
-																	number: '4242424242424242',
-																	expMonth: '12',
-																	expYear: '25',
-																	cvc: '333',
-																},
-														  }) */
 												}}
 												size={'lg'}
 												shadow
@@ -207,6 +194,9 @@ const NftDetails = () => {
 							onClose={() => {
 								setModalIsOpen(false)
 							}}
+							connectedAddress={connectedAddress ?? ''}
+							nftId={BigNumber.from(tokenID)}
+							price={router.query.price}
 						/>
 					</>
 				)}
