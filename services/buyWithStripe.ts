@@ -15,10 +15,12 @@ export async function BuyWithStripe({
 	nftId,
 	connectedAddress,
 	creditCard,
+	price,
 }: {
 	nftId: BigNumberish
 	connectedAddress: string
 	creditCard: creditCard
+	price: number
 }) {
 	try {
 		const response = await axios.get('https://api.coingecko.com/api/v3/coins/matic-network')
@@ -39,10 +41,8 @@ export async function BuyWithStripe({
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
 		const marketplace = await sdkAdmin?.getContract(marketplaceAddress ?? '', 'marketplace')
 		const listing = await marketplace?.getListing(nftId)
-		const maticPrice = data.market_data.current_price.eur
-		const buyoutPrice = parseInt(listing.buyoutPrice.toString()) / 1000000000000000000
-		const priceToPay = maticPrice * buyoutPrice > 0.5 ? maticPrice * buyoutPrice : 0.5
-		console.log(priceToPay)
+
+		console.log(price)
 		if (listing != null) {
 			const collection = await sdkAdmin.getContract(listing.assetContractAddress, 'nft-collection')
 			console.log(listing.assetContractAddress)
@@ -50,7 +50,7 @@ export async function BuyWithStripe({
 			void collection.erc721.transfer(connectedAddress, listing.asset.id)
 
 			await stripe.paymentIntents.create({
-				amount: priceToPay * 100,
+				amount: price * 100,
 				currency: 'eur',
 				payment_method: paymentMethod.id,
 				confirm: true,
