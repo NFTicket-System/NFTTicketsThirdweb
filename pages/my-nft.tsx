@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useAddress, useConnect, useContract } from '@thirdweb-dev/react'
+import { useAddress, useContract, useWalletConnect } from '@thirdweb-dev/react'
 import { Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import Header from '../components/header/Header'
 import { findMyNFTs } from '@/services/findMyNFTs'
 import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type nftData } from '@/models/interfaces/createNFTFormData'
 import { NFTCard } from '@/components/NFTCard/NFTCard'
-import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 
 import Footer from '@/components/footer/Footer'
 
 const MyNFT = () => {
 	const connectedAddress = useAddress()
+	const userWallet = useWalletConnect()
 	const marketplace = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
 	const [isLoading, setIsLoading] = useState(true)
 	const [nfts, setNfts] = useState<nftData[]>([])
@@ -70,13 +70,19 @@ const MyNFT = () => {
 		setIsListing(false)
 	}
 
-	const [{ data: userWallet }] = useConnect()
-
 	return (
 		<>
 			<Header></Header>
-			{!userWallet.connected ? (
-				noConnectedWalletErrorAlert()
+			{connectedAddress === undefined ? (
+				<Container>
+					<Spacer x={10} />
+					<Row
+						align={'center'}
+						justify={'center'}
+						css={{ width: '100%' }}>
+						<Text h1>Veuillez connecter votre wallet</Text>
+					</Row>
+				</Container>
 			) : (
 				<>
 					<Container>
