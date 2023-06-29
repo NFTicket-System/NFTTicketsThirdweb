@@ -79,6 +79,7 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 								required
 								type="text"
 								value={cvc}
+								maxLength={3}
 								onChange={(e) => {
 									setCvc(e.target.value)
 								}}

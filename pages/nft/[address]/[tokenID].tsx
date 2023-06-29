@@ -8,7 +8,6 @@ import Header from '../../../components/header/Header'
 import { buyNft } from '@/services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import axios from 'axios'
-import { convertMaticToEur } from '@/utils/tools'
 import CreditCardModal from '@/components/forms/CreditCardModal'
 
 const NftDetails = () => {
@@ -37,23 +36,10 @@ const NftDetails = () => {
 			})
 	}
 
-	const getAmountInEuro = async (price: string) => {
-		await convertMaticToEur(Number(price))
-			.then((result: string) => {
-				console.log(price, result)
-				setConvertedPrice(result)
-			})
-			.catch(() => {
-				setConvertedPrice('erreur')
-			})
-	}
-
 	useEffect(() => {
 		if (isAllTicketsLoaded !== isLoading) {
-			console.log('ITEM', item)
 			if (item != null) {
 				void getEventLocation(String(item.asset.name))
-				void getAmountInEuro(item?.buyoutCurrencyValuePerToken.displayValue)
 			}
 		}
 		setIsAllTicketsLoaded(isLoading)

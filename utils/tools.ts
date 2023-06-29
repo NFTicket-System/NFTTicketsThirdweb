@@ -62,11 +62,7 @@ export async function convertEuroToMATIC(price: number, sens: ConversionSens) {
 		)
 		if (sens === ConversionSens.MATIC) {
 			console.log('IN MATIC')
-			return (price * response.data['matic-network'].eur).toFixed(2)
-		} else {
-			console.log('IN EUR')
-			console.log(response.data['matic-network'].eur)
-			return (price * response.data['matic-network'].eur).toFixed(2)
+			return (price / response.data['matic-network'].eur).toFixed(2)
 		}
 	} catch (error) {
 		console.error('Error exchange rate:', error)
@@ -74,7 +70,7 @@ export async function convertEuroToMATIC(price: number, sens: ConversionSens) {
 	}
 }
 
-export async function convertMaticToEur(price: number) {
+/* export async function convertMaticToEur(price: number) {
 	console.log('AMOOUNTINEURO  ', price)
 	try {
 		const response = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
@@ -92,7 +88,7 @@ export async function convertMaticToEur(price: number) {
 		console.error('Error fetching exchange rate:', error)
 		throw error
 	}
-}
+} */
 
 export const truncateText = (text: string, maxLength: number) => {
 	if (text !== undefined) {
