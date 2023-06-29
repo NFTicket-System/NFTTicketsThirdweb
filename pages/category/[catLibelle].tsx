@@ -46,7 +46,7 @@ const CategoryPage = () => {
 							? router.query.catLibelle === EventTypeCategories.FOIRE
 								? 'Foires & Salons'
 								: router.query.catLibelle
-							: 'Tendence'}
+							: 'Tendance'}
 					</Text>
 					<Card>
 						<Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>

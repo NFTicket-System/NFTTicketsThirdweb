@@ -1,5 +1,4 @@
-import { MediaRenderer } from '@thirdweb-dev/react'
-import { Button, Card, Loading } from '@nextui-org/react'
+import { Button, Card, Image, Loading, Text } from '@nextui-org/react'
 import QRCode from 'react-qr-code'
 import React, { useState } from 'react'
 import { type nftData } from '@/models/interfaces/createNFTFormData'
@@ -19,12 +18,15 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 				minWidth: '25rem',
 				minHeight: '20rem',
 				paddingBottom: '10px',
+				maxHeight: '50rem',
 			}}
-			variant={'bordered'}>
+			variant={'shadow'}>
 			{!displayQrCode && (
-				<MediaRenderer
+				<Image
+					alt={'nft image'}
 					src={props.nft.image}
-					height={'250rem'}
+					width={'100%'}
+					objectFit="cover"
 				/>
 			)}
 			{displayQrCode && (
@@ -35,19 +37,21 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 					value={`${props.nft.id};${props.nft.collectionId}`}
 				/>
 			)}
-			{props.nft.name}
+			<Text h4>{props.nft.name}</Text>
 
 			<Button
+				css={{ minHeight: '3rem' }}
 				onClick={() => {
 					setDisplayQrCode(!displayQrCode)
 				}}>
-				Display QR code
+				{!displayQrCode ? 'Afficher le QRCode' : 'Masquer le QRCode'}
 			</Button>
 			<Button
+				disabled
 				onClick={async () => {
 					await props.listNFT(props.nft)
 				}}>
-				{!isListing && 'List nft'}
+				{!isListing && 'Lister le NFT  '}
 				{isListing && (
 					<Loading
 						type={'points'}

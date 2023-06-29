@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import {
-	MediaRenderer,
-	useActiveListings,
-	useAddress,
-	useConnectedWallet,
-	useContract,
-	useSigner,
-	useWalletConnect,
-} from '@thirdweb-dev/react'
-import { Col, Container, Grid, Link, Loading, Row } from '@nextui-org/react'
+import { useAddress, useConnect, useContract } from '@thirdweb-dev/react'
+import { Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import Header from '../components/header/Header'
-import ScrollToTop from 'react-scroll-to-top'
 import { findMyNFTs } from '@/services/findMyNFTs'
-import { NATIVE_TOKEN_ADDRESS, type NFT, ThirdwebSDK } from '@thirdweb-dev/sdk'
+import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type nftData } from '@/models/interfaces/createNFTFormData'
-import QRCode from 'react-qr-code'
 import { NFTCard } from '@/components/NFTCard/NFTCard'
+import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
+
+import Footer from '@/components/footer/Footer'
 
 const MyNFT = () => {
 	const connectedAddress = useAddress()
-	const userWallet = useWalletConnect()
 	const marketplace = useContract(process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS, 'marketplace')
 	const [isLoading, setIsLoading] = useState(true)
 	const [nfts, setNfts] = useState<nftData[]>([])
@@ -28,7 +20,7 @@ const MyNFT = () => {
 		setIsLoading(true)
 		if (connectedAddress != null) {
 			void findMyNFTs({
-				connectedAddress: connectedAddress,
+				connectedAddress,
 			})
 				.then((res) => {
 					setNfts(res)
@@ -78,39 +70,60 @@ const MyNFT = () => {
 		setIsListing(false)
 	}
 
+	const [{ data: userWallet }] = useConnect()
+
 	return (
 		<>
 			<Header></Header>
-			<Grid.Container
-				xl
-				gap={4}
-				direction={'row'}
-				alignItems={'center'}
-				justify={'center'}>
-				<h1>Vos NFTs</h1>
-				<div>
-					{isLoading && (
-						<Grid xs={2}>
-							<Loading
-								type="points"
-								size={'lg'}
-							/>
-						</Grid>
-					)}
+			{!userWallet.connected ? (
+				noConnectedWalletErrorAlert()
+			) : (
+				<>
+					<Container>
+						{isLoading ? (
+							<Row
+								align={'center'}
+								justify={'center'}
+								css={{ width: '100%' }}>
+								<Spacer y={10} />
+								<Text h2>Chargement</Text>
+								<Spacer x={1} />
+								<Loading
+									type="points"
+									size={'lg'}
+								/>
+							</Row>
+						) : (
+							<>
+								<h1>Vos NFTs</h1>
+								<Grid.Container gap={4}>
+									{nfts.map((nft, index) => {
+										return (
+											<Grid
+												key={index}
+												xs={4}>
+												<NFTCard
+													nft={nft}
+													listNFT={listNFT}
+												/>
+											</Grid>
+										)
+									})}
+								</Grid.Container>
+							</>
+						)}
+					</Container>
 
-					{!isLoading &&
-						nfts?.map((nft) => {
-							return (
-								<Grid xs={2}>
-									<NFTCard
-										nft={nft}
-										listNFT={listNFT}
-									/>
-								</Grid>
-							)
-						})}
-				</div>
-			</Grid.Container>
+					{!isLoading ? (
+						<>
+							<Spacer y={6} />
+							<Footer />
+						</>
+					) : (
+						<></>
+					)}
+				</>
+			)}
 		</>
 	)
 }
