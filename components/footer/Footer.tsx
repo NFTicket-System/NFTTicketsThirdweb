@@ -10,8 +10,8 @@ const Footer = () => {
 			align={'center'}
 			css={
 				isDark === true
-					? { backgroundColor: '$colors$yellow600', padding: '2em 6em 4em 5em' }
-					: { backgroundColor: 'black', padding: '2em 6em 4em 5em' }
+					? { backgroundColor: '$colors$yellow600', padding: '2em 4em' }
+					: { backgroundColor: 'black', padding: '2em 4em' }
 			}>
 			<Col>
 				<Link href="https://github.com/NFTicket-System/NFTTicketsThirdweb">

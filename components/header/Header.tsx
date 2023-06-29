@@ -12,7 +12,7 @@ import {
 	useModal,
 	useTheme,
 } from '@nextui-org/react'
-import { ConnectWallet } from '@thirdweb-dev/react'
+import {ConnectWallet, useAddress} from '@thirdweb-dev/react'
 import React, { useEffect, useState } from 'react'
 import Logo from '../icons/Logo'
 import ThemeSwitcher from '../theme/ThemeSwitcher'
@@ -28,6 +28,8 @@ const Header = () => {
 
 	const [lightEvents, setLightEvents] = useState<LightEvent[]>([])
 	const [searchTermResults, setSearchTermResults] = useState<LightEvent[]>()
+
+    const connectedAddress = useAddress()
 
 	const fetchAllEvents = async () => {
 		await axios.get(`${process.env.NEXT_PUBLIC_API_HOSTNAME}/api/events/all/light`).then((response) => {
@@ -79,15 +81,17 @@ const Header = () => {
 							</Text>
 						</Link>
 					</Navbar.Brand>
-					<Navbar.Item isActive={asPath === '/create-drop'}>
-						<Link href="/create-drop">
-							<Text
-								b
-								color={isDark ?? false ? 'white' : 'black'}>
-								Créer un évènement
-							</Text>
-						</Link>
-					</Navbar.Item>
+                    {connectedAddress?.startsWith("0xd9036c24852d95e9C") ?
+                            <Navbar.Item isActive={asPath === '/create-drop'}>
+                                <Link href="/create-drop">
+                                <Text
+                                b
+                                color={isDark ?? false ? 'white' : 'black'}>
+                                Créer un évènement
+                                </Text>
+                                </Link>
+                            </Navbar.Item> : <></>
+                    }
 					{/*					<Navbar.Item isActive={asPath === '/all-nft'}>
 						<Link href="/all-nft">
 							<Text

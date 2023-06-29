@@ -72,7 +72,7 @@ const MyNFT = () => {
 
 	return (
 		<>
-			<Header></Header>
+			<Header/>
 			{connectedAddress === undefined ? (
 				<Container>
 					<Spacer x={10} />

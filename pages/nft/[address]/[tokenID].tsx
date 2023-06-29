@@ -1,4 +1,4 @@
-import { Button, Card, Container, Grid, Loading, Row, Spacer, Text } from '@nextui-org/react'
+import {Button, Card, Container, Grid, Loading, Row, Spacer, Text, useTheme} from '@nextui-org/react'
 import { RiMapPinLine } from '@react-icons/all-files/ri/RiMapPinLine'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -9,6 +9,7 @@ import { buyNft } from '@/services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import axios from 'axios'
 import CreditCardModal from '@/components/forms/CreditCardModal'
+import Footer from "@/components/footer/Footer";
 
 const NftDetails = () => {
 	const connectedAddress = useAddress()
@@ -22,6 +23,7 @@ const NftDetails = () => {
 	const [formatedLocation, setformatedLocation] = useState<string>('')
 	const [convertedPrice, setConvertedPrice] = useState<string>('0')
 	const [modalIsOpen, setModalIsOpen] = useState(false)
+    const { isDark } = useTheme()
 
 	const getEventLocation = async (label: string) => {
 		await axios
@@ -37,6 +39,7 @@ const NftDetails = () => {
 	}
 
 	useEffect(() => {
+        console.log(item)
 		if (isAllTicketsLoaded !== isLoading) {
 			if (item != null) {
 				void getEventLocation(String(item.asset.name))
@@ -66,8 +69,8 @@ const NftDetails = () => {
 							<Row justify={'flex-start'}>
 								<Text
 									weight={'bold'}
-									color={'white'}
-									css={{ backgroundColor: 'black', padding: '0 1rem' }}>
+									color={isDark ? 'black': 'white'}
+									css={{ backgroundColor: isDark ? 'white': 'black', padding: '0 1rem' }}>
 									{(item?.asset.properties as { date: string })?.date ?? 'Date missing'}
 								</Text>
 							</Row>
@@ -75,7 +78,7 @@ const NftDetails = () => {
 							<Text
 								size="$3xl"
 								weight={'bold'}
-								color={'black'}>
+								color={isDark ? 'white': 'black'}>
 								{item?.asset.name}
 							</Text>
 							<Spacer y={2} />
@@ -169,20 +172,26 @@ const NftDetails = () => {
 														  })
 												}}
 												size={'lg'}
-												shadow
 												color={'primary'}
 												auto>
-												Acheter en crypto
+                                                <Text
+                                                        color="black"
+                                                        b>
+                                                    Acheter en crypto
+                                                </Text>
 											</Button>
 											<Button
 												onPress={async () => {
 													setModalIsOpen(true)
 												}}
 												size={'lg'}
-												shadow
 												color={'primary'}
 												auto>
-												Acheter en carte bleu
+                                                <Text
+                                                        color="black"
+                                                        b>
+                                                    Acheter en carte bleu
+                                                </Text>
 											</Button>
 										</Card.Footer>
 									</Card>
@@ -201,6 +210,8 @@ const NftDetails = () => {
 					</>
 				)}
 			</Container>
+            <Spacer y={7}/>
+            <Footer/>
 		</>
 	)
 }
