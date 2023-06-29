@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Cards from 'react-credit-cards-2'
-import { Button, Col, Input, Modal, Row, Spacer, Text } from '@nextui-org/react'
+import { Button, Col, Container, Input, Modal, Row, Spacer, Text } from '@nextui-org/react'
 import 'react-credit-cards-2/dist/es/styles-compiled.css'
-import { BigNumberish } from 'ethers'
+import { type BigNumberish } from 'ethers'
 import { BuyWithStripe } from '@/services/buyWithStripe'
 import router from 'next/router'
 
@@ -56,76 +56,83 @@ const CreditCardModal = ({
 							name={name}
 						/>
 					</Col>
-					<Col span={5}>
-						<Spacer y={0.5} />
-						<Input
-							clearable
-							aria-label="number"
-							label={'Numéro de carte'}
-							required
-							type="text"
-							maxLength={16}
-							value={cardNumber}
-							onChange={(e) => {
-								console.log(e.target.value)
-								if (regexNumber.test(e.target.value)) {
-									setCardNumber(e.target.value)
-								}
-							}}
-						/>
-						<Spacer y={0.5} />
-						<Input
-							aria-label="name"
-							label={'Nom inscrit sur la carte'}
-							required
-							type="text"
-							value={name}
-							onChange={(e) => {
-								setName(e.target.value)
-							}}
-						/>
-						<Spacer y={0.5} />
-						<Row>
+					<Col span={6}>
+						<Container xl>
+							<Spacer y={0.5} />
+
 							<Input
-								aria-label="expiration"
-								label={"Mois d'expiration"}
+								css={{ width: '100%' }}
+								clearable
+								aria-label="number"
+								label={'Numéro de carte'}
 								required
 								type="text"
-								maxLength={2}
+								maxLength={16}
+								value={cardNumber}
 								onChange={(e) => {
+									console.log(e.target.value)
 									if (regexNumber.test(e.target.value)) {
-										setExpiryMonth(e.target.value)
+										setCardNumber(e.target.value)
 									}
 								}}
 							/>
-							<Spacer x={1} />
+							<Spacer y={0.5} />
 							<Input
-								aria-label="expiration"
-								label={"Année d'expiration"}
+								aria-label="name"
+								label={'Nom inscrit sur la carte'}
 								required
 								type="text"
-								maxLength={2}
+								value={name}
+								css={{ width: '100%' }}
+								onChange={(e) => {
+									setName(e.target.value)
+								}}
+							/>
+							<Spacer y={0.5} />
+							<Row>
+								<Input
+									css={{ width: '50%' }}
+									aria-label="expiration"
+									label={"Mois d'expiration"}
+									required
+									type="text"
+									maxLength={2}
+									onChange={(e) => {
+										if (regexNumber.test(e.target.value)) {
+											setExpiryMonth(e.target.value)
+										}
+									}}
+								/>
+								<Spacer x={1} />
+								<Input
+									css={{ width: '50%' }}
+									aria-label="expiration"
+									label={"Année d'expiration"}
+									required
+									type="text"
+									maxLength={2}
+									onChange={(e) => {
+										if (regexNumber.test(e.target.value)) {
+											setExpiryYear(e.target.value)
+										}
+									}}
+								/>
+							</Row>
+							<Spacer y={0.5} />
+							<Input
+								aria-label="csv"
+								label={'CSV'}
+								required
+								type="number"
+								value={cvc}
+								maxLength={3}
 								onChange={(e) => {
 									if (regexNumber.test(e.target.value)) {
-										setExpiryYear(e.target.value)
+										setCvc(e.target.value)
 									}
 								}}
 							/>
-						</Row>
-						<Spacer x={1} />
-						<Input
-							aria-label="csv"
-							label={'CSV'}
-							required
-							type="number"
-							value={cvc}
-							maxLength={3}
-							onChange={(e) => {
-								if (regexNumber.test(e.target.value)) {
-									setCvc(e.target.value)
-								}
-							}}
-						/>
+						</Container>
 					</Col>
 				</Row>
 			</Modal.Body>
@@ -145,13 +152,13 @@ const CreditCardModal = ({
 					onPress={async () => {
 						onClose()
 						await BuyWithStripe({
-							nftId: nftId,
+							nftId,
 							connectedAddress,
 							creditCard: {
 								number: cardNumber,
 								expMonth: expiryMonth,
 								expYear: expiryYear,
-								cvc: cvc,
+								cvc,
 							},
 							price: parseInt(price),
 						})
