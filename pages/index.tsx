@@ -6,8 +6,8 @@ import {Card, Col, Collapse, Container, Divider, Spacer, Text} from '@nextui-org
 import {LightEvent} from '@/models/LightEvent'
 import axios from 'axios'
 import SwiperCarousel from '@/components/caroussel/SwiperCarousel'
-import CategoryEventTitle from "@/components/text/CategoryEventTitle";
 import EventContainer from "@/components/container/EventContainer";
+import CategoryEventTitle from "@/components/text/CategoryEventTitle";
 
 const Home: NextPage = () => {
     const [events, setEvents] = useState<LightEvent[]>([])
