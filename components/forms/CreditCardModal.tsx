@@ -24,6 +24,11 @@ const CreditCardModal = ({
 	const [expiryMonth, setExpiryMonth] = useState('')
 	const [expiryYear, setExpiryYear] = useState('')
 	const [cvc, setCvc] = useState('')
+	const regexNumber = /^[0-9\b]*$/
+
+	const getExpiry = (): string => {
+		return `${expiryMonth}${expiryYear}`
+	}
 
 	return (
 		<Modal
@@ -41,12 +46,12 @@ const CreditCardModal = ({
 				</Text>
 			</Modal.Header>
 			<Modal.Body>
-				<Spacer y={1} />
 				<Row gap={2}>
 					<Col span={6}>
+						<Spacer y={4} />
 						<Cards
 							number={cardNumber}
-							expiry={`${expiryMonth}${expiryYear}`}
+							expiry={getExpiry()}
 							cvc={cvc}
 							name={name}
 						/>
@@ -54,20 +59,24 @@ const CreditCardModal = ({
 					<Col span={5}>
 						<Spacer y={0.5} />
 						<Input
+							clearable
 							aria-label="number"
-							labelPlaceholder={'Numéro de carte'}
+							label={'Numéro de carte'}
 							required
 							type="text"
 							maxLength={16}
 							value={cardNumber}
 							onChange={(e) => {
-								setCardNumber(e.target.value)
+								console.log(e.target.value)
+								if (regexNumber.test(e.target.value)) {
+									setCardNumber(e.target.value)
+								}
 							}}
 						/>
 						<Spacer y={0.5} />
 						<Input
 							aria-label="name"
-							labelPlaceholder={'Nom inscrit sur la carte'}
+							label={'Nom inscrit sur la carte'}
 							required
 							type="text"
 							value={name}
@@ -79,39 +88,44 @@ const CreditCardModal = ({
 						<Row>
 							<Input
 								aria-label="expiration"
-								labelPlaceholder={"Mois d'expiration"}
+								label={"Mois d'expiration"}
 								required
 								type="text"
 								maxLength={2}
 								onChange={(e) => {
-									setExpiryMonth(e.target.value)
+									if (regexNumber.test(e.target.value)) {
+										setExpiryMonth(e.target.value)
+									}
 								}}
 							/>
 							<Spacer x={1} />
 							<Input
 								aria-label="expiration"
-								labelPlaceholder={"Année d'expiration"}
+								label={"Année d'expiration"}
 								required
 								type="text"
 								maxLength={2}
 								onChange={(e) => {
-									setExpiryYear(e.target.value)
-								}}
-							/>
-
-							<Spacer x={1} />
-							<Input
-								aria-label="csv"
-								labelPlaceholder={'CSV'}
-								required
-								type="text"
-								value={cvc}
-								maxLength={3}
-								onChange={(e) => {
-									setCvc(e.target.value)
+									if (regexNumber.test(e.target.value)) {
+										setExpiryYear(e.target.value)
+									}
 								}}
 							/>
 						</Row>
+						<Spacer x={1} />
+						<Input
+							aria-label="csv"
+							label={'CSV'}
+							required
+							type="number"
+							value={cvc}
+							maxLength={3}
+							onChange={(e) => {
+								if (regexNumber.test(e.target.value)) {
+									setCvc(e.target.value)
+								}
+							}}
+						/>
 					</Col>
 				</Row>
 			</Modal.Body>
