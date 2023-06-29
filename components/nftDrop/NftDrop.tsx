@@ -242,7 +242,7 @@ const NftDrop = () => {
 									console.log('ticketCATEGORIES', ticketCategories)
 
 									for (const item of ticketTypes) {
-										const finalPrice = await convertEuroToMATIC(
+										const priceInMatic = await convertEuroToMATIC(
 											Number(item.prix),
 											ConversionSens.MATIC
 										)
@@ -252,7 +252,7 @@ const NftDrop = () => {
 											formData.name,
 											formData.description,
 											formData.date,
-											finalPrice,
+											priceInMatic,
 											formData.hourStart,
 											formData.hourEnd,
 											formData.location,

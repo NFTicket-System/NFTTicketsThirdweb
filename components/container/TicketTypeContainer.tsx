@@ -1,6 +1,6 @@
 import { Card, Collapse, Container, Text } from '@nextui-org/react'
 import TicketTypeCollapse from '../collapse/TicketTypeCollapse'
-import { type Ticket } from '../../models/Event'
+import { type Ticket } from '@/models/Event'
 
 interface TicketTypeContainerProps {
 	tickets: Ticket[]
@@ -59,6 +59,8 @@ const TicketTypeContainer: React.FC<TicketTypeContainerProps> = (props: TicketTy
 										} else {
 											return <></>
 										}
+									} else {
+										return <></>
 									}
 								})}
 							</Collapse.Group>

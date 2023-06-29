@@ -15,9 +15,16 @@ interface EventContainerProps {
 	events: LightEvent[]
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+const swiperStyles = {
+	'--swiper-navigation-color': '#fff',
+	'--swiper-pagination-color': '#fff',
+} as React.CSSProperties
+
 const SwiperCarousel = (props: EventContainerProps) => {
 	return (
 		<Swiper
+			style={swiperStyles}
 			spaceBetween={10}
 			slidesPerView={3}
 			loop
@@ -28,15 +35,15 @@ const SwiperCarousel = (props: EventContainerProps) => {
 			{props.events.map((event, index) => (
 				<SwiperSlide
 					className={styles.slide}
-					key={index}>
+					key={index}
+					onClick={() => {
+						void router.push(`/event/${event.id}`)
+					}}>
 					<Card
 						isPressable
 						isHoverable
 						variant={'flat'}
-						css={{ w: '100%', h: '100%', boxShadow: 'unset' }}
-						onPress={() => {
-							void router.push(`/event/${event.id}`)
-						}}>
+						css={{ w: '100%', h: '100%', boxShadow: 'unset' }}>
 						<Card.Header css={{ position: 'absolute', zIndex: 2, top: 5 }}>
 							<Col>
 								<Text
@@ -49,6 +56,7 @@ const SwiperCarousel = (props: EventContainerProps) => {
 						<Card.Body css={{ p: 0 }}>
 							<div className={styles.overlay} />
 							<Card.Image
+								showSkeleton
 								src={event.urlImage}
 								objectFit="cover"
 								width="100%"
@@ -56,34 +64,6 @@ const SwiperCarousel = (props: EventContainerProps) => {
 								alt="Relaxing app background"
 							/>
 						</Card.Body>
-						{/*						<Card.Footer
-							css={{
-								position: 'absolute',
-								bottom: 0,
-								zIndex: 1,
-							}}>
-							<Row>
-								<Col>
-									<Row justify="flex-end">
-										<Button
-											onPress={() => {
-												void router.push(`/category/${event.id}`)
-											}}
-											flat
-											auto
-											rounded>
-											<Text
-												css={{ color: 'inherit' }}
-												size={12}
-												weight="bold"
-												transform="uppercase">
-												Participer
-											</Text>
-										</Button>
-									</Row>
-								</Col>
-							</Row>
-						</Card.Footer> */}
 					</Card>
 				</SwiperSlide>
 			))}

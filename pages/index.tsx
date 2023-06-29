@@ -87,37 +87,35 @@ const Home: NextPage = () => {
 	}, [])
 
 	const fetchHumorEvents = useCallback(async () => {
-		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humour').then((response) => {
+		await axios
+			.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Humour')
+			.then((response) => {
+				const result: LightEvent[] = []
+				response.data.map((item: LightEvent) => result.push(item))
+				fillEvents(result)
+				setHumorEvents(result)
+			})
+	}, [])
+
+	const fetchRockEvents = useCallback(async () => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Rock').then((response) => {
+			console.log()
 			const result: LightEvent[] = []
 			response.data.map((item: LightEvent) => result.push(item))
 			fillEvents(result)
-			setHumorEvents(result)
+			setRockEvents(result)
 		})
 	}, [])
 
-    const fetchRockEvents = useCallback(async () => {
-        await axios
-                .get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Rock')
-                .then((response) => {
-                    console.log()
-                    const result: LightEvent[] = []
-                    response.data.map((item: LightEvent) => result.push(item))
-                    fillEvents(result)
-                    setRockEvents(result)
-                })
-    }, [])
-
-    const fetchPopEvents = useCallback(async () => {
-        await axios
-                .get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Pop')
-                .then((response) => {
-                    console.log()
-                    const result: LightEvent[] = []
-                    response.data.map((item: LightEvent) => result.push(item))
-                    fillEvents(result)
-                    setPopEvents(result)
-                })
-    }, [])
+	const fetchPopEvents = useCallback(async () => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Pop').then((response) => {
+			console.log()
+			const result: LightEvent[] = []
+			response.data.map((item: LightEvent) => result.push(item))
+			fillEvents(result)
+			setPopEvents(result)
+		})
+	}, [])
 
 	useEffect(() => {
 		if (!isEventsAlreadyFetched) {
@@ -142,11 +140,11 @@ const Home: NextPage = () => {
 			// All humor events
 			fetchHumorEvents().catch(console.error)
 
-            // All rock events
-            fetchRockEvents().catch(console.error)
+			// All rock events
+			fetchRockEvents().catch(console.error)
 
-            // All pop events
-            fetchPopEvents().catch(console.error)
+			// All pop events
+			fetchPopEvents().catch(console.error)
 
 			setIsEventsAlreadyFetched(true)
 		}
@@ -158,8 +156,8 @@ const Home: NextPage = () => {
 		fetchConcertsEvents,
 		fetchTheatreEvents,
 		fetchHumorEvents,
-        fetchRockEvents,
-        fetchPopEvents
+		fetchRockEvents,
+		fetchPopEvents,
 	])
 
 	const fillEvents = (events: LightEvent[]) => {
@@ -261,13 +259,13 @@ const Home: NextPage = () => {
 				title={'Humours'}
 				libelle={'Humour'}
 			/>
-            {/* Rock */}
+			{/* Rock */}
 			<CategoryContainer
 				events={rockEvents}
 				title={'Rock'}
 				libelle={'Rock'}
 			/>
-            {/* Pop */}
+			{/* Pop */}
 			<CategoryContainer
 				events={popEvents}
 				title={'Pop'}
