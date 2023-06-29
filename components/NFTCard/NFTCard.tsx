@@ -38,13 +38,16 @@ export function NFTCard(props: { nft: nftData; listNFT: Function }) {
 				/>
 			)}
 			<Text h4>{props.nft.name}</Text>
-
 			<Button
 				css={{ minHeight: '3rem' }}
 				onClick={() => {
 					setDisplayQrCode(!displayQrCode)
 				}}>
-				{!displayQrCode ? 'Afficher le QRCode' : 'Masquer le QRCode'}
+				<Text
+					color="black"
+					b>
+					{!displayQrCode ? 'Afficher le QRCode' : 'Masquer le QRCode'}
+				</Text>
 			</Button>
 			<Button
 				disabled
