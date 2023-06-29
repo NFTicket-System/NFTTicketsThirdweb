@@ -58,7 +58,7 @@ const CreditCardModal = ({
 				</Text>
 			</Modal.Header>
 			<Modal.Body>
-				<Row gap={2}>
+				<Row>
 					<Col span={6}>
 						<Spacer y={4} />
 						<Cards
@@ -81,7 +81,7 @@ const CreditCardModal = ({
 								type="text"
 								maxLength={16}
 								value={cardNumber}
-                                bordered
+								bordered
 								onChange={(e) => {
 									console.log(e.target.value)
 									if (regexNumber.test(e.target.value)) {
@@ -97,7 +97,7 @@ const CreditCardModal = ({
 								type="text"
 								value={name}
 								css={{ width: '100%' }}
-                                bordered
+								bordered
 								onChange={(e) => {
 									setName(e.target.value)
 								}}
@@ -111,7 +111,7 @@ const CreditCardModal = ({
 									required
 									type="text"
 									maxLength={2}
-                                    bordered
+									bordered
 									onChange={(e) => {
 										if (regexNumber.test(e.target.value)) {
 											setExpiryMonth(e.target.value)
@@ -126,7 +126,7 @@ const CreditCardModal = ({
 									required
 									type="text"
 									maxLength={2}
-                                    bordered
+									bordered
 									onChange={(e) => {
 										if (regexNumber.test(e.target.value)) {
 											setExpiryYear(e.target.value)
@@ -142,7 +142,7 @@ const CreditCardModal = ({
 								type="text"
 								value={cvc}
 								maxLength={3}
-                                bordered
+								bordered
 								onChange={(e) => {
 									if (regexNumber.test(e.target.value)) {
 										setCvc(e.target.value)
