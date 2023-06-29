@@ -1,12 +1,14 @@
 export class Category {
 
-    constructor(id: number, libelle: string, color: string) {
-        this.id = id
-        this.libelle = libelle
-        this.color = color
+    constructor(data: any) {
+        this.id = data.id
+        this.libelle = data.libelle
+        this.color = data.color
+        this.urlImage = data.urlImage
     }
 
     id: number
     libelle: string
     color: string
+    urlImage: string
 }
