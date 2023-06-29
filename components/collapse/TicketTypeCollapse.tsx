@@ -34,6 +34,7 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 							console.error(e)
 						})
 				}
+				console.log('FTS', nfts)
 			}
 		}
 		setIsAllTicketsLoaded(isLoading)

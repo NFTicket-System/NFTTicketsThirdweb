@@ -1,9 +1,10 @@
 import { NATIVE_TOKEN_ADDRESS, type ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { type CreateEventCategories, type CreateTicket } from '@/models/interfaces/createNFTFormData'
 import axios from 'axios'
-import { convertToTimestamp } from '@/utils/tools'
+import { convertEuroToMATIC, convertToTimestamp } from '@/utils/tools'
 import { type Category } from '@/models/Category'
 import { type FormDataTypeClass } from '@/models/formDataTypeClass'
+import { ConversionSens } from '@/models/enum/createNFTInputs'
 
 export function createMetadatas(formData: FormDataTypeClass, imageUrl: string | undefined) {
 	console.log('form', formData)
@@ -60,6 +61,10 @@ export async function createNFTicket(
 
 	setCreationStep(`Mise en vente des NFT : ${formData.ticketType}`)
 
+	console.log('FORMDATA', formData)
+
+	const priceInMatic = await convertEuroToMATIC(Number(formData.price), ConversionSens.MATIC)
+
 	for (const nftObject of mintTransaction) {
 		const marketplaceAddress = process.env.NEXT_PUBLIC_MARKETPLACE_ADRESS
 
@@ -80,7 +85,7 @@ export async function createNFTicket(
 			// address of the currency contract that will be used to pay for the listing
 			currencyContractAddress: NATIVE_TOKEN_ADDRESS,
 			// how much the asset will be sold for
-			buyoutPricePerToken: formData.price,
+			buyoutPricePerToken: priceInMatic,
 		}
 
 		console.log('LISTING', listing)
@@ -89,7 +94,7 @@ export async function createNFTicket(
 			const ticket: CreateTicket = {
 				addressContract: listing.assetContractAddress,
 				idEvent: insertId,
-				prix: listing.buyoutPricePerToken,
+				prix: formData.price,
 				type: formData.ticketType,
 				date: convertToTimestamp(formData.date, formData.hourStart),
 				solded: 0,

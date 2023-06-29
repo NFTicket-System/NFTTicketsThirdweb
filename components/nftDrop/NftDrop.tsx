@@ -35,7 +35,7 @@ import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErr
 import { defaultErrorModal } from '@/utils/errors/defaultErrorAlert'
 import { useMultiStepForm } from '@/hooks/useMultiStepForm'
 import FormWrapper from '../forms/FormWrapper'
-import { ConversionSens, InputName } from '@/models/enum/createNFTInputs'
+import { InputName } from '@/models/enum/createNFTInputs'
 import { FileUploader } from 'react-drag-drop-files'
 import styles from '../../styles/create-event/NftDrop.module.scss'
 import { RiImageAddFill } from '@react-icons/all-files/ri/RiImageAddFill'
@@ -50,7 +50,7 @@ import dynamic from 'next/dynamic'
 import { getLocationDetails } from '@/services/getLocationDetails'
 import { type ApiLocationItem } from '@/models/interfaces/locationApi'
 import { GrLocationPin } from '@react-icons/all-files/gr/GrLocationPin'
-import { convertEuroToMATIC, convertToTimestamp, formatEventDate, truncateText } from '@/utils/tools'
+import { convertToTimestamp, formatEventDate, truncateText } from '@/utils/tools'
 import {
 	createEventCategories,
 	createNFTicket,
@@ -242,17 +242,17 @@ const NftDrop = () => {
 									console.log('ticketCATEGORIES', ticketCategories)
 
 									for (const item of ticketTypes) {
-										const priceInMatic = await convertEuroToMATIC(
+										/*	const priceInMatic = await convertEuroToMATIC(
 											Number(item.prix),
 											ConversionSens.MATIC
-										)
+										) */
 
 										const typedFormData = new FormDataTypeClass(
 											Number(item.nbticket),
 											formData.name,
 											formData.description,
 											formData.date,
-											priceInMatic,
+											item.prix,
 											formData.hourStart,
 											formData.hourEnd,
 											formData.location,
@@ -652,9 +652,11 @@ const NftDrop = () => {
 								onPress={() => {
 									setShowAddTypeTicketModal(true)
 								}}>
-                                <Text color="black" b>
-                                    Ajouter un type de billet
-                                </Text>
+								<Text
+									color="black"
+									b>
+									Ajouter un type de billet
+								</Text>
 							</Button>
 						</Row>
 					</Container>
@@ -732,17 +734,18 @@ const NftDrop = () => {
 					{step}
 					<Spacer y={2} />
 					<Row justify={'flex-end'}>
-						<Button.Group
-                                color="primary">
+						<Button.Group color="primary">
 							{!isFirstStep ? (
 								<Button
 									onPress={() => {
 										previousStep()
 										setTriedToSubmit(false)
 									}}>
-                                    <Text color="black" b>
-                                        Précédent
-                                    </Text>
+									<Text
+										color="black"
+										b>
+										Précédent
+									</Text>
 								</Button>
 							) : null}
 
@@ -752,13 +755,15 @@ const NftDrop = () => {
 									handleButtonClick()
 									isLastStep && userWallet.connected ? setShowConfirmationModal(true) : ''
 								}}>
-                                <Text color="black" b>
-                                    {isLastStep ? 'Mettre en vente' : 'Suivant'}
-                                </Text>
+								<Text
+									color="black"
+									b>
+									{isLastStep ? 'Mettre en vente' : 'Suivant'}
+								</Text>
 							</Button>
 						</Button.Group>
 					</Row>
-                    <Spacer />
+					<Spacer />
 				</Container>
 			</form>
 			{/* MODALS */}
@@ -925,9 +930,11 @@ const NftDrop = () => {
 							setShowConfirmationModal(true)
 							setIsInfosCorrect(true)
 						}}>
-                        <Text color="black" b>
-                            Confimer
-                        </Text>
+						<Text
+							color="black"
+							b>
+							Confimer
+						</Text>
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -1001,7 +1008,7 @@ const NftDrop = () => {
 						onPress={() => {
 							setShowAddTypeTicketModal(false)
 						}}>
-                        Fermer
+						Fermer
 					</Button>
 					<Button
 						auto
@@ -1010,9 +1017,11 @@ const NftDrop = () => {
 								handleSubmitAddTicketType(ticketTypeLabel, ticketTypePrice, ticketTypeCount)
 							}
 						}}>
-                        <Text color="black" b>
-                            Valider
-                        </Text>
+						<Text
+							color="black"
+							b>
+							Valider
+						</Text>
 					</Button>
 				</Modal.Footer>
 			</Modal>

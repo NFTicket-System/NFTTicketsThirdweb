@@ -8,8 +8,7 @@ import Header from '../../../components/header/Header'
 import { buyNft } from '@/services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
 import axios from 'axios'
-import { convertEuroToMATIC } from '@/utils/tools'
-import { ConversionSens } from '@/models/enum/createNFTInputs'
+import { convertMaticToEur } from '@/utils/tools'
 import CreditCardModal from '@/components/forms/CreditCardModal'
 
 const NftDetails = () => {
@@ -39,8 +38,9 @@ const NftDetails = () => {
 	}
 
 	const getAmountInEuro = async (price: string) => {
-		await convertEuroToMATIC(Number(price), ConversionSens.EUR)
+		await convertMaticToEur(Number(price))
 			.then((result: string) => {
+				console.log(price, result)
 				setConvertedPrice(result)
 			})
 			.catch(() => {

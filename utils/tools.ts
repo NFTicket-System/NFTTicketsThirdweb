@@ -54,18 +54,42 @@ export const convertToTimestamp = (dateString: string, timeString: string): stri
 	return new Date(year, month, day, hours, minutes).toISOString()
 }
 
-export async function convertEuroToMATIC(amountInEuro: number, sens: ConversionSens) {
+export async function convertEuroToMATIC(price: number, sens: ConversionSens) {
+	console.log('AMOOUNTINEURO  ', price)
 	try {
 		const response = await axios.get(
 			'https://api.coingecko.com/api/v3/simple/price?ids=matic-network&vs_currencies=eur'
 		)
 		if (sens === ConversionSens.MATIC) {
-			return (amountInEuro * response.data['matic-network'].eur).toFixed(2)
+			console.log('IN MATIC')
+			return (price * response.data['matic-network'].eur).toFixed(2)
 		} else {
-			return (amountInEuro / response.data['matic-network'].eur).toFixed(2)
+			console.log('IN EUR')
+			console.log(response.data['matic-network'].eur)
+			return (price * response.data['matic-network'].eur).toFixed(2)
 		}
 	} catch (error) {
 		console.error('Error exchange rate:', error)
+		throw error
+	}
+}
+
+export async function convertMaticToEur(price: number) {
+	console.log('AMOOUNTINEURO  ', price)
+	try {
+		const response = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
+			params: {
+				ids: 'matic-network',
+				vs_currencies: 'eur',
+			},
+		})
+
+		const maticToEurosRate = response.data['matic-network'].eur
+		const priceInEuros = price / maticToEurosRate
+
+		return String(priceInEuros.toFixed(2))
+	} catch (error) {
+		console.error('Error fetching exchange rate:', error)
 		throw error
 	}
 }
