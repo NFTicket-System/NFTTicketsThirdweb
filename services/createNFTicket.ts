@@ -44,6 +44,8 @@ export async function createNFTicket(
 	const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection({
 		name: formData.ticketType,
 		primary_sale_recipient: connectedAddress ?? '',
+		seller_fee_basis_points: 10,
+		fee_recipient: connectedAddress,
 	})
 
 	const tickets2Add: CreateTicket[] = []
