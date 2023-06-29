@@ -1,16 +1,15 @@
-import {LightEvent} from "../../models/LightEvent";
 import {Grid, Link, Spacer, Text} from "@nextui-org/react";
-import EventContainer from "./EventContainer";
-import React from "react";
 import router from "next/router";
+import React from "react";
+import {LightEvent} from "@/models/LightEvent";
 
-interface CategoryContainerProps {
+interface CategoryEventTitleProps {
     events: LightEvent[],
     title: string,
     libelle: string
 }
 
-const CategoryContainer: React.FC<CategoryContainerProps> = (props: CategoryContainerProps) => {
+const CategoryEventTitle: React.FC<CategoryEventTitleProps> = (props: CategoryEventTitleProps) => {
     return (
             <>
                 <Grid.Container
@@ -30,33 +29,22 @@ const CategoryContainer: React.FC<CategoryContainerProps> = (props: CategoryCont
                                 size={12}
                                 weight="bold"
                                 transform="uppercase">
-                            {/* <Link
+                            <Link
                                     underline
                                     color="secondary"
                                     onClick={() => {
-                                        router.push(`/category/${props.libelle}`)
-                                    }}>
-                                Voir plus
-                            </Link> */}
-                                <Link
-                                    underline
-                                    color="secondary"
-                                    onClick={() => {
-                                        // router.push(`/category/${props.libelle}`)
                                         void router.push({
                                             pathname: `/category/${props.libelle}`,
                                             query: {events: JSON.stringify(props.events)}
                                         })
                                     }}>
-                                    Voir plus
-                                </Link>
+                                Voir plus
+                            </Link>
                         </Text>
                     </Grid>
                 </Grid.Container>
-                <EventContainer events={props.events}/>
             </>
-    );
-
+    )
 }
 
-export default CategoryContainer
+export default CategoryEventTitle
