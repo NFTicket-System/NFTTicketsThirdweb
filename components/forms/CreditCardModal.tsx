@@ -11,7 +11,7 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 
 	return (
 		<Modal
-			width={'60%'}
+			width={'50%'}
 			preventClose
 			blur
 			aria-labelledby="modal-title"
@@ -28,7 +28,6 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 				<Spacer y={1} />
 				<Row gap={2}>
 					<Col span={6}>
-						<Spacer y={1} />
 						<Cards
 							number={cardNumber}
 							expiry={expiry}
@@ -37,11 +36,13 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 						/>
 					</Col>
 					<Col span={5}>
+						<Spacer y={0.5} />
 						<Input
 							aria-label="number"
-							label={'Numero de carte'}
+							labelPlaceholder={'Numéro de carte'}
 							required
 							type="text"
+							maxLength={16}
 							value={cardNumber}
 							onChange={(e) => {
 								setCardNumber(e.target.value)
@@ -50,7 +51,7 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 						<Spacer y={0.5} />
 						<Input
 							aria-label="name"
-							label={'Nom inscrit sur la carte'}
+							labelPlaceholder={'Nom inscrit sur la carte'}
 							required
 							type="text"
 							value={name}
@@ -62,7 +63,7 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 						<Row>
 							<Input
 								aria-label="expiration"
-								label={'Date dexpiration'}
+								labelPlaceholder={"Date d'expiration"}
 								required
 								type="text"
 								maxLength={4}
@@ -71,10 +72,10 @@ const CreditCardModal = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => 
 									setExpiry(e.target.value)
 								}}
 							/>
-							<Spacer x={2} />
+							<Spacer x={1} />
 							<Input
 								aria-label="csv"
-								label={'CSV'}
+								labelPlaceholder={'CSV'}
 								required
 								type="text"
 								value={cvc}
