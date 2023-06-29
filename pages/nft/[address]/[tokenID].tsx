@@ -169,10 +169,7 @@ const NftDetails = () => {
 												justifyContent: 'flex-end',
 												gap: '10px',
 											}}>
-											<Text weight={'bold'}>
-												<>{`${convertedPrice} €`}</>
-												{/* {item?.buyoutCurrencyValuePerToken.symbol} */}
-											</Text>
+											<Text weight={'bold'}>{`${router.query.price} €`}</Text>
 											<Spacer x={1}></Spacer>
 											<Button
 												onPress={async () => {

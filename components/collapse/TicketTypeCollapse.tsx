@@ -1,9 +1,9 @@
 import { type Ticket } from '@/models/Event'
-import { Button, Collapse, Grid, Loading, Modal, Row, Spacer, Text, useModal } from '@nextui-org/react'
+import { Button, Collapse, Loading, Row, Spacer, Text } from '@nextui-org/react'
 import Image from 'next/image'
 import nextIcon from '../../assets/icons/fleche-droite.png'
 import { useActiveListings, useContract } from '@thirdweb-dev/react'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import router from 'next/router'
 
 interface TicketCardProps {
@@ -18,27 +18,6 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 	const { data: nfts, isLoading } = useActiveListings(contract, {
 		tokenContract: collectionAddress,
 	})
-	const { setVisible, bindings } = useModal()
-	const [isAllTicketsLoaded, setIsAllTicketsLoaded] = useState(isLoading)
-
-	useEffect(() => {
-		if (isAllTicketsLoaded !== isLoading) {
-			if (nfts !== undefined) {
-				if (bindings.open) {
-					router
-						.push(`/nft/${collectionAddress}/${nfts[0].id}`)
-						.then(() => {
-							setVisible(false)
-						})
-						.catch((e: any) => {
-							console.error(e)
-						})
-				}
-				console.log('FTS', nfts)
-			}
-		}
-		setIsAllTicketsLoaded(isLoading)
-	}, [isLoading])
 
 	return (
 		<>
@@ -50,8 +29,20 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 						Ticket(s) à partir de {props.lowerPrice} €
 					</Text>
 					<Button
+						disabled={isLoading}
 						onPress={() => {
-							setVisible(true)
+							if (nfts !== undefined) {
+								try {
+									router.push({
+										pathname: `/nft/${collectionAddress}/${nfts[0].id}`,
+										query: {
+											price: props.lowerPrice,
+										},
+									})
+								} catch (e) {
+									console.error(e)
+								}
+							}
 						}}>
 						<Row
 							justify={'space-between'}
@@ -59,42 +50,24 @@ const TicketTypeCollapse: React.FC<TicketCardProps> = (props: TicketCardProps) =
 							<Text
 								color="black"
 								b>
-								Consulter les tickets
+								Consulter un ticket
 							</Text>
 							<Spacer x={0.5} />
-							<Image
-								alt={'right arrow'}
-								width={30}
-								height={30}
-								src={nextIcon}
-								objectFit="cover"
-							/>
+							{isLoading ? (
+								<Loading type="points-opacity" />
+							) : (
+								<Image
+									alt={'right arrow'}
+									width={30}
+									height={30}
+									src={nextIcon}
+									objectFit="cover"
+								/>
+							)}
 						</Row>
 					</Button>
 				</Row>
 			</Collapse>
-			<Modal
-				scroll
-				fullScreen
-				closeButton
-				aria-labelledby="redirect-modal"
-				aria-describedby="redirect-modal"
-				{...bindings}>
-				<Modal.Body>
-					<Grid.Container
-						justify={'center'}
-						alignItems={'center'}
-						direction={'row'}
-						css={{ height: '100%' }}>
-						<Text size={50}>Chargement</Text>
-						<Spacer x={1} />
-						<Loading
-							type={'points'}
-							size={'xl'}
-						/>
-					</Grid.Container>
-				</Modal.Body>
-			</Modal>
 		</>
 	)
 }
