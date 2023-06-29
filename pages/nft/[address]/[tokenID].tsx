@@ -7,10 +7,10 @@ import { BigNumber } from 'ethers'
 import Header from '../../../components/header/Header'
 import { buyNft } from '@/services/buyNFTicket'
 import { noConnectedWalletErrorAlert } from '@/utils/errors/noConnectedWalletErrorAlert'
-import { BuyWithStripe } from '@/services/buyWithStripe'
 import axios from 'axios'
 import { convertEuroToMATIC } from '@/utils/tools'
 import { ConversionSens } from '@/models/enum/createNFTInputs'
+import CreditCardModal from '@/components/forms/CreditCardModal'
 
 const NftDetails = () => {
 	const connectedAddress = useAddress()
@@ -23,6 +23,7 @@ const NftDetails = () => {
 	const [isAllTicketsLoaded, setIsAllTicketsLoaded] = useState(isLoading)
 	const [formatedLocation, setformatedLocation] = useState<string>('')
 	const [convertedPrice, setConvertedPrice] = useState<string>('0')
+	const [modalIsOpen, setModalIsOpen] = useState(false)
 
 	const getEventLocation = async (label: string) => {
 		await axios
@@ -74,6 +75,7 @@ const NftDetails = () => {
 					</Row>
 				) : (
 					<>
+						<Spacer x={4} />
 						<Container css={{ maxWidth: '80%' }}>
 							<Row justify={'flex-start'}>
 								<Text
@@ -150,20 +152,15 @@ const NftDetails = () => {
 													{(item?.asset.properties as { hourEnd: string })?.hourEnd ??
 														'End Hour Missing'}
 												</Text>
-												{formatedLocation !== '' ? (
-													<Text
-														size={18}
-														color="white"
-														weight="bold">
-														<Row align={'center'}>
-															<RiMapPinLine />
-															&nbsp;
-															{formatedLocation}
-														</Row>
-													</Text>
-												) : (
-													<></>
-												)}
+												<Text
+													size={18}
+													weight="bold">
+													<Row align={'center'}>
+														<RiMapPinLine />
+														&nbsp;
+														{formatedLocation}
+													</Row>
+												</Text>
 											</Container>
 										</Card.Body>
 										<Card.Footer
@@ -196,6 +193,8 @@ const NftDetails = () => {
 											</Button>
 											<Button
 												onPress={async () => {
+													setModalIsOpen(true)
+													/*
 													connectedAddress === undefined
 														? noConnectedWalletErrorAlert()
 														: await BuyWithStripe({
@@ -207,7 +206,7 @@ const NftDetails = () => {
 																	expYear: '25',
 																	cvc: '333',
 																},
-														  })
+														  }) */
 												}}
 												size={'lg'}
 												shadow
@@ -220,6 +219,12 @@ const NftDetails = () => {
 								</Grid>
 							</Grid.Container>
 						</Container>
+						<CreditCardModal
+							isOpen={modalIsOpen}
+							onClose={() => {
+								setModalIsOpen(false)
+							}}
+						/>
 					</>
 				)}
 			</Container>

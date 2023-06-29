@@ -133,9 +133,12 @@ const Header = () => {
 							}}
 							placeholder="Recherche..."
 							onChange={(e) => {
-								const filteredEvents = lightEvents.filter((event) =>
-									event.libelle.toLowerCase().includes(e.target.value.toLowerCase())
-								)
+								const filteredEvents = lightEvents.filter((event) => {
+									const searchValue = e.target.value.toLowerCase().normalize('NFD')
+									const libelle = event.libelle.toLowerCase().normalize('NFD')
+
+									return libelle.includes(searchValue)
+								})
 								e.target.value.length > 0
 									? filteredEvents.length > 0
 										? setSearchTermResults(filteredEvents)

@@ -16,6 +16,8 @@ const Home: NextPage = () => {
 	const [concertEvents, setConcertEvents] = useState<LightEvent[]>([])
 	const [theatreEvents, setTheatreEvents] = useState<LightEvent[]>([])
 	const [humorEvents, setHumorEvents] = useState<LightEvent[]>([])
+	const [rockEvents, setRockEvents] = useState<LightEvent[]>([])
+	const [popEvents, setPopEvents] = useState<LightEvent[]>([])
 	const [isEventsAlreadyFetched, setIsEventsAlreadyFetched] = useState(false)
 
 	const fetchAllEvents = useCallback(async () => {
@@ -79,7 +81,7 @@ const Home: NextPage = () => {
 			.then((response) => {
 				const result: LightEvent[] = []
 				response.data.map((item: LightEvent) => result.push(item))
-				// fillEvents(result)
+				fillEvents(result)
 				setTheatreEvents(result)
 			})
 	}, [])
@@ -93,6 +95,26 @@ const Home: NextPage = () => {
 				fillEvents(result)
 				setHumorEvents(result)
 			})
+	}, [])
+
+	const fetchRockEvents = useCallback(async () => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Rock').then((response) => {
+			console.log()
+			const result: LightEvent[] = []
+			response.data.map((item: LightEvent) => result.push(item))
+			fillEvents(result)
+			setRockEvents(result)
+		})
+	}, [])
+
+	const fetchPopEvents = useCallback(async () => {
+		await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/events/all/light/byCat/Pop').then((response) => {
+			console.log()
+			const result: LightEvent[] = []
+			response.data.map((item: LightEvent) => result.push(item))
+			fillEvents(result)
+			setPopEvents(result)
+		})
 	}, [])
 
 	useEffect(() => {
@@ -118,6 +140,12 @@ const Home: NextPage = () => {
 			// All humor events
 			fetchHumorEvents().catch(console.error)
 
+			// All rock events
+			fetchRockEvents().catch(console.error)
+
+			// All pop events
+			fetchPopEvents().catch(console.error)
+
 			setIsEventsAlreadyFetched(true)
 		}
 	}, [
@@ -128,6 +156,8 @@ const Home: NextPage = () => {
 		fetchConcertsEvents,
 		fetchTheatreEvents,
 		fetchHumorEvents,
+		fetchRockEvents,
+		fetchPopEvents,
 	])
 
 	const fillEvents = (events: LightEvent[]) => {
@@ -228,6 +258,18 @@ const Home: NextPage = () => {
 				events={humorEvents}
 				title={'Humours'}
 				libelle={'Humour'}
+			/>
+			{/* Rock */}
+			<CategoryContainer
+				events={rockEvents}
+				title={'Rock'}
+				libelle={'Rock'}
+			/>
+			{/* Pop */}
+			<CategoryContainer
+				events={popEvents}
+				title={'Pop'}
+				libelle={'Pop'}
 			/>
 			<Spacer y={1} />
 			<Footer />
