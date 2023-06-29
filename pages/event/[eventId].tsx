@@ -16,7 +16,7 @@ const EventPage = () => {
 	const [event, setEvent] = useState<Event>()
 	const [eventCategories, setEventCategories] = useState<Category[]>([])
 	const [ticketTypes, setTicketTypes] = useState<string[]>([])
-	const [events, setEvents] = useState<LightEvent[]>([])
+
 	const fetchEventAllInfos = async () => {
 		console.log('categories - eventId')
 		console.log(eventId)
