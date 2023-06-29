@@ -8,7 +8,7 @@ import {
 	useSigner,
 	useWalletConnect,
 } from '@thirdweb-dev/react'
-import { Link, Loading, Row } from '@nextui-org/react'
+import { Col, Container, Grid, Link, Loading, Row } from '@nextui-org/react'
 import Header from '../components/header/Header'
 import ScrollToTop from 'react-scroll-to-top'
 import { findMyNFTs } from '@/services/findMyNFTs'
@@ -81,33 +81,36 @@ const MyNFT = () => {
 	return (
 		<>
 			<Header></Header>
-			<h1>Vos NFTs</h1>
-			<div
-				style={{
-					display: 'flex',
-					gap: '15rem',
-					justifyContent: 'center',
-					alignItems: 'center',
-					minHeight: '800px',
-				}}>
-				{isLoading && (
-					<Loading
-						type="points"
-						size={'lg'}
-					/>
-				)}
-				{!isLoading &&
-					nfts?.map((nft) => {
-						return (
-							<>
-								<NFTCard
-									nft={nft}
-									listNFT={listNFT}
-								/>
-							</>
-						)
-					})}
-			</div>
+			<Grid.Container
+				xl
+				gap={4}
+				direction={'row'}
+				alignItems={'center'}
+				justify={'center'}>
+				<h1>Vos NFTs</h1>
+				<div>
+					{isLoading && (
+						<Grid xs={2}>
+							<Loading
+								type="points"
+								size={'lg'}
+							/>
+						</Grid>
+					)}
+
+					{!isLoading &&
+						nfts?.map((nft) => {
+							return (
+								<Grid xs={2}>
+									<NFTCard
+										nft={nft}
+										listNFT={listNFT}
+									/>
+								</Grid>
+							)
+						})}
+				</div>
+			</Grid.Container>
 		</>
 	)
 }

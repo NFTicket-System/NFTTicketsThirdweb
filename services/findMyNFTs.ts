@@ -6,12 +6,20 @@ import { LightEvent } from '@/models/LightEvent'
 import { type Ticket } from '@/models/Event'
 
 export async function findMyNFTs({ connectedAddress }: { connectedAddress: string }) {
-	const collections: string[] = []
-	await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/tickets/all').then((response) => {
-		const result: Ticket[] = []
-		response.data.map((item: Ticket) => result.push(item))
-		result.map((ticket) => collections.push(ticket.addressContract))
-	})
+	const collections: string[] = [
+		'0x7ABe8fF84a65E0121ce81aB9142B593a3D086487',
+		'0x4c900094D670A513e85A6291f2771A172428a364',
+		'0x7ABe8fF84a65E0121ce81aB9142B593a3D086487',
+		'0x4c900094D670A513e85A6291f2771A172428a364',
+		'0x7ABe8fF84a65E0121ce81aB9142B593a3D086487',
+		'0x4c900094D670A513e85A6291f2771A172428a364',
+	]
+	// await axios.get(process.env.NEXT_PUBLIC_API_HOSTNAME + '/api/tickets/all').then((response) => {
+	// 	const result: Ticket[] = []
+	// 	response.data.map((item: Ticket) => result.push(item))
+	// 	result.map((ticket) => collections.push(ticket.addressContract))
+	// })
+	console.log(collections)
 	const nfts: nftData[] = []
 	const sdkAdmin = ThirdwebSDK.fromPrivateKey(process.env.NEXT_PUBLIC_SDK_PK ?? '', 'mumbai')
 	for (const collectionId of collections) {
