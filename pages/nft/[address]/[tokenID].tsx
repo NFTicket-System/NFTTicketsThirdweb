@@ -1,4 +1,4 @@
-import {Button, Card, Container, Grid, Loading, Row, Spacer, Text, useTheme} from '@nextui-org/react'
+import {Button, Card, Col, Container, Grid, Loading, Row, Spacer, Text, useTheme} from '@nextui-org/react'
 import { RiMapPinLine } from '@react-icons/all-files/ri/RiMapPinLine'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -158,41 +158,49 @@ const NftDetails = () => {
 												justifyContent: 'flex-end',
 												gap: '10px',
 											}}>
-											<Text weight={'bold'}>{`${router.query.price} €`}</Text>
-											<Spacer x={1}></Spacer>
-											<Button
-												onPress={async () => {
-													connectedAddress === undefined
-														? noConnectedWalletErrorAlert()
-														: await buyNft({
-																nftId: BigNumber.from(tokenID),
-																isMismatched,
-																switchNetwork,
-																marketplace,
-														  })
-												}}
-												size={'lg'}
-												color={'primary'}
-												auto>
-                                                <Text
-                                                        color="black"
-                                                        b>
-                                                    Acheter en crypto
-                                                </Text>
-											</Button>
-											<Button
-												onPress={async () => {
-													setModalIsOpen(true)
-												}}
-												size={'lg'}
-												color={'primary'}
-												auto>
-                                                <Text
-                                                        color="black"
-                                                        b>
-                                                    Acheter en carte bleu
-                                                </Text>
-											</Button>
+                                            <Col>
+                                                <Row justify={"flex-end"}>
+                                                    <Text weight={'bold'}>{`${router.query.price} €`}</Text>
+                                                    <Spacer x={0.5}/>
+                                                </Row>
+                                                <Spacer/>
+                                                <Row justify={"flex-end"}>
+                                                    <Button
+                                                            onPress={async () => {
+                                                                connectedAddress === undefined
+                                                                        ? noConnectedWalletErrorAlert()
+                                                                        : await buyNft({
+                                                                            nftId: BigNumber.from(tokenID),
+                                                                            isMismatched,
+                                                                            switchNetwork,
+                                                                            marketplace,
+                                                                        })
+                                                            }}
+                                                            size={'lg'}
+                                                            color={'primary'}
+                                                            auto>
+                                                        <Text
+                                                                color="black"
+                                                                b>
+                                                            Acheter en crypto
+                                                        </Text>
+                                                    </Button>
+                                                    <Spacer x={1}/>
+                                                    <Button
+                                                            onPress={async () => {
+                                                                setModalIsOpen(true)
+                                                            }}
+                                                            size={'lg'}
+                                                            color={'primary'}
+                                                            auto>
+                                                        <Text
+                                                                color="black"
+                                                                b>
+                                                            Acheter en carte bleu
+                                                        </Text>
+                                                    </Button>
+                                                </Row>
+                                            </Col>
 										</Card.Footer>
 									</Card>
 								</Grid>

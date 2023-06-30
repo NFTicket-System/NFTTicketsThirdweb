@@ -106,7 +106,7 @@ const Header = () => {
 							<Text
 								b
 								color={isDark ?? false ? 'white' : 'black'}>
-								My Nfts
+								Mes tickets
 							</Text>
 						</Link>
 					</Navbar.Item>
