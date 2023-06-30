@@ -137,7 +137,7 @@ const CreditCardModal = ({
 							<Spacer y={0.5} />
 							<Input
 								aria-label="csv"
-								label={'CSV'}
+								label={'CVC'}
 								required
 								type="text"
 								value={cvc}
